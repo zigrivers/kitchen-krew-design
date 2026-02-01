@@ -1,0 +1,579 @@
+{
+  "_meta": {
+    "models": {
+      "playerStats": "Aggregated statistics for a player including wins, losses, win percentage, streaks, and point differential.",
+      "partnerRecords": "Win/loss records with each partner the player has played doubles with.",
+      "opponentRecords": "Head-to-head records against each opponent the player has faced.",
+      "ratingHistory": "Historical rating values over time used to render the rating trend chart.",
+      "matchHistory": "Detailed records of each match played including partner, opponents, scores, and results.",
+      "activityCalendar": "Games played per day used to render the activity calendar heat map.",
+      "eventLeaderboard": "Rankings for players within a specific event.",
+      "clubLeaderboard": "Rankings for members within a club with configurable metrics and time periods."
+    },
+    "relationships": [
+      "PlayerStats summarizes data from all Matches a player has participated in",
+      "PartnerRecords aggregate Match results grouped by partner",
+      "OpponentRecords aggregate Match results grouped by opponent",
+      "RatingHistory tracks changes after each Match",
+      "MatchHistory references Players, Events, and Venues",
+      "EventLeaderboard contains entries for all Players in an Event",
+      "ClubLeaderboard contains entries for all Members of a Club"
+    ]
+  },
+  "currentPlayer": {
+    "id": "plr-001",
+    "name": "Sarah Martinez",
+    "avatarUrl": null,
+    "skillRating": 3.5,
+    "duprRating": 3.42,
+    "memberSince": "2023-03-15"
+  },
+  "playerStats": {
+    "playerId": "plr-001",
+    "totalGames": 87,
+    "wins": 52,
+    "losses": 35,
+    "winPercentage": 59.8,
+    "doublesGames": 74,
+    "doublesWins": 45,
+    "doublesLosses": 29,
+    "singlesGames": 13,
+    "singlesWins": 7,
+    "singlesLosses": 6,
+    "currentWinStreak": 3,
+    "currentLossStreak": 0,
+    "longestWinStreak": 8,
+    "longestWinStreakDates": { "start": "2025-09-12", "end": "2025-09-28" },
+    "longestLossStreak": 4,
+    "longestLossStreakDates": { "start": "2024-06-15", "end": "2024-06-22" },
+    "avgPointDifferential": 1.8,
+    "avgPointDifferentialWins": 4.2,
+    "avgPointDifferentialLosses": -3.1,
+    "gamesThisWeek": 4,
+    "gamesThisMonth": 12,
+    "gamesThisYear": 87,
+    "avgGamesPerWeek": 2.1,
+    "trend": "improving"
+  },
+  "partnerRecords": [
+    {
+      "partnerId": "plr-002",
+      "partnerName": "Marcus Chen",
+      "partnerAvatarUrl": "/avatars/marcus.jpg",
+      "partnerRating": 4.0,
+      "gamesPlayed": 24,
+      "wins": 18,
+      "losses": 6,
+      "winPercentage": 75.0,
+      "avgPointDiff": 3.2,
+      "lastPlayedDate": "2026-01-30"
+    },
+    {
+      "partnerId": "plr-003",
+      "partnerName": "Jennifer Walsh",
+      "partnerAvatarUrl": null,
+      "partnerRating": 4.25,
+      "gamesPlayed": 18,
+      "wins": 12,
+      "losses": 6,
+      "winPercentage": 66.7,
+      "avgPointDiff": 2.1,
+      "lastPlayedDate": "2026-01-28"
+    },
+    {
+      "partnerId": "plr-004",
+      "partnerName": "David Kim",
+      "partnerAvatarUrl": "/avatars/david.jpg",
+      "partnerRating": 3.5,
+      "gamesPlayed": 15,
+      "wins": 8,
+      "losses": 7,
+      "winPercentage": 53.3,
+      "avgPointDiff": 0.8,
+      "lastPlayedDate": "2026-01-25"
+    },
+    {
+      "partnerId": "plr-005",
+      "partnerName": "Emily Rodriguez",
+      "partnerAvatarUrl": null,
+      "partnerRating": 3.0,
+      "gamesPlayed": 10,
+      "wins": 4,
+      "losses": 6,
+      "winPercentage": 40.0,
+      "avgPointDiff": -1.5,
+      "lastPlayedDate": "2026-01-20"
+    },
+    {
+      "partnerId": "plr-010",
+      "partnerName": "Alex Thompson",
+      "partnerAvatarUrl": "/avatars/alex.jpg",
+      "partnerRating": 3.75,
+      "gamesPlayed": 5,
+      "wins": 3,
+      "losses": 2,
+      "winPercentage": 60.0,
+      "avgPointDiff": 1.2,
+      "lastPlayedDate": "2026-01-15"
+    },
+    {
+      "partnerId": "plr-011",
+      "partnerName": "Rachel Green",
+      "partnerAvatarUrl": null,
+      "partnerRating": 3.25,
+      "gamesPlayed": 2,
+      "wins": 0,
+      "losses": 2,
+      "winPercentage": 0.0,
+      "avgPointDiff": -4.0,
+      "lastPlayedDate": "2025-12-10"
+    }
+  ],
+  "opponentRecords": [
+    {
+      "opponentId": "plr-020",
+      "opponentName": "Mike Johnson",
+      "opponentAvatarUrl": "/avatars/mike.jpg",
+      "opponentRating": 3.75,
+      "gamesPlayed": 12,
+      "wins": 7,
+      "losses": 5,
+      "winPercentage": 58.3,
+      "currentStreak": { "type": "win", "count": 2 },
+      "lastPlayedDate": "2026-01-30"
+    },
+    {
+      "opponentId": "plr-021",
+      "opponentName": "Lisa Park",
+      "opponentAvatarUrl": null,
+      "opponentRating": 4.0,
+      "gamesPlayed": 10,
+      "wins": 3,
+      "losses": 7,
+      "winPercentage": 30.0,
+      "currentStreak": { "type": "loss", "count": 3 },
+      "lastPlayedDate": "2026-01-28"
+    },
+    {
+      "opponentId": "plr-022",
+      "opponentName": "Tom Williams",
+      "opponentAvatarUrl": "/avatars/tom.jpg",
+      "opponentRating": 3.5,
+      "gamesPlayed": 9,
+      "wins": 6,
+      "losses": 3,
+      "winPercentage": 66.7,
+      "currentStreak": { "type": "win", "count": 4 },
+      "lastPlayedDate": "2026-01-25"
+    },
+    {
+      "opponentId": "plr-023",
+      "opponentName": "Amanda Davis",
+      "opponentAvatarUrl": null,
+      "opponentRating": 3.25,
+      "gamesPlayed": 8,
+      "wins": 6,
+      "losses": 2,
+      "winPercentage": 75.0,
+      "currentStreak": { "type": "win", "count": 1 },
+      "lastPlayedDate": "2026-01-20"
+    },
+    {
+      "opponentId": "plr-024",
+      "opponentName": "Chris Martinez",
+      "opponentAvatarUrl": "/avatars/chris.jpg",
+      "opponentRating": 3.75,
+      "gamesPlayed": 7,
+      "wins": 4,
+      "losses": 3,
+      "winPercentage": 57.1,
+      "currentStreak": { "type": "loss", "count": 1 },
+      "lastPlayedDate": "2026-01-18"
+    },
+    {
+      "opponentId": "plr-025",
+      "opponentName": "Jessica Lee",
+      "opponentAvatarUrl": null,
+      "opponentRating": 4.25,
+      "gamesPlayed": 6,
+      "wins": 1,
+      "losses": 5,
+      "winPercentage": 16.7,
+      "currentStreak": { "type": "loss", "count": 2 },
+      "lastPlayedDate": "2026-01-15"
+    },
+    {
+      "opponentId": "plr-026",
+      "opponentName": "Ryan Foster",
+      "opponentAvatarUrl": "/avatars/ryan.jpg",
+      "opponentRating": 3.5,
+      "gamesPlayed": 5,
+      "wins": 3,
+      "losses": 2,
+      "winPercentage": 60.0,
+      "currentStreak": { "type": "win", "count": 1 },
+      "lastPlayedDate": "2026-01-10"
+    },
+    {
+      "opponentId": "plr-027",
+      "opponentName": "Nicole Brown",
+      "opponentAvatarUrl": null,
+      "opponentRating": 3.0,
+      "gamesPlayed": 4,
+      "wins": 4,
+      "losses": 0,
+      "winPercentage": 100.0,
+      "currentStreak": { "type": "win", "count": 4 },
+      "lastPlayedDate": "2026-01-05"
+    }
+  ],
+  "ratingHistory": [
+    { "date": "2025-02-01", "rating": 3.0, "duprRating": null },
+    { "date": "2025-03-01", "rating": 3.05, "duprRating": null },
+    { "date": "2025-04-01", "rating": 3.12, "duprRating": 3.08 },
+    { "date": "2025-05-01", "rating": 3.18, "duprRating": 3.15 },
+    { "date": "2025-06-01", "rating": 3.15, "duprRating": 3.12 },
+    { "date": "2025-07-01", "rating": 3.22, "duprRating": 3.18 },
+    { "date": "2025-08-01", "rating": 3.28, "duprRating": 3.22 },
+    { "date": "2025-09-01", "rating": 3.35, "duprRating": 3.28 },
+    { "date": "2025-10-01", "rating": 3.38, "duprRating": 3.32 },
+    { "date": "2025-11-01", "rating": 3.42, "duprRating": 3.36 },
+    { "date": "2025-12-01", "rating": 3.45, "duprRating": 3.38 },
+    { "date": "2026-01-01", "rating": 3.48, "duprRating": 3.40 },
+    { "date": "2026-02-01", "rating": 3.50, "duprRating": 3.42 }
+  ],
+  "matchHistory": [
+    {
+      "id": "match-001",
+      "date": "2026-01-30",
+      "eventId": "evt-100",
+      "eventName": "Thursday Night Open Play",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-002", "name": "Marcus Chen" },
+      "opponents": [
+        { "id": "plr-020", "name": "Mike Johnson" },
+        { "id": "plr-021", "name": "Lisa Park" }
+      ],
+      "scores": [{ "us": 11, "them": 8 }],
+      "result": "win",
+      "pointDiff": 3
+    },
+    {
+      "id": "match-002",
+      "date": "2026-01-30",
+      "eventId": "evt-100",
+      "eventName": "Thursday Night Open Play",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-002", "name": "Marcus Chen" },
+      "opponents": [
+        { "id": "plr-022", "name": "Tom Williams" },
+        { "id": "plr-023", "name": "Amanda Davis" }
+      ],
+      "scores": [{ "us": 11, "them": 6 }],
+      "result": "win",
+      "pointDiff": 5
+    },
+    {
+      "id": "match-003",
+      "date": "2026-01-28",
+      "eventId": "evt-099",
+      "eventName": "Tuesday Round Robin",
+      "venueId": "ven-002",
+      "venueName": "Mueller Park Courts",
+      "format": "doubles",
+      "partner": { "id": "plr-003", "name": "Jennifer Walsh" },
+      "opponents": [
+        { "id": "plr-021", "name": "Lisa Park" },
+        { "id": "plr-025", "name": "Jessica Lee" }
+      ],
+      "scores": [{ "us": 8, "them": 11 }],
+      "result": "loss",
+      "pointDiff": -3
+    },
+    {
+      "id": "match-004",
+      "date": "2026-01-28",
+      "eventId": "evt-099",
+      "eventName": "Tuesday Round Robin",
+      "venueId": "ven-002",
+      "venueName": "Mueller Park Courts",
+      "format": "doubles",
+      "partner": { "id": "plr-003", "name": "Jennifer Walsh" },
+      "opponents": [
+        { "id": "plr-020", "name": "Mike Johnson" },
+        { "id": "plr-024", "name": "Chris Martinez" }
+      ],
+      "scores": [{ "us": 11, "them": 9 }],
+      "result": "win",
+      "pointDiff": 2
+    },
+    {
+      "id": "match-005",
+      "date": "2026-01-25",
+      "eventId": "evt-098",
+      "eventName": "Saturday Morning Mixer",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-004", "name": "David Kim" },
+      "opponents": [
+        { "id": "plr-022", "name": "Tom Williams" },
+        { "id": "plr-026", "name": "Ryan Foster" }
+      ],
+      "scores": [{ "us": 11, "them": 7 }],
+      "result": "win",
+      "pointDiff": 4
+    },
+    {
+      "id": "match-006",
+      "date": "2026-01-25",
+      "eventId": "evt-098",
+      "eventName": "Saturday Morning Mixer",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-004", "name": "David Kim" },
+      "opponents": [
+        { "id": "plr-021", "name": "Lisa Park" },
+        { "id": "plr-027", "name": "Nicole Brown" }
+      ],
+      "scores": [{ "us": 9, "them": 11 }],
+      "result": "loss",
+      "pointDiff": -2
+    },
+    {
+      "id": "match-007",
+      "date": "2026-01-23",
+      "eventId": "evt-097",
+      "eventName": "Thursday Night Open Play",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "singles",
+      "partner": null,
+      "opponents": [
+        { "id": "plr-022", "name": "Tom Williams" }
+      ],
+      "scores": [{ "us": 11, "them": 5 }],
+      "result": "win",
+      "pointDiff": 6
+    },
+    {
+      "id": "match-008",
+      "date": "2026-01-20",
+      "eventId": "evt-096",
+      "eventName": "Monday Skill Session",
+      "venueId": "ven-003",
+      "venueName": "Lakeway Activity Center",
+      "format": "doubles",
+      "partner": { "id": "plr-005", "name": "Emily Rodriguez" },
+      "opponents": [
+        { "id": "plr-023", "name": "Amanda Davis" },
+        { "id": "plr-024", "name": "Chris Martinez" }
+      ],
+      "scores": [{ "us": 7, "them": 11 }],
+      "result": "loss",
+      "pointDiff": -4
+    },
+    {
+      "id": "match-009",
+      "date": "2026-01-18",
+      "eventId": "evt-095",
+      "eventName": "Saturday Tournament",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-002", "name": "Marcus Chen" },
+      "opponents": [
+        { "id": "plr-024", "name": "Chris Martinez" },
+        { "id": "plr-025", "name": "Jessica Lee" }
+      ],
+      "scores": [{ "us": 11, "them": 9 }, { "us": 9, "them": 11 }, { "us": 11, "them": 8 }],
+      "result": "win",
+      "pointDiff": 3
+    },
+    {
+      "id": "match-010",
+      "date": "2026-01-18",
+      "eventId": "evt-095",
+      "eventName": "Saturday Tournament",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-002", "name": "Marcus Chen" },
+      "opponents": [
+        { "id": "plr-021", "name": "Lisa Park" },
+        { "id": "plr-026", "name": "Ryan Foster" }
+      ],
+      "scores": [{ "us": 8, "them": 11 }, { "us": 11, "them": 7 }, { "us": 6, "them": 11 }],
+      "result": "loss",
+      "pointDiff": -4
+    },
+    {
+      "id": "match-011",
+      "date": "2026-01-15",
+      "eventId": "evt-094",
+      "eventName": "Wednesday Open Play",
+      "venueId": "ven-002",
+      "venueName": "Mueller Park Courts",
+      "format": "doubles",
+      "partner": { "id": "plr-010", "name": "Alex Thompson" },
+      "opponents": [
+        { "id": "plr-025", "name": "Jessica Lee" },
+        { "id": "plr-020", "name": "Mike Johnson" }
+      ],
+      "scores": [{ "us": 6, "them": 11 }],
+      "result": "loss",
+      "pointDiff": -5
+    },
+    {
+      "id": "match-012",
+      "date": "2026-01-15",
+      "eventId": "evt-094",
+      "eventName": "Wednesday Open Play",
+      "venueId": "ven-002",
+      "venueName": "Mueller Park Courts",
+      "format": "doubles",
+      "partner": { "id": "plr-010", "name": "Alex Thompson" },
+      "opponents": [
+        { "id": "plr-022", "name": "Tom Williams" },
+        { "id": "plr-023", "name": "Amanda Davis" }
+      ],
+      "scores": [{ "us": 11, "them": 9 }],
+      "result": "win",
+      "pointDiff": 2
+    },
+    {
+      "id": "match-013",
+      "date": "2026-01-10",
+      "eventId": "evt-093",
+      "eventName": "Friday Night Lights",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-003", "name": "Jennifer Walsh" },
+      "opponents": [
+        { "id": "plr-026", "name": "Ryan Foster" },
+        { "id": "plr-027", "name": "Nicole Brown" }
+      ],
+      "scores": [{ "us": 11, "them": 4 }],
+      "result": "win",
+      "pointDiff": 7
+    },
+    {
+      "id": "match-014",
+      "date": "2026-01-05",
+      "eventId": "evt-092",
+      "eventName": "Sunday Social",
+      "venueId": "ven-004",
+      "venueName": "Brushy Creek Sports Park",
+      "format": "doubles",
+      "partner": { "id": "plr-004", "name": "David Kim" },
+      "opponents": [
+        { "id": "plr-027", "name": "Nicole Brown" },
+        { "id": "plr-028", "name": "Kevin Wright" }
+      ],
+      "scores": [{ "us": 11, "them": 3 }],
+      "result": "win",
+      "pointDiff": 8
+    },
+    {
+      "id": "match-015",
+      "date": "2025-12-28",
+      "eventId": "evt-091",
+      "eventName": "Holiday Tournament",
+      "venueId": "ven-001",
+      "venueName": "Riverside Recreation Center",
+      "format": "doubles",
+      "partner": { "id": "plr-002", "name": "Marcus Chen" },
+      "opponents": [
+        { "id": "plr-020", "name": "Mike Johnson" },
+        { "id": "plr-021", "name": "Lisa Park" }
+      ],
+      "scores": [{ "us": 11, "them": 8 }, { "us": 11, "them": 6 }],
+      "result": "win",
+      "pointDiff": 8
+    }
+  ],
+  "activityCalendar": [
+    { "date": "2026-01-30", "gamesPlayed": 2 },
+    { "date": "2026-01-28", "gamesPlayed": 2 },
+    { "date": "2026-01-25", "gamesPlayed": 2 },
+    { "date": "2026-01-23", "gamesPlayed": 1 },
+    { "date": "2026-01-20", "gamesPlayed": 1 },
+    { "date": "2026-01-18", "gamesPlayed": 3 },
+    { "date": "2026-01-15", "gamesPlayed": 2 },
+    { "date": "2026-01-10", "gamesPlayed": 1 },
+    { "date": "2026-01-05", "gamesPlayed": 2 },
+    { "date": "2025-12-28", "gamesPlayed": 4 },
+    { "date": "2025-12-21", "gamesPlayed": 2 },
+    { "date": "2025-12-18", "gamesPlayed": 1 },
+    { "date": "2025-12-14", "gamesPlayed": 3 },
+    { "date": "2025-12-10", "gamesPlayed": 2 },
+    { "date": "2025-12-07", "gamesPlayed": 1 },
+    { "date": "2025-12-03", "gamesPlayed": 2 },
+    { "date": "2025-11-28", "gamesPlayed": 0 },
+    { "date": "2025-11-25", "gamesPlayed": 2 },
+    { "date": "2025-11-21", "gamesPlayed": 3 },
+    { "date": "2025-11-18", "gamesPlayed": 1 },
+    { "date": "2025-11-14", "gamesPlayed": 2 },
+    { "date": "2025-11-11", "gamesPlayed": 2 },
+    { "date": "2025-11-07", "gamesPlayed": 1 },
+    { "date": "2025-11-04", "gamesPlayed": 2 },
+    { "date": "2025-10-31", "gamesPlayed": 4 },
+    { "date": "2025-10-28", "gamesPlayed": 2 },
+    { "date": "2025-10-25", "gamesPlayed": 3 },
+    { "date": "2025-10-21", "gamesPlayed": 1 },
+    { "date": "2025-10-18", "gamesPlayed": 2 },
+    { "date": "2025-10-14", "gamesPlayed": 2 }
+  ],
+  "eventLeaderboard": {
+    "eventId": "evt-100",
+    "eventName": "Thursday Night Open Play",
+    "eventDate": "2026-01-30",
+    "metric": "wins",
+    "entries": [
+      { "rank": 1, "playerId": "plr-002", "playerName": "Marcus Chen", "avatarUrl": "/avatars/marcus.jpg", "wins": 4, "losses": 0, "pointDiff": 18, "isCurrentPlayer": false },
+      { "rank": 2, "playerId": "plr-001", "playerName": "Sarah Martinez", "avatarUrl": null, "wins": 3, "losses": 1, "pointDiff": 10, "isCurrentPlayer": true },
+      { "rank": 3, "playerId": "plr-020", "playerName": "Mike Johnson", "avatarUrl": "/avatars/mike.jpg", "wins": 3, "losses": 1, "pointDiff": 6, "isCurrentPlayer": false },
+      { "rank": 4, "playerId": "plr-022", "playerName": "Tom Williams", "avatarUrl": "/avatars/tom.jpg", "wins": 2, "losses": 2, "pointDiff": 2, "isCurrentPlayer": false },
+      { "rank": 5, "playerId": "plr-023", "playerName": "Amanda Davis", "avatarUrl": null, "wins": 2, "losses": 2, "pointDiff": -1, "isCurrentPlayer": false },
+      { "rank": 6, "playerId": "plr-024", "playerName": "Chris Martinez", "avatarUrl": "/avatars/chris.jpg", "wins": 2, "losses": 2, "pointDiff": -3, "isCurrentPlayer": false },
+      { "rank": 7, "playerId": "plr-021", "playerName": "Lisa Park", "avatarUrl": null, "wins": 1, "losses": 3, "pointDiff": -8, "isCurrentPlayer": false },
+      { "rank": 8, "playerId": "plr-026", "playerName": "Ryan Foster", "avatarUrl": "/avatars/ryan.jpg", "wins": 1, "losses": 3, "pointDiff": -10, "isCurrentPlayer": false },
+      { "rank": 9, "playerId": "plr-027", "playerName": "Nicole Brown", "avatarUrl": null, "wins": 0, "losses": 4, "pointDiff": -14, "isCurrentPlayer": false }
+    ]
+  },
+  "clubLeaderboard": {
+    "clubId": "club-001",
+    "clubName": "Austin Pickleball Club",
+    "metric": "wins",
+    "timePeriod": "month",
+    "entries": [
+      { "rank": 1, "playerId": "plr-002", "playerName": "Marcus Chen", "avatarUrl": "/avatars/marcus.jpg", "rating": 4.0, "wins": 28, "losses": 8, "winPercentage": 77.8, "gamesPlayed": 36, "pointDiff": 82, "isCurrentPlayer": false },
+      { "rank": 2, "playerId": "plr-003", "playerName": "Jennifer Walsh", "avatarUrl": null, "rating": 4.25, "wins": 24, "losses": 10, "winPercentage": 70.6, "gamesPlayed": 34, "pointDiff": 58, "isCurrentPlayer": false },
+      { "rank": 3, "playerId": "plr-025", "playerName": "Jessica Lee", "avatarUrl": null, "rating": 4.25, "wins": 22, "losses": 8, "winPercentage": 73.3, "gamesPlayed": 30, "pointDiff": 64, "isCurrentPlayer": false },
+      { "rank": 4, "playerId": "plr-020", "playerName": "Mike Johnson", "avatarUrl": "/avatars/mike.jpg", "rating": 3.75, "wins": 20, "losses": 12, "winPercentage": 62.5, "gamesPlayed": 32, "pointDiff": 35, "isCurrentPlayer": false },
+      { "rank": 5, "playerId": "plr-021", "playerName": "Lisa Park", "avatarUrl": null, "rating": 4.0, "wins": 18, "losses": 14, "winPercentage": 56.3, "gamesPlayed": 32, "pointDiff": 18, "isCurrentPlayer": false },
+      { "rank": 6, "playerId": "plr-001", "playerName": "Sarah Martinez", "avatarUrl": null, "rating": 3.5, "wins": 15, "losses": 9, "winPercentage": 62.5, "gamesPlayed": 24, "pointDiff": 28, "isCurrentPlayer": true },
+      { "rank": 7, "playerId": "plr-022", "playerName": "Tom Williams", "avatarUrl": "/avatars/tom.jpg", "rating": 3.5, "wins": 14, "losses": 10, "winPercentage": 58.3, "gamesPlayed": 24, "pointDiff": 15, "isCurrentPlayer": false },
+      { "rank": 8, "playerId": "plr-024", "playerName": "Chris Martinez", "avatarUrl": "/avatars/chris.jpg", "rating": 3.75, "wins": 13, "losses": 11, "winPercentage": 54.2, "gamesPlayed": 24, "pointDiff": 8, "isCurrentPlayer": false },
+      { "rank": 9, "playerId": "plr-010", "playerName": "Alex Thompson", "avatarUrl": "/avatars/alex.jpg", "rating": 3.75, "wins": 12, "losses": 8, "winPercentage": 60.0, "gamesPlayed": 20, "pointDiff": 22, "isCurrentPlayer": false },
+      { "rank": 10, "playerId": "plr-004", "playerName": "David Kim", "avatarUrl": "/avatars/david.jpg", "rating": 3.5, "wins": 11, "losses": 11, "winPercentage": 50.0, "gamesPlayed": 22, "pointDiff": 2, "isCurrentPlayer": false },
+      { "rank": 11, "playerId": "plr-023", "playerName": "Amanda Davis", "avatarUrl": null, "rating": 3.25, "wins": 10, "losses": 8, "winPercentage": 55.6, "gamesPlayed": 18, "pointDiff": 12, "isCurrentPlayer": false },
+      { "rank": 12, "playerId": "plr-026", "playerName": "Ryan Foster", "avatarUrl": "/avatars/ryan.jpg", "rating": 3.5, "wins": 9, "losses": 9, "winPercentage": 50.0, "gamesPlayed": 18, "pointDiff": 0, "isCurrentPlayer": false },
+      { "rank": 13, "playerId": "plr-005", "playerName": "Emily Rodriguez", "avatarUrl": null, "rating": 3.0, "wins": 8, "losses": 10, "winPercentage": 44.4, "gamesPlayed": 18, "pointDiff": -8, "isCurrentPlayer": false },
+      { "rank": 14, "playerId": "plr-027", "playerName": "Nicole Brown", "avatarUrl": null, "rating": 3.0, "wins": 6, "losses": 12, "winPercentage": 33.3, "gamesPlayed": 18, "pointDiff": -22, "isCurrentPlayer": false },
+      { "rank": 15, "playerId": "plr-011", "playerName": "Rachel Green", "avatarUrl": null, "rating": 3.25, "wins": 4, "losses": 8, "winPercentage": 33.3, "gamesPlayed": 12, "pointDiff": -18, "isCurrentPlayer": false }
+    ]
+  },
+  "statsCardTemplates": [
+    { "id": "template-classic", "name": "Classic", "previewUrl": "/templates/classic.png" },
+    { "id": "template-dark", "name": "Dark Mode", "previewUrl": "/templates/dark.png" },
+    { "id": "template-vibrant", "name": "Vibrant", "previewUrl": "/templates/vibrant.png" },
+    { "id": "template-minimal", "name": "Minimal", "previewUrl": "/templates/minimal.png" }
+  ]
+}

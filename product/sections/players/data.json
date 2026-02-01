@@ -1,0 +1,621 @@
+{
+  "_meta": {
+    "models": {
+      "players": "A registered user with their profile, skill ratings, playing preferences, and social connections. Players can participate in events and earn achievements.",
+      "achievements": "Badges earned for reaching milestones like games played, wins, streaks, or social goals. Each has criteria, levels (bronze/silver/gold/platinum), and progress tracking.",
+      "friendRequests": "Pending connection requests between players. Can be incoming (someone wants to connect with you) or outgoing (you sent a request).",
+      "preferredPartners": "Players you enjoy partnering with during doubles games. Used by the matching algorithm to prioritize pairings.",
+      "avoidInMatching": "Players you'd prefer not to be matched with or against. Private and not visible to other players."
+    },
+    "relationships": [
+      "Each Player has one set of Playing Preferences and Privacy Settings",
+      "Each Player has many Friends (mutual connections)",
+      "Each Player can send and receive Friend Requests",
+      "Each Player earns many Achievements over time",
+      "Players can add others to Preferred Partners or Avoid lists"
+    ]
+  },
+  "currentUser": {
+    "id": "plr-001",
+    "name": "Sarah Martinez",
+    "email": "sarah.martinez@email.com",
+    "avatarUrl": null,
+    "bio": "Weekend warrior who fell in love with pickleball during the pandemic. Always looking to improve my game and meet new players. I play mostly at Riverside Rec Center but happy to travel for tournaments!",
+    "location": "Austin, TX",
+    "memberSince": "2024-03-15",
+    "profileCompletion": 85,
+    "isVerified": true,
+    "skillRatings": {
+      "singles": {
+        "rating": 3.25,
+        "source": "self_assessed",
+        "lastUpdated": "2025-12-01"
+      },
+      "doubles": {
+        "rating": 3.5,
+        "source": "self_assessed",
+        "lastUpdated": "2025-12-01"
+      },
+      "duprRating": null,
+      "calculatedRating": 3.4
+    },
+    "playingPreferences": {
+      "preferredSide": "right",
+      "playingStyle": "all_around",
+      "preferredDays": ["tuesday", "thursday", "saturday", "sunday"],
+      "preferredTimeStart": "18:00",
+      "preferredTimeEnd": "21:00",
+      "opponentSkillMin": 3.0,
+      "opponentSkillMax": 4.0
+    },
+    "privacySettings": {
+      "profileVisibility": "public",
+      "showMatchHistory": true,
+      "showStatistics": true,
+      "showOnLeaderboards": true,
+      "showInSearch": true,
+      "friendRequestsFrom": "anyone"
+    },
+    "stats": {
+      "totalGames": 147,
+      "wins": 89,
+      "losses": 58,
+      "winRate": 0.605,
+      "eventsAttended": 23,
+      "uniquePartners": 34,
+      "uniqueOpponents": 67,
+      "currentWinStreak": 4,
+      "bestWinStreak": 7
+    },
+    "friendsCount": 28,
+    "achievementCount": 12
+  },
+  "players": [
+    {
+      "id": "plr-002",
+      "name": "Marcus Chen",
+      "avatarUrl": null,
+      "bio": "Former tennis player turned pickleball addict. I run Tuesday and Thursday evening open play at Riverside. Always happy to help newer players!",
+      "location": "Austin, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 3.75, "source": "dupr" },
+        "doubles": { "rating": 4.0, "source": "dupr" }
+      },
+      "playingStyle": "aggressive",
+      "preferredSide": "left",
+      "isFriend": true,
+      "mutualFriends": 8,
+      "stats": {
+        "totalGames": 312,
+        "winRate": 0.68
+      }
+    },
+    {
+      "id": "plr-003",
+      "name": "Jennifer Walsh",
+      "avatarUrl": null,
+      "bio": "Tournament director and competitive player. 4.25 DUPR. Let's play!",
+      "location": "Austin, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 4.0, "source": "dupr" },
+        "doubles": { "rating": 4.25, "source": "dupr" }
+      },
+      "playingStyle": "aggressive",
+      "preferredSide": "left",
+      "isFriend": true,
+      "mutualFriends": 12,
+      "stats": {
+        "totalGames": 523,
+        "winRate": 0.72
+      }
+    },
+    {
+      "id": "plr-004",
+      "name": "David Kim",
+      "avatarUrl": null,
+      "bio": "Software engineer by day, pickleballer by night. Looking for regular drilling partners.",
+      "location": "Round Rock, TX",
+      "isVerified": false,
+      "skillRatings": {
+        "singles": { "rating": 3.25, "source": "self_assessed" },
+        "doubles": { "rating": 3.5, "source": "calculated" }
+      },
+      "playingStyle": "defensive",
+      "preferredSide": "right",
+      "isFriend": true,
+      "mutualFriends": 5,
+      "stats": {
+        "totalGames": 89,
+        "winRate": 0.52
+      }
+    },
+    {
+      "id": "plr-005",
+      "name": "Emily Rodriguez",
+      "avatarUrl": null,
+      "bio": "New to pickleball but learning fast! Looking for patient partners to practice with.",
+      "location": "Austin, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 2.75, "source": "self_assessed" },
+        "doubles": { "rating": 3.0, "source": "self_assessed" }
+      },
+      "playingStyle": "all_around",
+      "preferredSide": "both",
+      "isFriend": false,
+      "mutualFriends": 3,
+      "stats": {
+        "totalGames": 34,
+        "winRate": 0.44
+      }
+    },
+    {
+      "id": "plr-006",
+      "name": "Brian Thompson",
+      "avatarUrl": null,
+      "bio": "Retired and loving the pickleball life. Play 5 days a week at various clubs around Austin.",
+      "location": "Cedar Park, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 4.0, "source": "dupr" },
+        "doubles": { "rating": 4.0, "source": "dupr" }
+      },
+      "playingStyle": "defensive",
+      "preferredSide": "left",
+      "isFriend": true,
+      "mutualFriends": 15,
+      "stats": {
+        "totalGames": 892,
+        "winRate": 0.61
+      }
+    },
+    {
+      "id": "plr-007",
+      "name": "Lisa Patel",
+      "avatarUrl": null,
+      "bio": "3.75 player looking to break into 4.0. Love competitive round robins!",
+      "location": "Austin, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 3.5, "source": "calculated" },
+        "doubles": { "rating": 3.75, "source": "dupr" }
+      },
+      "playingStyle": "aggressive",
+      "preferredSide": "right",
+      "isFriend": false,
+      "mutualFriends": 7,
+      "stats": {
+        "totalGames": 201,
+        "winRate": 0.58
+      }
+    },
+    {
+      "id": "plr-008",
+      "name": "Michael Torres",
+      "avatarUrl": null,
+      "bio": "Pickleball instructor and tournament player. Available for lessons!",
+      "location": "Austin, TX",
+      "isVerified": true,
+      "skillRatings": {
+        "singles": { "rating": 4.5, "source": "dupr" },
+        "doubles": { "rating": 4.5, "source": "dupr" }
+      },
+      "playingStyle": "all_around",
+      "preferredSide": "both",
+      "isFriend": false,
+      "mutualFriends": 22,
+      "stats": {
+        "totalGames": 1247,
+        "winRate": 0.74
+      }
+    },
+    {
+      "id": "plr-009",
+      "name": "Amanda Foster",
+      "avatarUrl": null,
+      "bio": "",
+      "location": "Pflugerville, TX",
+      "isVerified": false,
+      "skillRatings": {
+        "singles": { "rating": 3.0, "source": "self_assessed" },
+        "doubles": { "rating": 3.0, "source": "self_assessed" }
+      },
+      "playingStyle": "defensive",
+      "preferredSide": "right",
+      "isFriend": false,
+      "mutualFriends": 0,
+      "stats": {
+        "totalGames": 12,
+        "winRate": 0.42
+      }
+    }
+  ],
+  "friendRequests": [
+    {
+      "id": "freq-001",
+      "type": "incoming",
+      "player": {
+        "id": "plr-007",
+        "name": "Lisa Patel",
+        "avatarUrl": null,
+        "skillRating": 3.75,
+        "mutualFriends": 7
+      },
+      "message": "Hey Sarah! We played together at the round robin last weekend. Would love to connect!",
+      "sentAt": "2026-01-30T14:22:00"
+    },
+    {
+      "id": "freq-002",
+      "type": "incoming",
+      "player": {
+        "id": "plr-008",
+        "name": "Michael Torres",
+        "avatarUrl": null,
+        "skillRating": 4.5,
+        "mutualFriends": 22
+      },
+      "message": null,
+      "sentAt": "2026-01-29T09:15:00"
+    },
+    {
+      "id": "freq-003",
+      "type": "outgoing",
+      "player": {
+        "id": "plr-005",
+        "name": "Emily Rodriguez",
+        "avatarUrl": null,
+        "skillRating": 3.0,
+        "mutualFriends": 3
+      },
+      "message": "Hi Emily! Saw you at Riverside the other day. Let's connect!",
+      "sentAt": "2026-01-28T18:45:00"
+    },
+    {
+      "id": "freq-004",
+      "type": "incoming",
+      "player": {
+        "id": "plr-009",
+        "name": "Amanda Foster",
+        "avatarUrl": null,
+        "skillRating": 3.0,
+        "mutualFriends": 0
+      },
+      "message": null,
+      "sentAt": "2026-01-25T11:30:00"
+    }
+  ],
+  "preferredPartners": [
+    {
+      "id": "plr-002",
+      "name": "Marcus Chen",
+      "avatarUrl": null,
+      "skillRating": 4.0,
+      "addedAt": "2025-06-15"
+    },
+    {
+      "id": "plr-004",
+      "name": "David Kim",
+      "avatarUrl": null,
+      "skillRating": 3.5,
+      "addedAt": "2025-09-22"
+    },
+    {
+      "id": "plr-006",
+      "name": "Brian Thompson",
+      "avatarUrl": null,
+      "skillRating": 4.0,
+      "addedAt": "2025-11-03"
+    }
+  ],
+  "preferredOpponents": [
+    {
+      "id": "plr-003",
+      "name": "Jennifer Walsh",
+      "avatarUrl": null,
+      "skillRating": 4.25,
+      "addedAt": "2025-08-10"
+    }
+  ],
+  "avoidInMatching": [
+    {
+      "id": "plr-010",
+      "name": "Robert Stevens",
+      "avatarUrl": null,
+      "skillRating": 3.5,
+      "addedAt": "2025-10-18"
+    }
+  ],
+  "achievements": [
+    {
+      "id": "ach-001",
+      "name": "First Step",
+      "description": "Play your first game",
+      "category": "activity",
+      "level": "bronze",
+      "criteria": "Play 1 game",
+      "iconName": "footprints",
+      "isEarned": true,
+      "earnedAt": "2024-03-20",
+      "progress": 1,
+      "target": 1,
+      "rarity": 0.95
+    },
+    {
+      "id": "ach-002",
+      "name": "Getting Started",
+      "description": "Play 10 games",
+      "category": "activity",
+      "level": "bronze",
+      "criteria": "Play 10 games",
+      "iconName": "play",
+      "isEarned": true,
+      "earnedAt": "2024-04-02",
+      "progress": 10,
+      "target": 10,
+      "rarity": 0.82
+    },
+    {
+      "id": "ach-003",
+      "name": "Regular",
+      "description": "Play 50 games",
+      "category": "activity",
+      "level": "silver",
+      "criteria": "Play 50 games",
+      "iconName": "calendar-check",
+      "isEarned": true,
+      "earnedAt": "2024-07-15",
+      "progress": 50,
+      "target": 50,
+      "rarity": 0.45
+    },
+    {
+      "id": "ach-004",
+      "name": "Century Club",
+      "description": "Play 100 games",
+      "category": "activity",
+      "level": "gold",
+      "criteria": "Play 100 games",
+      "iconName": "trophy",
+      "isEarned": true,
+      "earnedAt": "2025-02-28",
+      "progress": 100,
+      "target": 100,
+      "rarity": 0.22
+    },
+    {
+      "id": "ach-005",
+      "name": "Dedicated",
+      "description": "Play 500 games",
+      "category": "activity",
+      "level": "platinum",
+      "criteria": "Play 500 games",
+      "iconName": "crown",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 147,
+      "target": 500,
+      "rarity": 0.05
+    },
+    {
+      "id": "ach-006",
+      "name": "First Victory",
+      "description": "Win your first game",
+      "category": "wins",
+      "level": "bronze",
+      "criteria": "Win 1 game",
+      "iconName": "medal",
+      "isEarned": true,
+      "earnedAt": "2024-03-20",
+      "progress": 1,
+      "target": 1,
+      "rarity": 0.92
+    },
+    {
+      "id": "ach-007",
+      "name": "On a Roll",
+      "description": "Win 10 games",
+      "category": "wins",
+      "level": "bronze",
+      "criteria": "Win 10 games",
+      "iconName": "trending-up",
+      "isEarned": true,
+      "earnedAt": "2024-04-10",
+      "progress": 10,
+      "target": 10,
+      "rarity": 0.78
+    },
+    {
+      "id": "ach-008",
+      "name": "Winner",
+      "description": "Win 50 games",
+      "category": "wins",
+      "level": "silver",
+      "criteria": "Win 50 games",
+      "iconName": "award",
+      "isEarned": true,
+      "earnedAt": "2024-11-05",
+      "progress": 50,
+      "target": 50,
+      "rarity": 0.35
+    },
+    {
+      "id": "ach-009",
+      "name": "Champion",
+      "description": "Win 100 games",
+      "category": "wins",
+      "level": "gold",
+      "criteria": "Win 100 games",
+      "iconName": "trophy",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 89,
+      "target": 100,
+      "rarity": 0.15
+    },
+    {
+      "id": "ach-010",
+      "name": "Hot Hand",
+      "description": "Win 3 games in a row",
+      "category": "streaks",
+      "level": "bronze",
+      "criteria": "3-game win streak",
+      "iconName": "flame",
+      "isEarned": true,
+      "earnedAt": "2024-04-15",
+      "progress": 3,
+      "target": 3,
+      "rarity": 0.65
+    },
+    {
+      "id": "ach-011",
+      "name": "On Fire",
+      "description": "Win 5 games in a row",
+      "category": "streaks",
+      "level": "silver",
+      "criteria": "5-game win streak",
+      "iconName": "zap",
+      "isEarned": true,
+      "earnedAt": "2025-01-12",
+      "progress": 5,
+      "target": 5,
+      "rarity": 0.28
+    },
+    {
+      "id": "ach-012",
+      "name": "Unstoppable",
+      "description": "Win 10 games in a row",
+      "category": "streaks",
+      "level": "gold",
+      "criteria": "10-game win streak",
+      "iconName": "rocket",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 7,
+      "target": 10,
+      "rarity": 0.08
+    },
+    {
+      "id": "ach-013",
+      "name": "Event Rookie",
+      "description": "Attend your first event",
+      "category": "events",
+      "level": "bronze",
+      "criteria": "Attend 1 event",
+      "iconName": "calendar",
+      "isEarned": true,
+      "earnedAt": "2024-03-22",
+      "progress": 1,
+      "target": 1,
+      "rarity": 0.88
+    },
+    {
+      "id": "ach-014",
+      "name": "Event Regular",
+      "description": "Attend 10 events",
+      "category": "events",
+      "level": "silver",
+      "criteria": "Attend 10 events",
+      "iconName": "calendar-days",
+      "isEarned": true,
+      "earnedAt": "2024-08-30",
+      "progress": 10,
+      "target": 10,
+      "rarity": 0.42
+    },
+    {
+      "id": "ach-015",
+      "name": "Event Veteran",
+      "description": "Attend 50 events",
+      "category": "events",
+      "level": "gold",
+      "criteria": "Attend 50 events",
+      "iconName": "star",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 23,
+      "target": 50,
+      "rarity": 0.12
+    },
+    {
+      "id": "ach-016",
+      "name": "Podium Finish",
+      "description": "Place top 3 in an event",
+      "category": "events",
+      "level": "silver",
+      "criteria": "Top 3 finish",
+      "iconName": "medal",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 0,
+      "target": 1,
+      "rarity": 0.18
+    },
+    {
+      "id": "ach-017",
+      "name": "Social Butterfly",
+      "description": "Play with 10 different partners",
+      "category": "social",
+      "level": "bronze",
+      "criteria": "10 unique partners",
+      "iconName": "users",
+      "isEarned": true,
+      "earnedAt": "2024-05-18",
+      "progress": 10,
+      "target": 10,
+      "rarity": 0.55
+    },
+    {
+      "id": "ach-018",
+      "name": "Community Builder",
+      "description": "Play with 25 different partners",
+      "category": "social",
+      "level": "silver",
+      "criteria": "25 unique partners",
+      "iconName": "heart-handshake",
+      "isEarned": true,
+      "earnedAt": "2025-03-10",
+      "progress": 25,
+      "target": 25,
+      "rarity": 0.25
+    },
+    {
+      "id": "ach-019",
+      "name": "Friendly Competition",
+      "description": "Play against 50 different opponents",
+      "category": "social",
+      "level": "silver",
+      "criteria": "50 unique opponents",
+      "iconName": "swords",
+      "isEarned": true,
+      "earnedAt": "2025-06-22",
+      "progress": 50,
+      "target": 50,
+      "rarity": 0.30
+    },
+    {
+      "id": "ach-020",
+      "name": "Jack of All Trades",
+      "description": "Play 5 different game formats",
+      "category": "variety",
+      "level": "gold",
+      "criteria": "5 different formats",
+      "iconName": "shuffle",
+      "isEarned": false,
+      "earnedAt": null,
+      "progress": 3,
+      "target": 5,
+      "rarity": 0.20
+    }
+  ],
+  "skillLevelDescriptions": [
+    { "rating": 2.0, "label": "Beginner", "description": "Learning basic rules and strokes. Working on getting the ball over the net consistently." },
+    { "rating": 2.5, "label": "Beginner+", "description": "Sustains short rallies. Beginning to understand court positioning and dinking." },
+    { "rating": 3.0, "label": "Intermediate", "description": "Consistent on medium-paced shots. Developing third shot drops and kitchen play." },
+    { "rating": 3.5, "label": "Intermediate+", "description": "Good shot variety. Understands stacking, poaching, and can execute third shot drops." },
+    { "rating": 4.0, "label": "Advanced", "description": "Controls pace and placement. Strong net game. Good strategic decision-making." },
+    { "rating": 4.5, "label": "Advanced+", "description": "Excellent shot selection. Rarely makes unforced errors. Tournament-level play." },
+    { "rating": 5.0, "label": "Pro/Elite", "description": "Exceptional skills in all areas. Competes at professional or elite amateur level." }
+  ]
+}

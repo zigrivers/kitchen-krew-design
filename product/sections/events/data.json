@@ -1,0 +1,419 @@
+{
+  "_meta": {
+    "models": {
+      "events": "A scheduled pickleball session with a specific game format, venue, and registration settings. Events are created by Game Managers and joined by Players.",
+      "registrations": "A player's signup for an event, tracking their status from registration through check-in. Includes optional partner for doubles formats.",
+      "players": "Simplified player info for display in event cards and registration lists. Full player data lives in the Players section.",
+      "venues": "Simplified venue info showing where events take place. Full venue data lives in the Clubs & Venues section.",
+      "eventQRCodes": "QR codes generated for events, either for registration (players scan to sign up) or check-in (players scan on arrival).",
+      "shareEventData": "Pre-formatted data for sharing event links via SMS, email, or copy link."
+    },
+    "relationships": [
+      "Each Event takes place at one Venue",
+      "Each Event has one Organizer (a Player who created it)",
+      "Each Event has many Registrations (players who signed up)",
+      "Each Registration belongs to one Player and one Event",
+      "Registrations may include a Partner (another Player) for doubles formats",
+      "Each Event can have multiple QR codes (one for registration, one for check-in)",
+      "Each QR code belongs to exactly one Event"
+    ]
+  },
+  "events": [
+    {
+      "id": "evt-001",
+      "name": "Tuesday Night Open Play",
+      "description": "Casual open play session for all skill levels. Paddle stacking rotation with winners stay. Great way to meet other players and get some games in after work!",
+      "startDateTime": "2026-02-03T18:00:00",
+      "endDateTime": "2026-02-03T21:00:00",
+      "venue": {
+        "id": "ven-001",
+        "name": "Riverside Recreation Center",
+        "address": "450 River Road",
+        "city": "Austin, TX"
+      },
+      "format": "Open Play",
+      "maxPlayers": 24,
+      "registeredCount": 18,
+      "spotsAvailable": 6,
+      "skillLevelMin": 2.5,
+      "skillLevelMax": 4.0,
+      "fee": null,
+      "organizer": {
+        "id": "plr-001",
+        "name": "Marcus Chen",
+        "avatarUrl": null,
+        "skillRating": 3.75
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-001",
+          "player": { "id": "plr-002", "name": "Sarah Martinez", "avatarUrl": null, "skillRating": 3.5 },
+          "status": "registered",
+          "registeredAt": "2026-01-28T14:22:00",
+          "partner": null
+        },
+        {
+          "id": "reg-002",
+          "player": { "id": "plr-003", "name": "David Kim", "avatarUrl": null, "skillRating": 3.25 },
+          "status": "registered",
+          "registeredAt": "2026-01-28T15:45:00",
+          "partner": null
+        },
+        {
+          "id": "reg-003",
+          "player": { "id": "plr-004", "name": "Emily Rodriguez", "avatarUrl": null, "skillRating": 3.0 },
+          "status": "registered",
+          "registeredAt": "2026-01-29T09:10:00",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-002",
+      "name": "Weekend Round Robin Tournament",
+      "description": "Competitive round robin format where you'll play with different partners against different opponents each round. Points accumulate across all games. Top 4 players advance to a mini bracket playoff. Skill level 3.5+ recommended.",
+      "startDateTime": "2026-02-08T09:00:00",
+      "endDateTime": "2026-02-08T14:00:00",
+      "venue": {
+        "id": "ven-002",
+        "name": "Lakewood Pickleball Club",
+        "address": "1200 Lakewood Drive",
+        "city": "Austin, TX"
+      },
+      "format": "Round Robin",
+      "maxPlayers": 16,
+      "registeredCount": 16,
+      "spotsAvailable": 0,
+      "skillLevelMin": 3.5,
+      "skillLevelMax": 4.5,
+      "fee": 25,
+      "organizer": {
+        "id": "plr-005",
+        "name": "Jennifer Walsh",
+        "avatarUrl": null,
+        "skillRating": 4.25
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-010",
+          "player": { "id": "plr-006", "name": "Michael Torres", "avatarUrl": null, "skillRating": 4.0 },
+          "status": "registered",
+          "registeredAt": "2026-01-25T10:00:00",
+          "partner": null
+        },
+        {
+          "id": "reg-011",
+          "player": { "id": "plr-007", "name": "Lisa Patel", "avatarUrl": null, "skillRating": 3.75 },
+          "status": "registered",
+          "registeredAt": "2026-01-25T10:15:00",
+          "partner": null
+        },
+        {
+          "id": "reg-012",
+          "player": { "id": "plr-008", "name": "Robert Johnson", "avatarUrl": null, "skillRating": 4.0 },
+          "status": "registered",
+          "registeredAt": "2026-01-25T11:30:00",
+          "partner": null
+        }
+      ],
+      "waitlist": [
+        {
+          "id": "reg-020",
+          "player": { "id": "plr-015", "name": "Amanda Foster", "avatarUrl": null, "skillRating": 3.5 },
+          "status": "waitlisted",
+          "registeredAt": "2026-01-30T08:45:00",
+          "partner": null
+        },
+        {
+          "id": "reg-021",
+          "player": { "id": "plr-016", "name": "Chris Nguyen", "avatarUrl": null, "skillRating": 3.75 },
+          "status": "waitlisted",
+          "registeredAt": "2026-01-30T12:20:00",
+          "partner": null
+        }
+      ]
+    },
+    {
+      "id": "evt-003",
+      "name": "King of the Court Challenge",
+      "description": "Fast-paced ladder format! Winners move up, losers move down. Can you climb to Court 1 and hold your crown? Games to 11, win by 2. Bring your competitive spirit!",
+      "startDateTime": "2026-02-05T19:00:00",
+      "endDateTime": "2026-02-05T21:30:00",
+      "venue": {
+        "id": "ven-003",
+        "name": "Cedar Park Sports Complex",
+        "address": "2800 Cedar Park Blvd",
+        "city": "Cedar Park, TX"
+      },
+      "format": "King of the Court",
+      "maxPlayers": 20,
+      "registeredCount": 14,
+      "spotsAvailable": 6,
+      "skillLevelMin": 3.0,
+      "skillLevelMax": 4.5,
+      "fee": 10,
+      "organizer": {
+        "id": "plr-009",
+        "name": "Brian Thompson",
+        "avatarUrl": null,
+        "skillRating": 4.0
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-030",
+          "player": { "id": "plr-010", "name": "Nicole Garcia", "avatarUrl": null, "skillRating": 3.5 },
+          "status": "registered",
+          "registeredAt": "2026-01-31T16:00:00",
+          "partner": null
+        },
+        {
+          "id": "reg-031",
+          "player": { "id": "plr-011", "name": "James Wilson", "avatarUrl": null, "skillRating": 3.75 },
+          "status": "registered",
+          "registeredAt": "2026-01-31T16:30:00",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-004",
+      "name": "Mixed Doubles Social",
+      "description": "Friendly mixed doubles event! Register with a partner or sign up solo and we'll pair you up. Focus is on fun and meeting new players. Refreshments provided.",
+      "startDateTime": "2026-02-09T14:00:00",
+      "endDateTime": "2026-02-09T17:00:00",
+      "venue": {
+        "id": "ven-001",
+        "name": "Riverside Recreation Center",
+        "address": "450 River Road",
+        "city": "Austin, TX"
+      },
+      "format": "Mixed Doubles",
+      "maxPlayers": 16,
+      "registeredCount": 10,
+      "spotsAvailable": 6,
+      "skillLevelMin": 2.5,
+      "skillLevelMax": 3.5,
+      "fee": null,
+      "organizer": {
+        "id": "plr-001",
+        "name": "Marcus Chen",
+        "avatarUrl": null,
+        "skillRating": 3.75
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-040",
+          "player": { "id": "plr-012", "name": "Kevin Lee", "avatarUrl": null, "skillRating": 3.0 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T09:00:00",
+          "partner": { "id": "plr-013", "name": "Rachel Lee", "avatarUrl": null, "skillRating": 2.75 }
+        },
+        {
+          "id": "reg-041",
+          "player": { "id": "plr-014", "name": "Tom Bradley", "avatarUrl": null, "skillRating": 3.25 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T10:30:00",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-005",
+      "name": "Spring Singles Tournament",
+      "description": "Single elimination singles tournament. Best of 3 games to 11 in early rounds, best of 5 in semifinals and finals. Medals for top 3 finishers. DUPR ratings will be submitted.",
+      "startDateTime": "2026-02-15T08:00:00",
+      "endDateTime": "2026-02-15T16:00:00",
+      "venue": {
+        "id": "ven-002",
+        "name": "Lakewood Pickleball Club",
+        "address": "1200 Lakewood Drive",
+        "city": "Austin, TX"
+      },
+      "format": "Single Elimination",
+      "maxPlayers": 32,
+      "registeredCount": 28,
+      "spotsAvailable": 4,
+      "skillLevelMin": 3.5,
+      "skillLevelMax": 5.0,
+      "fee": 40,
+      "organizer": {
+        "id": "plr-005",
+        "name": "Jennifer Walsh",
+        "avatarUrl": null,
+        "skillRating": 4.25
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-050",
+          "player": { "id": "plr-017", "name": "Alex Morgan", "avatarUrl": null, "skillRating": 4.5 },
+          "status": "registered",
+          "registeredAt": "2026-01-20T08:00:00",
+          "partner": null
+        },
+        {
+          "id": "reg-051",
+          "player": { "id": "plr-018", "name": "Diana Cruz", "avatarUrl": null, "skillRating": 4.25 },
+          "status": "registered",
+          "registeredAt": "2026-01-20T08:15:00",
+          "partner": null
+        },
+        {
+          "id": "reg-052",
+          "player": { "id": "plr-019", "name": "Ryan Mitchell", "avatarUrl": null, "skillRating": 4.0 },
+          "status": "registered",
+          "registeredAt": "2026-01-20T09:00:00",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-006",
+      "name": "Beginner Welcome Night",
+      "description": "New to pickleball? This is your event! Patient coaches will help you learn the basics, then you'll play relaxed games with other beginners. Paddles available to borrow. No experience necessary!",
+      "startDateTime": "2026-02-06T18:30:00",
+      "endDateTime": "2026-02-06T20:30:00",
+      "venue": {
+        "id": "ven-004",
+        "name": "South Austin Community Center",
+        "address": "3911 Manchaca Road",
+        "city": "Austin, TX"
+      },
+      "format": "Open Play",
+      "maxPlayers": 12,
+      "registeredCount": 8,
+      "spotsAvailable": 4,
+      "skillLevelMin": 1.0,
+      "skillLevelMax": 2.5,
+      "fee": null,
+      "organizer": {
+        "id": "plr-020",
+        "name": "Patricia Simmons",
+        "avatarUrl": null,
+        "skillRating": 3.5
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-060",
+          "player": { "id": "plr-021", "name": "Jordan Blake", "avatarUrl": null, "skillRating": 1.5 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T14:00:00",
+          "partner": null
+        },
+        {
+          "id": "reg-061",
+          "player": { "id": "plr-022", "name": "Casey Rivers", "avatarUrl": null, "skillRating": 2.0 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T15:30:00",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    }
+  ],
+  "gameFormats": [
+    { "id": "open-play", "name": "Open Play", "description": "Casual paddle stacking rotation" },
+    { "id": "round-robin", "name": "Round Robin", "description": "Play with rotating partners against all opponents" },
+    { "id": "king-of-court", "name": "King of the Court", "description": "Winners move up, losers move down" },
+    { "id": "challenge-court", "name": "Challenge Court", "description": "Winners stay until defeated" },
+    { "id": "single-elimination", "name": "Single Elimination", "description": "Tournament bracket, one loss and you're out" },
+    { "id": "double-elimination", "name": "Double Elimination", "description": "Tournament bracket, two losses to eliminate" },
+    { "id": "pool-play", "name": "Pool Play", "description": "Round robin pools followed by bracket" },
+    { "id": "ladder", "name": "Ladder Tournament", "description": "Ongoing ranked competition with challenges" },
+    { "id": "skinny-singles", "name": "Skinny Singles", "description": "Half-court singles format" },
+    { "id": "singles", "name": "Traditional Singles", "description": "Full-court singles" },
+    { "id": "mixed-doubles", "name": "Mixed Doubles", "description": "Gender-balanced doubles teams" }
+  ],
+  "currentUser": {
+    "id": "plr-002",
+    "name": "Sarah Martinez",
+    "avatarUrl": null,
+    "skillRating": 3.5,
+    "isGameManager": false
+  },
+  "eventQRCodes": [
+    {
+      "id": "eqr-001",
+      "type": "event_registration",
+      "eventId": "evt-001",
+      "eventName": "Tuesday Night Open Play",
+      "targetUrl": "https://kitchenkrew.app/events/evt-001/register",
+      "createdAt": "2026-01-25T10:00:00",
+      "expiresAt": "2026-02-03T18:00:00",
+      "scanCount": 45,
+      "conversionCount": 12,
+      "isActive": true
+    },
+    {
+      "id": "eqr-002",
+      "type": "check_in",
+      "eventId": "evt-001",
+      "eventName": "Tuesday Night Open Play",
+      "targetUrl": "https://kitchenkrew.app/events/evt-001/checkin",
+      "createdAt": "2026-02-03T17:00:00",
+      "expiresAt": "2026-02-03T21:00:00",
+      "scanCount": 0,
+      "conversionCount": 0,
+      "isActive": true
+    },
+    {
+      "id": "eqr-003",
+      "type": "event_registration",
+      "eventId": "evt-002",
+      "eventName": "Weekend Round Robin Tournament",
+      "targetUrl": "https://kitchenkrew.app/events/evt-002/register",
+      "createdAt": "2026-01-20T08:00:00",
+      "expiresAt": "2026-02-08T09:00:00",
+      "scanCount": 128,
+      "conversionCount": 16,
+      "isActive": true
+    },
+    {
+      "id": "eqr-004",
+      "type": "event_registration",
+      "eventId": "evt-005",
+      "eventName": "Spring Singles Tournament",
+      "targetUrl": "https://kitchenkrew.app/events/evt-005/register",
+      "createdAt": "2026-01-15T12:00:00",
+      "expiresAt": "2026-02-15T08:00:00",
+      "scanCount": 87,
+      "conversionCount": 28,
+      "isActive": true
+    }
+  ],
+  "shareEventData": [
+    {
+      "eventId": "evt-001",
+      "eventName": "Tuesday Night Open Play",
+      "eventDate": "Tue, Feb 3 at 6:00 PM",
+      "venueName": "Riverside Recreation Center",
+      "shareUrl": "https://kitchenkrew.app/events/evt-001",
+      "defaultMessage": "Join me for Tuesday Night Open Play at Riverside Recreation Center on Feb 3rd! 🏓 Sign up here: https://kitchenkrew.app/events/evt-001"
+    },
+    {
+      "eventId": "evt-002",
+      "eventName": "Weekend Round Robin Tournament",
+      "eventDate": "Sat, Feb 8 at 9:00 AM",
+      "venueName": "Lakewood Pickleball Club",
+      "shareUrl": "https://kitchenkrew.app/events/evt-002",
+      "defaultMessage": "Competitive round robin tournament this Saturday! 🏆 Register here: https://kitchenkrew.app/events/evt-002"
+    },
+    {
+      "eventId": "evt-006",
+      "eventName": "Beginner Welcome Night",
+      "eventDate": "Thu, Feb 6 at 6:30 PM",
+      "venueName": "South Austin Community Center",
+      "shareUrl": "https://kitchenkrew.app/events/evt-006",
+      "defaultMessage": "New to pickleball? Join us for Beginner Welcome Night! Coaches will help you learn the basics. No experience needed! 🎾 https://kitchenkrew.app/events/evt-006"
+    }
+  ]
+}

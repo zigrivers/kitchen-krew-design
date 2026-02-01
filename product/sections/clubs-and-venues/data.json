@@ -1,0 +1,628 @@
+{
+  "_meta": {
+    "models": {
+      "clubs": "Organizations that host pickleball events and manage members. Clubs have branding, membership settings, and can be linked to venues.",
+      "venues": "Physical locations where pickleball is played, with addresses, amenities, operating hours, and courts.",
+      "courts": "Individual playing surfaces at a venue with attributes like indoor/outdoor, surface type, and lighting.",
+      "members": "Players who belong to a club, with their role (member, admin, game manager) and membership status.",
+      "membershipRequests": "Pending requests from players wanting to join a closed club.",
+      "subGroups": "Categories within a club for organizing members by skill level or interest.",
+      "venueReviews": "Ratings and written reviews from players who have attended events at a venue.",
+      "qrCodes": "Generated QR codes for club invitations and app downloads, with tracking data for scans and conversions."
+    },
+    "relationships": [
+      "Each Club has many Members (players who have joined)",
+      "Each Club can be linked to one or more Venues",
+      "Each Venue has many Courts (the playing surfaces)",
+      "Each Venue has many Reviews from players",
+      "Members can have different roles within a Club (admin, game manager, member)",
+      "SubGroups belong to a Club and contain a subset of Members",
+      "QR Codes belong to a Club and track invitation/download activity"
+    ]
+  },
+  "currentUser": {
+    "id": "plr-001",
+    "name": "Sarah Martinez",
+    "isClubAdmin": true,
+    "isVenueAdmin": false,
+    "myClubs": ["club-001", "club-003"],
+    "pendingRequests": ["club-002"]
+  },
+  "clubs": [
+    {
+      "id": "club-001",
+      "name": "Austin Pickleball Club",
+      "slug": "austin-pickleball-club",
+      "description": "The largest and most active pickleball community in Austin! We host weekly open play sessions, monthly tournaments, and social events for players of all skill levels. Whether you're just starting out or competing at 4.5+, you'll find your crew here.",
+      "logoUrl": null,
+      "location": {
+        "city": "Austin",
+        "state": "TX"
+      },
+      "contactEmail": "hello@austinpickleball.club",
+      "websiteUrl": "https://austinpickleball.club",
+      "membershipType": "open",
+      "visibility": "public",
+      "memberCount": 342,
+      "activeThisMonth": 156,
+      "upcomingEvents": 8,
+      "linkedVenueIds": ["ven-001", "ven-002"],
+      "createdAt": "2023-03-15",
+      "isUserMember": true,
+      "userRole": "admin"
+    },
+    {
+      "id": "club-002",
+      "name": "Lakeway Paddle Pros",
+      "slug": "lakeway-paddle-pros",
+      "description": "A competitive club focused on tournament preparation and advanced play. We run structured drilling sessions, league play, and travel to regional tournaments together.",
+      "logoUrl": "/logos/lakeway-paddle-pros.png",
+      "location": {
+        "city": "Lakeway",
+        "state": "TX"
+      },
+      "contactEmail": "info@lakewaypaddlepros.com",
+      "websiteUrl": null,
+      "membershipType": "closed",
+      "visibility": "public",
+      "memberCount": 64,
+      "activeThisMonth": 48,
+      "upcomingEvents": 3,
+      "linkedVenueIds": ["ven-003"],
+      "createdAt": "2023-08-22",
+      "isUserMember": false,
+      "userRole": null,
+      "pendingRequest": true
+    },
+    {
+      "id": "club-003",
+      "name": "Cedar Park Dinkers",
+      "slug": "cedar-park-dinkers",
+      "description": "Casual, fun-focused pickleball for beginners and intermediate players. No pressure, just good vibes and great games. We meet Tuesday and Thursday evenings.",
+      "logoUrl": null,
+      "location": {
+        "city": "Cedar Park",
+        "state": "TX"
+      },
+      "contactEmail": "cedarpark.dinkers@gmail.com",
+      "websiteUrl": null,
+      "membershipType": "open",
+      "visibility": "public",
+      "memberCount": 89,
+      "activeThisMonth": 34,
+      "upcomingEvents": 2,
+      "linkedVenueIds": ["ven-004"],
+      "createdAt": "2024-01-10",
+      "isUserMember": true,
+      "userRole": "member"
+    },
+    {
+      "id": "club-004",
+      "name": "Hill Country Seniors",
+      "slug": "hill-country-seniors",
+      "description": "Pickleball for players 55 and up. We focus on fun, fitness, and friendship with morning sessions that work around the Texas heat.",
+      "logoUrl": "/logos/hill-country-seniors.png",
+      "location": {
+        "city": "Dripping Springs",
+        "state": "TX"
+      },
+      "contactEmail": "play@hillcountryseniors.org",
+      "websiteUrl": "https://hillcountryseniors.org",
+      "membershipType": "open",
+      "visibility": "public",
+      "memberCount": 128,
+      "activeThisMonth": 72,
+      "upcomingEvents": 5,
+      "linkedVenueIds": ["ven-005"],
+      "createdAt": "2022-11-05",
+      "isUserMember": false,
+      "userRole": null
+    }
+  ],
+  "venues": [
+    {
+      "id": "ven-001",
+      "name": "Riverside Recreation Center",
+      "address": {
+        "street": "1250 Riverside Dr",
+        "city": "Austin",
+        "state": "TX",
+        "zip": "78741"
+      },
+      "coordinates": {
+        "lat": 30.2421,
+        "lng": -97.7237
+      },
+      "description": "Austin's premier indoor pickleball facility with 8 dedicated courts, climate control, and a pro shop. Open 7 days a week with both public play times and private rentals available.",
+      "photoUrls": [
+        "/venues/riverside-1.jpg",
+        "/venues/riverside-2.jpg",
+        "/venues/riverside-3.jpg"
+      ],
+      "amenities": ["restrooms", "water", "parking", "seating", "lighting", "proshop"],
+      "operatingHours": {
+        "monday": { "open": "06:00", "close": "22:00" },
+        "tuesday": { "open": "06:00", "close": "22:00" },
+        "wednesday": { "open": "06:00", "close": "22:00" },
+        "thursday": { "open": "06:00", "close": "22:00" },
+        "friday": { "open": "06:00", "close": "22:00" },
+        "saturday": { "open": "07:00", "close": "20:00" },
+        "sunday": { "open": "08:00", "close": "18:00" }
+      },
+      "courtCount": 8,
+      "linkedClubId": "club-001",
+      "averageRating": 4.7,
+      "reviewCount": 48,
+      "isTemporarilyClosed": false
+    },
+    {
+      "id": "ven-002",
+      "name": "Mueller Park Courts",
+      "address": {
+        "street": "4550 Mueller Blvd",
+        "city": "Austin",
+        "state": "TX",
+        "zip": "78723"
+      },
+      "coordinates": {
+        "lat": 30.2987,
+        "lng": -97.7023
+      },
+      "description": "Beautiful outdoor courts in the heart of Mueller. Six courts with great lighting for evening play. Free public access with organized play on weekends.",
+      "photoUrls": [
+        "/venues/mueller-1.jpg",
+        "/venues/mueller-2.jpg"
+      ],
+      "amenities": ["restrooms", "water", "parking", "lighting"],
+      "operatingHours": {
+        "monday": { "open": "06:00", "close": "22:00" },
+        "tuesday": { "open": "06:00", "close": "22:00" },
+        "wednesday": { "open": "06:00", "close": "22:00" },
+        "thursday": { "open": "06:00", "close": "22:00" },
+        "friday": { "open": "06:00", "close": "22:00" },
+        "saturday": { "open": "06:00", "close": "22:00" },
+        "sunday": { "open": "06:00", "close": "22:00" }
+      },
+      "courtCount": 6,
+      "linkedClubId": "club-001",
+      "averageRating": 4.3,
+      "reviewCount": 31,
+      "isTemporarilyClosed": false
+    },
+    {
+      "id": "ven-003",
+      "name": "Lakeway Activity Center",
+      "address": {
+        "street": "105 Cross Creek",
+        "city": "Lakeway",
+        "state": "TX",
+        "zip": "78734"
+      },
+      "coordinates": {
+        "lat": 30.3621,
+        "lng": -97.9847
+      },
+      "description": "Private facility for Lakeway residents and club members. Four indoor courts with premium sport court surface. Reservation required.",
+      "photoUrls": [
+        "/venues/lakeway-1.jpg"
+      ],
+      "amenities": ["restrooms", "water", "parking", "seating", "lighting"],
+      "operatingHours": {
+        "monday": { "open": "07:00", "close": "21:00" },
+        "tuesday": { "open": "07:00", "close": "21:00" },
+        "wednesday": { "open": "07:00", "close": "21:00" },
+        "thursday": { "open": "07:00", "close": "21:00" },
+        "friday": { "open": "07:00", "close": "21:00" },
+        "saturday": { "open": "08:00", "close": "18:00" },
+        "sunday": { "open": "08:00", "close": "18:00" }
+      },
+      "courtCount": 4,
+      "linkedClubId": "club-002",
+      "averageRating": 4.9,
+      "reviewCount": 22,
+      "isTemporarilyClosed": false
+    },
+    {
+      "id": "ven-004",
+      "name": "Brushy Creek Sports Park",
+      "address": {
+        "street": "2310 Brushy Creek Rd",
+        "city": "Cedar Park",
+        "state": "TX",
+        "zip": "78613"
+      },
+      "coordinates": {
+        "lat": 30.5152,
+        "lng": -97.8203
+      },
+      "description": "Public outdoor courts maintained by the City of Cedar Park. Great for casual play with plenty of shade trees nearby.",
+      "photoUrls": [],
+      "amenities": ["restrooms", "water", "parking"],
+      "operatingHours": {
+        "monday": { "open": "06:00", "close": "22:00" },
+        "tuesday": { "open": "06:00", "close": "22:00" },
+        "wednesday": { "open": "06:00", "close": "22:00" },
+        "thursday": { "open": "06:00", "close": "22:00" },
+        "friday": { "open": "06:00", "close": "22:00" },
+        "saturday": { "open": "06:00", "close": "22:00" },
+        "sunday": { "open": "06:00", "close": "22:00" }
+      },
+      "courtCount": 4,
+      "linkedClubId": "club-003",
+      "averageRating": 3.8,
+      "reviewCount": 15,
+      "isTemporarilyClosed": false
+    },
+    {
+      "id": "ven-005",
+      "name": "Dripping Springs Ranch Park",
+      "address": {
+        "street": "1042 Event Center Dr",
+        "city": "Dripping Springs",
+        "state": "TX",
+        "zip": "78620"
+      },
+      "coordinates": {
+        "lat": 30.1901,
+        "lng": -98.0867
+      },
+      "description": "Scenic outdoor courts with Hill Country views. Recently resurfaced with dedicated pickleball lines. Morning shade makes it perfect for summer play.",
+      "photoUrls": [
+        "/venues/dripping-1.jpg",
+        "/venues/dripping-2.jpg"
+      ],
+      "amenities": ["restrooms", "parking", "seating"],
+      "operatingHours": {
+        "monday": { "open": "07:00", "close": "20:00" },
+        "tuesday": { "open": "07:00", "close": "20:00" },
+        "wednesday": { "open": "07:00", "close": "20:00" },
+        "thursday": { "open": "07:00", "close": "20:00" },
+        "friday": { "open": "07:00", "close": "20:00" },
+        "saturday": { "open": "07:00", "close": "20:00" },
+        "sunday": { "open": "07:00", "close": "20:00" }
+      },
+      "courtCount": 6,
+      "linkedClubId": "club-004",
+      "averageRating": 4.5,
+      "reviewCount": 27,
+      "isTemporarilyClosed": false
+    }
+  ],
+  "courts": [
+    { "id": "court-001", "venueId": "ven-001", "name": "Court 1", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-002", "venueId": "ven-001", "name": "Court 2", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-003", "venueId": "ven-001", "name": "Court 3", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-004", "venueId": "ven-001", "name": "Court 4", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-005", "venueId": "ven-001", "name": "Court 5", "indoor": true, "surface": "sport_court", "lighting": true, "status": "maintenance", "notes": "Resurfacing scheduled for Feb 5-7" },
+    { "id": "court-006", "venueId": "ven-001", "name": "Court 6", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-007", "venueId": "ven-001", "name": "Court 7", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-008", "venueId": "ven-001", "name": "Court 8", "indoor": true, "surface": "sport_court", "lighting": true, "status": "active", "notes": "Tournament court - premium surface" },
+    { "id": "court-009", "venueId": "ven-002", "name": "Court A", "indoor": false, "surface": "concrete", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-010", "venueId": "ven-002", "name": "Court B", "indoor": false, "surface": "concrete", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-011", "venueId": "ven-002", "name": "Court C", "indoor": false, "surface": "concrete", "lighting": true, "status": "active", "notes": "Shaded in afternoon" },
+    { "id": "court-012", "venueId": "ven-002", "name": "Court D", "indoor": false, "surface": "concrete", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-013", "venueId": "ven-002", "name": "Court E", "indoor": false, "surface": "concrete", "lighting": true, "status": "active", "notes": null },
+    { "id": "court-014", "venueId": "ven-002", "name": "Court F", "indoor": false, "surface": "concrete", "lighting": false, "status": "active", "notes": "No lights - day play only" }
+  ],
+  "members": [
+    {
+      "id": "mem-001",
+      "clubId": "club-001",
+      "playerId": "plr-001",
+      "playerName": "Sarah Martinez",
+      "playerAvatarUrl": null,
+      "skillRating": 3.5,
+      "role": "admin",
+      "status": "active",
+      "joinedAt": "2023-03-15",
+      "lastActiveAt": "2026-02-01",
+      "gamesPlayed": 87,
+      "isGameManager": true
+    },
+    {
+      "id": "mem-002",
+      "clubId": "club-001",
+      "playerId": "plr-002",
+      "playerName": "Marcus Chen",
+      "playerAvatarUrl": "/avatars/marcus.jpg",
+      "skillRating": 4.0,
+      "role": "admin",
+      "status": "active",
+      "joinedAt": "2023-03-15",
+      "lastActiveAt": "2026-01-30",
+      "gamesPlayed": 156,
+      "isGameManager": true
+    },
+    {
+      "id": "mem-003",
+      "clubId": "club-001",
+      "playerId": "plr-003",
+      "playerName": "Jennifer Walsh",
+      "playerAvatarUrl": null,
+      "skillRating": 4.25,
+      "role": "member",
+      "status": "active",
+      "joinedAt": "2023-05-22",
+      "lastActiveAt": "2026-01-28",
+      "gamesPlayed": 112,
+      "isGameManager": true
+    },
+    {
+      "id": "mem-004",
+      "clubId": "club-001",
+      "playerId": "plr-004",
+      "playerName": "David Kim",
+      "playerAvatarUrl": "/avatars/david.jpg",
+      "skillRating": 3.5,
+      "role": "member",
+      "status": "active",
+      "joinedAt": "2023-07-10",
+      "lastActiveAt": "2026-01-25",
+      "gamesPlayed": 64,
+      "isGameManager": false
+    },
+    {
+      "id": "mem-005",
+      "clubId": "club-001",
+      "playerId": "plr-005",
+      "playerName": "Emily Rodriguez",
+      "playerAvatarUrl": null,
+      "skillRating": 3.0,
+      "role": "member",
+      "status": "active",
+      "joinedAt": "2024-02-14",
+      "lastActiveAt": "2026-01-20",
+      "gamesPlayed": 28,
+      "isGameManager": false
+    },
+    {
+      "id": "mem-006",
+      "clubId": "club-001",
+      "playerId": "plr-006",
+      "playerName": "Brian Thompson",
+      "playerAvatarUrl": null,
+      "skillRating": 4.0,
+      "role": "member",
+      "status": "suspended",
+      "joinedAt": "2023-09-05",
+      "lastActiveAt": "2025-12-15",
+      "gamesPlayed": 45,
+      "isGameManager": false,
+      "suspensionReason": "Repeated unsportsmanlike conduct",
+      "suspensionEndsAt": "2026-03-15"
+    }
+  ],
+  "membershipRequests": [
+    {
+      "id": "req-001",
+      "clubId": "club-002",
+      "playerId": "plr-001",
+      "playerName": "Sarah Martinez",
+      "playerAvatarUrl": null,
+      "skillRating": 3.5,
+      "message": "I've been playing for about a year and looking to improve my game. I'd love to join your drilling sessions!",
+      "requestedAt": "2026-01-28",
+      "status": "pending"
+    },
+    {
+      "id": "req-002",
+      "clubId": "club-002",
+      "playerId": "plr-007",
+      "playerName": "Lisa Patel",
+      "playerAvatarUrl": "/avatars/lisa.jpg",
+      "skillRating": 3.75,
+      "message": null,
+      "requestedAt": "2026-01-30",
+      "status": "pending"
+    },
+    {
+      "id": "req-003",
+      "clubId": "club-002",
+      "playerId": "plr-008",
+      "playerName": "Michael Torres",
+      "playerAvatarUrl": null,
+      "skillRating": 4.5,
+      "message": "Former tennis player, just started pickleball 6 months ago but advancing quickly. Interested in competitive play.",
+      "requestedAt": "2026-01-25",
+      "status": "pending"
+    }
+  ],
+  "subGroups": [
+    {
+      "id": "grp-001",
+      "clubId": "club-001",
+      "name": "Beginners (2.0-2.5)",
+      "description": "New to pickleball? Join us for beginner-friendly sessions with tips and drills.",
+      "memberCount": 45,
+      "color": "#84cc16"
+    },
+    {
+      "id": "grp-002",
+      "clubId": "club-001",
+      "name": "Intermediate (3.0-3.5)",
+      "description": "Ready to level up your game. Focused drilling and competitive play.",
+      "memberCount": 128,
+      "color": "#0ea5e9"
+    },
+    {
+      "id": "grp-003",
+      "clubId": "club-001",
+      "name": "Advanced (4.0+)",
+      "description": "High-level play for experienced competitors.",
+      "memberCount": 67,
+      "color": "#f59e0b"
+    },
+    {
+      "id": "grp-004",
+      "clubId": "club-001",
+      "name": "Women's Group",
+      "description": "Women-only sessions every Wednesday evening.",
+      "memberCount": 52,
+      "color": "#ec4899"
+    }
+  ],
+  "venueReviews": [
+    {
+      "id": "rev-001",
+      "venueId": "ven-001",
+      "playerId": "plr-003",
+      "playerName": "Jennifer Walsh",
+      "rating": 5,
+      "courtQuality": 5,
+      "amenities": 5,
+      "parking": 4,
+      "accessibility": 5,
+      "comment": "Best indoor facility in Austin! The sport court surface is tournament quality and the climate control makes summer play bearable. Pro shop has great selection too.",
+      "createdAt": "2025-11-15",
+      "helpfulCount": 12,
+      "adminResponse": null,
+      "isVerified": true
+    },
+    {
+      "id": "rev-002",
+      "venueId": "ven-001",
+      "playerId": "plr-004",
+      "playerName": "David Kim",
+      "rating": 4,
+      "courtQuality": 5,
+      "amenities": 4,
+      "parking": 3,
+      "accessibility": 4,
+      "comment": "Great courts but parking can be tough during peak hours. Get there early for evening sessions.",
+      "createdAt": "2025-12-02",
+      "helpfulCount": 8,
+      "adminResponse": "Thanks for the feedback! We're working with the city on additional parking options.",
+      "isVerified": true
+    },
+    {
+      "id": "rev-003",
+      "venueId": "ven-002",
+      "playerId": "plr-005",
+      "playerName": "Emily Rodriguez",
+      "rating": 4,
+      "courtQuality": 4,
+      "amenities": 3,
+      "parking": 5,
+      "accessibility": 4,
+      "comment": "Love the outdoor setting! Courts are well maintained. Would be nice to have more seating for spectators.",
+      "createdAt": "2026-01-10",
+      "helpfulCount": 3,
+      "adminResponse": null,
+      "isVerified": true
+    },
+    {
+      "id": "rev-004",
+      "venueId": "ven-004",
+      "playerId": "plr-009",
+      "playerName": "Robert Johnson",
+      "rating": 3,
+      "courtQuality": 3,
+      "amenities": 3,
+      "parking": 4,
+      "accessibility": 3,
+      "comment": "Decent public courts. Surface is showing some wear and lines are faded in spots. Good for casual play.",
+      "createdAt": "2025-10-20",
+      "helpfulCount": 5,
+      "adminResponse": null,
+      "isVerified": true
+    }
+  ],
+  "clubAnalytics": {
+    "clubId": "club-001",
+    "period": "month",
+    "membershipTrend": [
+      { "date": "2025-08", "total": 298, "new": 12, "churned": 3 },
+      { "date": "2025-09", "total": 305, "new": 10, "churned": 3 },
+      { "date": "2025-10", "total": 318, "new": 15, "churned": 2 },
+      { "date": "2025-11", "total": 325, "new": 9, "churned": 2 },
+      { "date": "2025-12", "total": 331, "new": 8, "churned": 2 },
+      { "date": "2026-01", "total": 342, "new": 14, "churned": 3 }
+    ],
+    "eventsHosted": {
+      "thisMonth": 8,
+      "lastMonth": 7,
+      "total": 156
+    },
+    "gamesPlayed": {
+      "thisMonth": 324,
+      "lastMonth": 287,
+      "total": 4521
+    },
+    "activeMembers": {
+      "thisMonth": 156,
+      "lastMonth": 142,
+      "percentOfTotal": 45.6
+    },
+    "topGameManagers": [
+      { "playerId": "plr-002", "name": "Marcus Chen", "eventsHosted": 42 },
+      { "playerId": "plr-003", "name": "Jennifer Walsh", "eventsHosted": 28 },
+      { "playerId": "plr-001", "name": "Sarah Martinez", "eventsHosted": 15 }
+    ]
+  },
+  "qrCodes": [
+    {
+      "id": "qr-001",
+      "type": "club_invite",
+      "entityId": "club-001",
+      "entityName": "Austin Pickleball Club",
+      "targetUrl": "https://kitchenkrew.app/join/austin-pickleball-club?ref=qr",
+      "createdAt": "2025-11-15",
+      "expiresAt": null,
+      "scanCount": 247,
+      "conversionCount": 89,
+      "isActive": true,
+      "brandingLogoUrl": null,
+      "utmSource": "qr_code",
+      "utmMedium": "print",
+      "utmCampaign": "venue_signage"
+    },
+    {
+      "id": "qr-002",
+      "type": "app_download",
+      "entityId": "club-001",
+      "entityName": "Austin Pickleball Club",
+      "targetUrl": "https://kitchenkrew.app/download?club=austin-pickleball-club",
+      "createdAt": "2025-12-01",
+      "expiresAt": null,
+      "scanCount": 156,
+      "conversionCount": 42,
+      "isActive": true,
+      "brandingLogoUrl": null,
+      "utmSource": "qr_code",
+      "utmMedium": "print",
+      "utmCampaign": "new_member_flyer"
+    },
+    {
+      "id": "qr-003",
+      "type": "club_invite",
+      "entityId": "club-002",
+      "entityName": "Lakeway Paddle Pros",
+      "targetUrl": "https://kitchenkrew.app/join/lakeway-paddle-pros?ref=qr",
+      "createdAt": "2026-01-10",
+      "expiresAt": "2026-03-10",
+      "scanCount": 34,
+      "conversionCount": 12,
+      "isActive": true,
+      "brandingLogoUrl": "/logos/lakeway-paddle-pros.png",
+      "utmSource": "qr_code",
+      "utmMedium": "print",
+      "utmCampaign": "tournament_flyer"
+    },
+    {
+      "id": "qr-004",
+      "type": "club_invite",
+      "entityId": "club-001",
+      "entityName": "Austin Pickleball Club",
+      "targetUrl": "https://kitchenkrew.app/join/austin-pickleball-club?ref=qr-old",
+      "createdAt": "2024-06-01",
+      "expiresAt": null,
+      "scanCount": 523,
+      "conversionCount": 187,
+      "isActive": false,
+      "brandingLogoUrl": null,
+      "utmSource": "qr_code",
+      "utmMedium": "print",
+      "utmCampaign": "summer_2024"
+    }
+  ]
+}

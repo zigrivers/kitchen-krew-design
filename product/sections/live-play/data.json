@@ -1,0 +1,440 @@
+{
+  "_meta": {
+    "models": {
+      "event": "The active event being played, containing format settings, scoring rules, and overall status (in_progress, paused, completed).",
+      "courts": "Physical playing surfaces at the venue, each with a real-time status showing whether a game is in progress, players are being called, or the court is available.",
+      "matches": "Individual games between teams within the event. Tracks court assignment, players, scores, timing, and whether the match needs score confirmation.",
+      "players": "Participants checked into the event, with their skill ratings, check-in status, and current match assignment.",
+      "matchQueue": "Upcoming matches waiting to be assigned to courts, shown in order they'll be called.",
+      "standings": "Running leaderboard showing player rankings based on wins, losses, and point differential.",
+      "scoreDisputes": "Matches where players submitted conflicting scores, requiring Game Manager resolution."
+    },
+    "relationships": [
+      "Each Event has many Courts available for play",
+      "Each Court can have one active Match at a time",
+      "Each Match has 4 Players (2 per team for doubles)",
+      "Players appear in the Standings based on their Match results",
+      "The MatchQueue feeds into Courts as they become available"
+    ]
+  },
+  "currentUser": {
+    "id": "plr-001",
+    "name": "Sarah Martinez",
+    "isGameManager": false,
+    "currentMatchId": null,
+    "nextMatchId": "match-007",
+    "checkedInAt": "2026-02-01T09:45:00"
+  },
+  "event": {
+    "id": "evt-001",
+    "name": "Saturday Morning Round Robin",
+    "format": "round_robin",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": {
+      "id": "ven-001",
+      "name": "Riverside Recreation Center",
+      "address": "1250 Riverside Dr, Austin, TX"
+    },
+    "organizer": {
+      "id": "plr-002",
+      "name": "Marcus Chen"
+    },
+    "startedAt": "2026-02-01T10:00:00",
+    "scheduledEndTime": "2026-02-01T13:00:00",
+    "scoringRules": {
+      "pointsToWin": 11,
+      "winByTwo": true,
+      "pointCap": 15,
+      "gamesPerMatch": 1,
+      "rallyScoring": true
+    },
+    "settings": {
+      "allowPlayerScoreEntry": true,
+      "requireScoreConfirmation": true,
+      "gracePeriodMinutes": 3
+    }
+  },
+  "eventProgress": {
+    "totalMatches": 15,
+    "completedMatches": 6,
+    "inProgressMatches": 2,
+    "remainingMatches": 7,
+    "currentRound": 2,
+    "totalRounds": 5,
+    "elapsedMinutes": 72,
+    "estimatedRemainingMinutes": 108
+  },
+  "courts": [
+    {
+      "id": "court-001",
+      "name": "Court 1",
+      "status": "in_progress",
+      "currentMatchId": "match-005",
+      "attributes": {
+        "indoor": true,
+        "surface": "sport_court",
+        "lighting": true
+      }
+    },
+    {
+      "id": "court-002",
+      "name": "Court 2",
+      "status": "in_progress",
+      "currentMatchId": "match-006",
+      "attributes": {
+        "indoor": true,
+        "surface": "sport_court",
+        "lighting": true
+      }
+    },
+    {
+      "id": "court-003",
+      "name": "Court 3",
+      "status": "calling",
+      "currentMatchId": "match-007",
+      "calledAt": "2026-02-01T11:10:00",
+      "attributes": {
+        "indoor": true,
+        "surface": "sport_court",
+        "lighting": true
+      }
+    },
+    {
+      "id": "court-004",
+      "name": "Court 4",
+      "status": "available",
+      "currentMatchId": null,
+      "attributes": {
+        "indoor": false,
+        "surface": "concrete",
+        "lighting": false
+      }
+    }
+  ],
+  "matches": [
+    {
+      "id": "match-001",
+      "courtId": "court-001",
+      "status": "completed",
+      "round": 1,
+      "team1": {
+        "players": [
+          { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.25 },
+          { "id": "plr-004", "name": "David Kim", "skillRating": 3.5 }
+        ],
+        "score": 11,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-005", "name": "Emily Rodriguez", "skillRating": 3.0 },
+          { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0 }
+        ],
+        "score": 8,
+        "checkedIn": [true, true]
+      },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:00:00",
+      "completedAt": "2026-02-01T10:18:00",
+      "duration": 18,
+      "scoreConfirmed": true
+    },
+    {
+      "id": "match-002",
+      "courtId": "court-002",
+      "status": "completed",
+      "round": 1,
+      "team1": {
+        "players": [
+          { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 3.5 },
+          { "id": "plr-007", "name": "Lisa Patel", "skillRating": 3.75 }
+        ],
+        "score": 11,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-008", "name": "Michael Torres", "skillRating": 4.5 },
+          { "id": "plr-009", "name": "Amanda Foster", "skillRating": 3.0 }
+        ],
+        "score": 9,
+        "checkedIn": [true, true]
+      },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:00:00",
+      "completedAt": "2026-02-01T10:22:00",
+      "duration": 22,
+      "scoreConfirmed": true
+    },
+    {
+      "id": "match-003",
+      "courtId": "court-003",
+      "status": "completed",
+      "round": 1,
+      "team1": {
+        "players": [
+          { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0 },
+          { "id": "plr-010", "name": "Robert Johnson", "skillRating": 3.25 }
+        ],
+        "score": 7,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-011", "name": "Nicole Garcia", "skillRating": 3.5 },
+          { "id": "plr-012", "name": "Chris Williams", "skillRating": 3.75 }
+        ],
+        "score": 11,
+        "checkedIn": [true, true]
+      },
+      "winner": "team2",
+      "startedAt": "2026-02-01T10:02:00",
+      "completedAt": "2026-02-01T10:20:00",
+      "duration": 18,
+      "scoreConfirmed": true
+    },
+    {
+      "id": "match-004",
+      "courtId": "court-001",
+      "status": "completed",
+      "round": 1,
+      "team1": {
+        "players": [
+          { "id": "plr-005", "name": "Emily Rodriguez", "skillRating": 3.0 },
+          { "id": "plr-008", "name": "Michael Torres", "skillRating": 4.5 }
+        ],
+        "score": 11,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.25 },
+          { "id": "plr-010", "name": "Robert Johnson", "skillRating": 3.25 }
+        ],
+        "score": 6,
+        "checkedIn": [true, true]
+      },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:25:00",
+      "completedAt": "2026-02-01T10:40:00",
+      "duration": 15,
+      "scoreConfirmed": true
+    },
+    {
+      "id": "match-005",
+      "courtId": "court-001",
+      "status": "in_progress",
+      "round": 2,
+      "team1": {
+        "players": [
+          { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.25 },
+          { "id": "plr-011", "name": "Nicole Garcia", "skillRating": 3.5 }
+        ],
+        "score": 7,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0 },
+          { "id": "plr-009", "name": "Amanda Foster", "skillRating": 3.0 }
+        ],
+        "score": 5,
+        "checkedIn": [true, true]
+      },
+      "winner": null,
+      "startedAt": "2026-02-01T11:02:00",
+      "completedAt": null,
+      "duration": null,
+      "scoreConfirmed": false
+    },
+    {
+      "id": "match-006",
+      "courtId": "court-002",
+      "status": "in_progress",
+      "round": 2,
+      "team1": {
+        "players": [
+          { "id": "plr-004", "name": "David Kim", "skillRating": 3.5 },
+          { "id": "plr-012", "name": "Chris Williams", "skillRating": 3.75 }
+        ],
+        "score": 9,
+        "checkedIn": [true, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0 },
+          { "id": "plr-005", "name": "Emily Rodriguez", "skillRating": 3.0 }
+        ],
+        "score": 10,
+        "checkedIn": [true, true]
+      },
+      "winner": null,
+      "startedAt": "2026-02-01T11:00:00",
+      "completedAt": null,
+      "duration": null,
+      "scoreConfirmed": false
+    },
+    {
+      "id": "match-007",
+      "courtId": "court-003",
+      "status": "calling",
+      "round": 2,
+      "team1": {
+        "players": [
+          { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 3.5 },
+          { "id": "plr-008", "name": "Michael Torres", "skillRating": 4.5 }
+        ],
+        "score": 0,
+        "checkedIn": [false, true]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-007", "name": "Lisa Patel", "skillRating": 3.75 },
+          { "id": "plr-010", "name": "Robert Johnson", "skillRating": 3.25 }
+        ],
+        "score": 0,
+        "checkedIn": [true, false]
+      },
+      "winner": null,
+      "startedAt": null,
+      "completedAt": null,
+      "duration": null,
+      "scoreConfirmed": false,
+      "calledAt": "2026-02-01T11:10:00"
+    }
+  ],
+  "matchQueue": [
+    {
+      "id": "match-008",
+      "round": 2,
+      "team1": {
+        "players": [
+          { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.25 },
+          { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0 }
+        ]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 3.5 },
+          { "id": "plr-012", "name": "Chris Williams", "skillRating": 3.75 }
+        ]
+      },
+      "estimatedStartTime": "2026-02-01T11:25:00"
+    },
+    {
+      "id": "match-009",
+      "round": 3,
+      "team1": {
+        "players": [
+          { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0 },
+          { "id": "plr-007", "name": "Lisa Patel", "skillRating": 3.75 }
+        ]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-004", "name": "David Kim", "skillRating": 3.5 },
+          { "id": "plr-011", "name": "Nicole Garcia", "skillRating": 3.5 }
+        ]
+      },
+      "estimatedStartTime": "2026-02-01T11:30:00"
+    },
+    {
+      "id": "match-010",
+      "round": 3,
+      "team1": {
+        "players": [
+          { "id": "plr-008", "name": "Michael Torres", "skillRating": 4.5 },
+          { "id": "plr-010", "name": "Robert Johnson", "skillRating": 3.25 }
+        ]
+      },
+      "team2": {
+        "players": [
+          { "id": "plr-005", "name": "Emily Rodriguez", "skillRating": 3.0 },
+          { "id": "plr-009", "name": "Amanda Foster", "skillRating": 3.0 }
+        ]
+      },
+      "estimatedStartTime": "2026-02-01T11:35:00"
+    }
+  ],
+  "players": [
+    { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 3.5, "checkedIn": true, "currentMatchId": null, "wins": 1, "losses": 0 },
+    { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-006", "wins": 0, "losses": 1, "isOrganizer": true },
+    { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.25, "checkedIn": true, "currentMatchId": "match-005", "wins": 1, "losses": 1 },
+    { "id": "plr-004", "name": "David Kim", "skillRating": 3.5, "checkedIn": true, "currentMatchId": "match-006", "wins": 1, "losses": 0 },
+    { "id": "plr-005", "name": "Emily Rodriguez", "skillRating": 3.0, "checkedIn": true, "currentMatchId": "match-006", "wins": 1, "losses": 1 },
+    { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-005", "wins": 0, "losses": 1 },
+    { "id": "plr-007", "name": "Lisa Patel", "skillRating": 3.75, "checkedIn": true, "currentMatchId": null, "wins": 1, "losses": 0 },
+    { "id": "plr-008", "name": "Michael Torres", "skillRating": 4.5, "checkedIn": true, "currentMatchId": null, "wins": 1, "losses": 1 },
+    { "id": "plr-009", "name": "Amanda Foster", "skillRating": 3.0, "checkedIn": true, "currentMatchId": "match-005", "wins": 0, "losses": 1 },
+    { "id": "plr-010", "name": "Robert Johnson", "skillRating": 3.25, "checkedIn": true, "currentMatchId": null, "wins": 0, "losses": 2 },
+    { "id": "plr-011", "name": "Nicole Garcia", "skillRating": 3.5, "checkedIn": true, "currentMatchId": "match-005", "wins": 1, "losses": 0 },
+    { "id": "plr-012", "name": "Chris Williams", "skillRating": 3.75, "checkedIn": true, "currentMatchId": "match-006", "wins": 1, "losses": 0 }
+  ],
+  "standings": [
+    { "rank": 1, "playerId": "plr-001", "name": "Sarah Martinez", "wins": 1, "losses": 0, "pointDiff": 2, "gamesPlayed": 1 },
+    { "rank": 2, "playerId": "plr-004", "name": "David Kim", "wins": 1, "losses": 0, "pointDiff": 3, "gamesPlayed": 1 },
+    { "rank": 3, "playerId": "plr-007", "name": "Lisa Patel", "wins": 1, "losses": 0, "pointDiff": 2, "gamesPlayed": 1 },
+    { "rank": 4, "playerId": "plr-011", "name": "Nicole Garcia", "wins": 1, "losses": 0, "pointDiff": 4, "gamesPlayed": 1 },
+    { "rank": 5, "playerId": "plr-012", "name": "Chris Williams", "wins": 1, "losses": 0, "pointDiff": 4, "gamesPlayed": 1 },
+    { "rank": 6, "playerId": "plr-003", "name": "Jennifer Walsh", "wins": 1, "losses": 1, "pointDiff": -2, "gamesPlayed": 2 },
+    { "rank": 7, "playerId": "plr-005", "name": "Emily Rodriguez", "wins": 1, "losses": 1, "pointDiff": 2, "gamesPlayed": 2 },
+    { "rank": 8, "playerId": "plr-008", "name": "Michael Torres", "wins": 1, "losses": 1, "pointDiff": 3, "gamesPlayed": 2 },
+    { "rank": 9, "playerId": "plr-002", "name": "Marcus Chen", "wins": 0, "losses": 1, "pointDiff": -4, "gamesPlayed": 1 },
+    { "rank": 10, "playerId": "plr-006", "name": "Brian Thompson", "wins": 0, "losses": 1, "pointDiff": -3, "gamesPlayed": 1 },
+    { "rank": 11, "playerId": "plr-009", "name": "Amanda Foster", "wins": 0, "losses": 1, "pointDiff": -2, "gamesPlayed": 1 },
+    { "rank": 12, "playerId": "plr-010", "name": "Robert Johnson", "wins": 0, "losses": 2, "pointDiff": -9, "gamesPlayed": 2 }
+  ],
+  "scoreDisputes": [
+    {
+      "id": "dispute-001",
+      "matchId": "match-004",
+      "team1SubmittedScore": { "team1": 11, "team2": 6 },
+      "team2SubmittedScore": { "team1": 11, "team2": 8 },
+      "submittedAt": "2026-02-01T10:42:00",
+      "status": "resolved",
+      "resolvedScore": { "team1": 11, "team2": 6 },
+      "resolvedBy": "plr-002",
+      "resolvedAt": "2026-02-01T10:45:00"
+    }
+  ],
+  "completedMatches": [
+    {
+      "id": "match-001",
+      "team1Names": "Jennifer Walsh & David Kim",
+      "team2Names": "Emily Rodriguez & Brian Thompson",
+      "score": "11-8",
+      "winner": "Jennifer Walsh & David Kim",
+      "court": "Court 1",
+      "completedAt": "2026-02-01T10:18:00"
+    },
+    {
+      "id": "match-002",
+      "team1Names": "Sarah Martinez & Lisa Patel",
+      "team2Names": "Michael Torres & Amanda Foster",
+      "score": "11-9",
+      "winner": "Sarah Martinez & Lisa Patel",
+      "court": "Court 2",
+      "completedAt": "2026-02-01T10:22:00"
+    },
+    {
+      "id": "match-003",
+      "team1Names": "Marcus Chen & Robert Johnson",
+      "team2Names": "Nicole Garcia & Chris Williams",
+      "score": "7-11",
+      "winner": "Nicole Garcia & Chris Williams",
+      "court": "Court 3",
+      "completedAt": "2026-02-01T10:20:00"
+    },
+    {
+      "id": "match-004",
+      "team1Names": "Emily Rodriguez & Michael Torres",
+      "team2Names": "Jennifer Walsh & Robert Johnson",
+      "score": "11-6",
+      "winner": "Emily Rodriguez & Michael Torres",
+      "court": "Court 1",
+      "completedAt": "2026-02-01T10:40:00"
+    }
+  ]
+}
