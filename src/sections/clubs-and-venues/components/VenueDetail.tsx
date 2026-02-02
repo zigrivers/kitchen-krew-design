@@ -12,12 +12,15 @@ export interface VenueDetailProps {
   reviews: VenueReview[]
   linkedClub: Club | null
   isAdmin: boolean
+  canClaimVenue?: boolean
   onEdit?: () => void
   onSubmitReview?: () => void
   onGetDirections?: () => void
   onViewClub?: (clubId: string) => void
   onMarkHelpful?: (reviewId: string) => void
   onRespondToReview?: (reviewId: string) => void
+  onClaimVenue?: () => void
+  onBulkAddCourts?: (count: number) => void
 }
 
 type Tab = 'info' | 'courts' | 'reviews'
@@ -87,12 +90,15 @@ export function VenueDetail({
   reviews,
   linkedClub,
   isAdmin,
+  canClaimVenue = false,
   onEdit,
   onSubmitReview,
   onGetDirections,
   onViewClub,
   onMarkHelpful,
   onRespondToReview,
+  onClaimVenue,
+  onBulkAddCourts,
 }: VenueDetailProps) {
   const [activeTab, setActiveTab] = useState<Tab>('info')
   const [selectedPhoto, setSelectedPhoto] = useState(0)
@@ -241,7 +247,32 @@ export function VenueDetail({
             Temporarily Closed
           </div>
         )}
+
+        {/* Verified Badge */}
+        {venue.isVerified && !venue.isTemporarilyClosed && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 bg-lime-500 text-white text-sm font-medium rounded-full">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Verified Venue
+          </div>
+        )}
       </div>
+
+      {/* Temporarily Closed Alert */}
+      {venue.isTemporarilyClosed && venue.temporarilyClosedMessage && (
+        <div className="mx-4 -mt-3 mb-3 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+          <div className="flex items-start gap-3">
+            <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <p className="font-medium text-red-800 dark:text-red-200">Temporarily Closed</p>
+              <p className="text-sm text-red-600 dark:text-red-300 mt-0.5">{venue.temporarilyClosedMessage}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Venue Info Card */}
       <div className="relative -mt-6 mx-4 bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -249,9 +280,19 @@ export function VenueDetail({
           {/* Name and Rating */}
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
-              <h1 className="text-xl font-bold text-slate-900 dark:text-white">
-                {venue.name}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+                  {venue.name}
+                </h1>
+                {venue.isVerified && (
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400">
+                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Verified
+                  </span>
+                )}
+              </div>
               <button
                 onClick={() => onGetDirections?.()}
                 className="flex items-center gap-1 mt-1 text-sm text-slate-500 dark:text-slate-400 hover:text-sky-500 dark:hover:text-sky-400 transition-colors"
@@ -277,6 +318,7 @@ export function VenueDetail({
                 </svg>
                 {formatAddress()}
               </button>
+            </div>
             </div>
 
             {/* Rating Badge */}
@@ -355,6 +397,41 @@ export function VenueDetail({
               </div>
               <svg
                 className="w-5 h-5 text-slate-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          )}
+
+          {/* Claim Venue Button - Show for unverified venues when user can claim */}
+          {canClaimVenue && !venue.isVerified && (
+            <button
+              onClick={onClaimVenue}
+              className="flex items-center gap-3 mt-4 p-3 w-full bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/30 transition-colors"
+            >
+              <div className="w-10 h-10 rounded-full bg-sky-100 dark:bg-sky-900/50 flex items-center justify-center">
+                <svg className="w-5 h-5 text-sky-600 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-medium text-sky-800 dark:text-sky-200">
+                  Claim This Venue
+                </p>
+                <p className="text-xs text-sky-600 dark:text-sky-400">
+                  Are you the owner or manager? Verify and manage this venue.
+                </p>
+              </div>
+              <svg
+                className="w-5 h-5 text-sky-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

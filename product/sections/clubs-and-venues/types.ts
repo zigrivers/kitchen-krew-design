@@ -75,6 +75,8 @@ export interface Venue {
   averageRating: number
   reviewCount: number
   isTemporarilyClosed: boolean
+  temporarilyClosedMessage: string | null
+  isVerified: boolean
 }
 
 /** An individual court at a venue */
@@ -277,6 +279,8 @@ export interface ClubsVenuesProps {
   onCreateClub?: () => void
   /** Called when admin archives/deletes a club */
   onArchiveClub?: (clubId: string) => void
+  /** Called when admin transfers club ownership to another admin */
+  onTransferOwnership?: (clubId: string, newOwnerId: string) => void
 
   // Member management actions
   /** Called when admin approves a membership request */
@@ -311,16 +315,24 @@ export interface ClubsVenuesProps {
   onCreateVenue?: () => void
   /** Called when admin archives/deletes a venue */
   onArchiveVenue?: (venueId: string) => void
+  /** Called when user submits a claim request for a venue */
+  onClaimVenue?: (venueId: string, claimData: Omit<VenueClaimRequest, 'id' | 'venueId' | 'claimantId' | 'claimantName' | 'status' | 'submittedAt' | 'reviewedAt' | 'reviewedBy' | 'rejectionReason'>) => void
+  /** Called when admin sets venue as temporarily closed */
+  onSetTemporarilyClosed?: (venueId: string, message: string | null) => void
 
   // Court actions
   /** Called when admin adds a court */
   onAddCourt?: (venueId: string) => void
+  /** Called when admin bulk-adds multiple courts */
+  onBulkAddCourts?: (venueId: string, count: number, indoor: boolean, surface: Court['surface']) => void
   /** Called when admin edits a court */
   onEditCourt?: (courtId: string) => void
   /** Called when admin reorders courts */
   onReorderCourts?: (venueId: string, courtIds: string[]) => void
   /** Called when admin marks court for maintenance */
   onSetCourtMaintenance?: (courtId: string, notes: string) => void
+  /** Called when admin deletes a court */
+  onDeleteCourt?: (courtId: string) => void
 
   // Review actions
   /** Called when user submits a venue review */
@@ -445,4 +457,203 @@ export interface QRCodeGeneratorProps {
   onCopyLink?: () => void
   /** Called when modal is closed */
   onClose?: () => void
+}
+
+// =============================================================================
+// Onboarding & Subscription Types
+// =============================================================================
+
+/** Subscription tier for clubs */
+export type SubscriptionTier = 'community' | 'pro' | 'elite'
+
+/** Features and limits for each subscription tier */
+export interface TierLimits {
+  tier: SubscriptionTier
+  name: string
+  price: number // monthly price in USD, 0 for free
+  annualPrice: number | null // annual price with discount
+  eventsPerMonth: number | null // null = unlimited
+  maxCourts: number | null
+  maxPlayersPerEvent: number | null
+  maxGameManagers: number | null
+  transactionFeePercent: number
+  features: string[]
+}
+
+/** Club subscription status */
+export interface ClubSubscription {
+  clubId: string
+  tier: SubscriptionTier
+  status: 'active' | 'trial' | 'past_due' | 'cancelled'
+  currentPeriodStart: string
+  currentPeriodEnd: string
+  trialEndsAt: string | null
+  cancelAtPeriodEnd: boolean
+}
+
+/** Usage metrics against tier limits */
+export interface ClubUsage {
+  clubId: string
+  eventsThisMonth: number
+  courtsConfigured: number
+  gameManagersAssigned: number
+  maxPlayersInEvents: number
+  limits: TierLimits
+}
+
+/** Onboarding wizard step identifier */
+export type OnboardingStep = 'club_setup' | 'venue_setup' | 'subscription' | 'first_event' | 'invite_members'
+
+/** Data collected during onboarding wizard */
+export interface OnboardingData {
+  /** Current step in the wizard */
+  currentStep: OnboardingStep
+  /** Whether user can proceed to next step */
+  canProceed: boolean
+  /** Club data being collected */
+  club: {
+    name: string
+    description: string
+    logoUrl: string | null
+    contactEmail: string
+    contactPhone: string | null
+    location: Location
+    membershipType: 'open' | 'closed'
+    visibility: 'public' | 'unlisted'
+  }
+  /** Venue data being collected (optional) */
+  venue: {
+    hasVenue: boolean
+    name: string
+    address: Address | null
+    courtCount: number
+    indoor: boolean
+    surface: Court['surface']
+  } | null
+  /** Selected subscription tier */
+  subscription: {
+    tier: SubscriptionTier
+    billingCycle: 'monthly' | 'annual'
+  }
+  /** First event data (optional) */
+  firstEvent: {
+    createEvent: boolean
+    template: 'open_play' | 'round_robin' | 'ladder' | null
+    dateTime: string | null
+    recurring: boolean
+  } | null
+  /** Progress tracking */
+  completedSteps: OnboardingStep[]
+  /** Last saved timestamp */
+  lastSavedAt: string | null
+}
+
+/** Venue claim request for claiming admin rights */
+export interface VenueClaimRequest {
+  id: string
+  venueId: string
+  claimantId: string
+  claimantName: string
+  relationship: 'owner' | 'manager' | 'authorized_rep'
+  contactEmail: string
+  contactPhone: string | null
+  supportingDocUrl: string | null
+  message: string | null
+  status: 'pending' | 'approved' | 'rejected' | 'disputed'
+  submittedAt: string
+  reviewedAt: string | null
+  reviewedBy: string | null
+  rejectionReason: string | null
+}
+
+// =============================================================================
+// Onboarding Component Props
+// =============================================================================
+
+export interface OnboardingWizardProps {
+  /** Current onboarding data state */
+  data: OnboardingData
+  /** Available subscription tiers */
+  tiers: TierLimits[]
+  /** Whether any operation is in progress */
+  isLoading: boolean
+  /** Called when user updates club info */
+  onUpdateClub: (club: Partial<OnboardingData['club']>) => void
+  /** Called when user updates venue info */
+  onUpdateVenue: (venue: Partial<NonNullable<OnboardingData['venue']>>) => void
+  /** Called when user selects subscription tier */
+  onSelectTier: (tier: SubscriptionTier, billingCycle: 'monthly' | 'annual') => void
+  /** Called when user configures first event */
+  onUpdateFirstEvent: (event: Partial<NonNullable<OnboardingData['firstEvent']>>) => void
+  /** Called when user proceeds to next step */
+  onNextStep: () => void
+  /** Called when user goes back a step */
+  onPreviousStep: () => void
+  /** Called when user skips current step */
+  onSkipStep: () => void
+  /** Called when user completes the wizard */
+  onComplete: () => void
+  /** Called when user uploads club logo */
+  onUploadLogo: (file: File) => void
+}
+
+export interface ClubSetupStepProps {
+  data: OnboardingData['club']
+  isLoading: boolean
+  onChange: (updates: Partial<OnboardingData['club']>) => void
+  onUploadLogo: (file: File) => void
+  onNext: () => void
+}
+
+export interface VenueSetupStepProps {
+  data: OnboardingData['venue']
+  isLoading: boolean
+  onChange: (updates: Partial<NonNullable<OnboardingData['venue']>>) => void
+  onSkip: () => void
+  onNext: () => void
+}
+
+export interface SubscriptionStepProps {
+  currentTier: SubscriptionTier
+  billingCycle: 'monthly' | 'annual'
+  tiers: TierLimits[]
+  isLoading: boolean
+  onSelectTier: (tier: SubscriptionTier, billingCycle: 'monthly' | 'annual') => void
+  onNext: () => void
+}
+
+export interface FirstEventStepProps {
+  data: OnboardingData['firstEvent']
+  clubName: string
+  venueName: string | null
+  isLoading: boolean
+  onChange: (updates: Partial<NonNullable<OnboardingData['firstEvent']>>) => void
+  onSkip: () => void
+  onNext: () => void
+}
+
+export interface InviteMembersStepProps {
+  clubId: string
+  clubName: string
+  qrCode: QRCode | null
+  isGeneratingQR: boolean
+  onGenerateQR: () => void
+  onDownloadQR: (format: 'png' | 'svg') => void
+  onCopyLink: () => void
+  onShareVia: (method: 'sms' | 'email') => void
+  onSkip: () => void
+  onComplete: () => void
+}
+
+export interface ClaimVenueModalProps {
+  venue: Venue
+  isSubmitting: boolean
+  onSubmit: (data: Omit<VenueClaimRequest, 'id' | 'venueId' | 'claimantId' | 'claimantName' | 'status' | 'submittedAt' | 'reviewedAt' | 'reviewedBy' | 'rejectionReason'>) => void
+  onClose: () => void
+}
+
+export interface TierComparisonProps {
+  tiers: TierLimits[]
+  currentTier?: SubscriptionTier
+  onSelectTier: (tier: SubscriptionTier) => void
 }

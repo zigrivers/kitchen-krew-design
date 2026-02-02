@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import { Settings, HelpCircle, LogOut, ChevronUp } from 'lucide-react'
 
+export type UserRole = 'user' | 'super_admin'
+
 export interface UserMenuProps {
   user: {
     name: string
     avatarUrl?: string
+    role?: UserRole
   }
   onLogout?: () => void
   onSettings?: () => void
@@ -94,14 +97,21 @@ export function UserMenu({ user, onLogout, onSettings, onHelp }: UserMenuProps) 
           </div>
         )}
 
-        {/* Name */}
-        <div className="flex-1 text-left">
+        {/* Name and Role */}
+        <div className="flex-1 text-left min-w-0">
           <div className="text-sm font-medium text-slate-900 dark:text-white truncate">
             {user.name}
           </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400">
-            Player
-          </div>
+          {user.role === 'super_admin' ? (
+            <div className="inline-flex items-center gap-1 text-xs font-medium text-sky-600 dark:text-sky-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-500" />
+              Super Admin
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500 dark:text-slate-400">
+              Player
+            </div>
+          )}
         </div>
 
         {/* Chevron */}

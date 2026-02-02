@@ -8,7 +8,12 @@
       "membershipRequests": "Pending requests from players wanting to join a closed club.",
       "subGroups": "Categories within a club for organizing members by skill level or interest.",
       "venueReviews": "Ratings and written reviews from players who have attended events at a venue.",
-      "qrCodes": "Generated QR codes for club invitations and app downloads, with tracking data for scans and conversions."
+      "qrCodes": "Generated QR codes for club invitations and app downloads, with tracking data for scans and conversions.",
+      "subscriptionTiers": "Available subscription plans with features and limits for clubs.",
+      "clubSubscriptions": "Active subscription status for each club.",
+      "clubUsage": "Current usage metrics against subscription tier limits.",
+      "onboardingData": "In-progress onboarding wizard data for new club owners.",
+      "venueClaimRequests": "Requests from users to claim admin rights over existing venues."
     },
     "relationships": [
       "Each Club has many Members (players who have joined)",
@@ -17,7 +22,10 @@
       "Each Venue has many Reviews from players",
       "Members can have different roles within a Club (admin, game manager, member)",
       "SubGroups belong to a Club and contain a subset of Members",
-      "QR Codes belong to a Club and track invitation/download activity"
+      "QR Codes belong to a Club and track invitation/download activity",
+      "Each Club has one Subscription (tier and billing status)",
+      "Each Club has Usage metrics tracked against tier limits",
+      "Venues can have ClaimRequests from users seeking admin access"
     ]
   },
   "currentUser": {
@@ -153,7 +161,9 @@
       "linkedClubId": "club-001",
       "averageRating": 4.7,
       "reviewCount": 48,
-      "isTemporarilyClosed": false
+      "isTemporarilyClosed": false,
+      "temporarilyClosedMessage": null,
+      "isVerified": true
     },
     {
       "id": "ven-002",
@@ -187,7 +197,9 @@
       "linkedClubId": "club-001",
       "averageRating": 4.3,
       "reviewCount": 31,
-      "isTemporarilyClosed": false
+      "isTemporarilyClosed": false,
+      "temporarilyClosedMessage": null,
+      "isVerified": true
     },
     {
       "id": "ven-003",
@@ -220,7 +232,9 @@
       "linkedClubId": "club-002",
       "averageRating": 4.9,
       "reviewCount": 22,
-      "isTemporarilyClosed": false
+      "isTemporarilyClosed": false,
+      "temporarilyClosedMessage": null,
+      "isVerified": true
     },
     {
       "id": "ven-004",
@@ -251,7 +265,9 @@
       "linkedClubId": "club-003",
       "averageRating": 3.8,
       "reviewCount": 15,
-      "isTemporarilyClosed": false
+      "isTemporarilyClosed": false,
+      "temporarilyClosedMessage": null,
+      "isVerified": false
     },
     {
       "id": "ven-005",
@@ -285,7 +301,9 @@
       "linkedClubId": "club-004",
       "averageRating": 4.5,
       "reviewCount": 27,
-      "isTemporarilyClosed": false
+      "isTemporarilyClosed": false,
+      "temporarilyClosedMessage": null,
+      "isVerified": true
     }
   ],
   "courts": [
@@ -623,6 +641,195 @@
       "utmSource": "qr_code",
       "utmMedium": "print",
       "utmCampaign": "summer_2024"
+    }
+  ],
+  "subscriptionTiers": [
+    {
+      "tier": "community",
+      "name": "Community",
+      "price": 0,
+      "annualPrice": null,
+      "eventsPerMonth": 20,
+      "maxCourts": 4,
+      "maxPlayersPerEvent": 32,
+      "maxGameManagers": 2,
+      "transactionFeePercent": 5.9,
+      "features": [
+        "Open Play scheduling",
+        "Basic event management",
+        "Member roster",
+        "Club profile page",
+        "Club invitation QR codes"
+      ]
+    },
+    {
+      "tier": "pro",
+      "name": "Club Pro",
+      "price": 79,
+      "annualPrice": 799,
+      "eventsPerMonth": null,
+      "maxCourts": null,
+      "maxPlayersPerEvent": null,
+      "maxGameManagers": null,
+      "transactionFeePercent": 4.5,
+      "features": [
+        "Unlimited events",
+        "All game formats (Round Robin, Ladder, etc.)",
+        "Unlimited courts",
+        "Unlimited Game Managers",
+        "Advanced analytics dashboard",
+        "Custom sub-groups",
+        "Priority support",
+        "Branded QR codes"
+      ]
+    },
+    {
+      "tier": "elite",
+      "name": "Club Elite",
+      "price": 199,
+      "annualPrice": 1999,
+      "eventsPerMonth": null,
+      "maxCourts": null,
+      "maxPlayersPerEvent": null,
+      "maxGameManagers": null,
+      "transactionFeePercent": 3.9,
+      "features": [
+        "Everything in Pro",
+        "Multi-venue management",
+        "API access",
+        "White-label options",
+        "Dedicated account manager",
+        "Custom integrations",
+        "Data export & reporting"
+      ]
+    }
+  ],
+  "clubSubscriptions": [
+    {
+      "clubId": "club-001",
+      "tier": "pro",
+      "status": "active",
+      "currentPeriodStart": "2026-01-01",
+      "currentPeriodEnd": "2026-02-01",
+      "trialEndsAt": null,
+      "cancelAtPeriodEnd": false
+    },
+    {
+      "clubId": "club-002",
+      "tier": "pro",
+      "status": "active",
+      "currentPeriodStart": "2026-01-15",
+      "currentPeriodEnd": "2026-02-15",
+      "trialEndsAt": null,
+      "cancelAtPeriodEnd": false
+    },
+    {
+      "clubId": "club-003",
+      "tier": "community",
+      "status": "active",
+      "currentPeriodStart": "2026-01-01",
+      "currentPeriodEnd": "2026-02-01",
+      "trialEndsAt": null,
+      "cancelAtPeriodEnd": false
+    },
+    {
+      "clubId": "club-004",
+      "tier": "pro",
+      "status": "trial",
+      "currentPeriodStart": "2026-01-20",
+      "currentPeriodEnd": "2026-02-20",
+      "trialEndsAt": "2026-02-03",
+      "cancelAtPeriodEnd": false
+    }
+  ],
+  "clubUsage": {
+    "clubId": "club-003",
+    "eventsThisMonth": 15,
+    "courtsConfigured": 4,
+    "gameManagersAssigned": 1,
+    "maxPlayersInEvents": 24,
+    "limits": {
+      "tier": "community",
+      "name": "Community",
+      "price": 0,
+      "annualPrice": null,
+      "eventsPerMonth": 20,
+      "maxCourts": 4,
+      "maxPlayersPerEvent": 32,
+      "maxGameManagers": 2,
+      "transactionFeePercent": 5.9,
+      "features": []
+    }
+  },
+  "onboardingData": {
+    "currentStep": "venue_setup",
+    "canProceed": true,
+    "club": {
+      "name": "Round Rock Ralliers",
+      "description": "Bringing pickleball to the Round Rock community!",
+      "logoUrl": null,
+      "contactEmail": "mike.johnson@example.com",
+      "contactPhone": null,
+      "location": {
+        "city": "Round Rock",
+        "state": "TX"
+      },
+      "membershipType": "open",
+      "visibility": "public"
+    },
+    "venue": {
+      "hasVenue": true,
+      "name": "Old Settlers Park Courts",
+      "address": {
+        "street": "3300 E Palm Valley Blvd",
+        "city": "Round Rock",
+        "state": "TX",
+        "zip": "78665"
+      },
+      "courtCount": 6,
+      "indoor": false,
+      "surface": "concrete"
+    },
+    "subscription": {
+      "tier": "community",
+      "billingCycle": "monthly"
+    },
+    "firstEvent": null,
+    "completedSteps": ["club_setup"],
+    "lastSavedAt": "2026-02-01T09:45:00"
+  },
+  "venueClaimRequests": [
+    {
+      "id": "claim-001",
+      "venueId": "ven-004",
+      "claimantId": "plr-010",
+      "claimantName": "Jessica Park",
+      "relationship": "manager",
+      "contactEmail": "jessica.park@cedarpark.gov",
+      "contactPhone": "512-555-0142",
+      "supportingDocUrl": "/docs/claim-001-badge.jpg",
+      "message": "I'm the recreation coordinator for Cedar Park. I manage the Brushy Creek Sports Park facilities including the pickleball courts.",
+      "status": "pending",
+      "submittedAt": "2026-01-28T14:30:00",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "rejectionReason": null
+    },
+    {
+      "id": "claim-002",
+      "venueId": "ven-005",
+      "claimantId": "plr-011",
+      "claimantName": "Tom Ramirez",
+      "relationship": "owner",
+      "contactEmail": "tom@drippingspringsranch.com",
+      "contactPhone": null,
+      "supportingDocUrl": null,
+      "message": "This is our private ranch venue. We'd like to manage it directly.",
+      "status": "approved",
+      "submittedAt": "2026-01-15T10:00:00",
+      "reviewedAt": "2026-01-16T11:30:00",
+      "reviewedBy": "admin-001",
+      "rejectionReason": null
     }
   ]
 }
