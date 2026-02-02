@@ -1,0 +1,705 @@
+{
+  "_meta": {
+    "models": {
+      "userAccounts": "Extended player information for admin views, including account status, verification state, and login history.",
+      "playerNotes": "Private notes added by Club Admins about members in their club. Notes are categorized and only visible to club staff and Super Admins.",
+      "playerWarnings": "Formal warnings issued to players with documented incidents and expected corrective actions.",
+      "memberActions": "Club-level suspensions and bans with reasons, durations, and appeal tracking.",
+      "platformActions": "Platform-wide moderation actions (warnings, suspensions, bans) issued by Super Admins affecting all clubs.",
+      "escalationCases": "Cases escalated from Club Admins to Super Admin review for potential platform-wide action.",
+      "gdprRequests": "Data export and deletion requests from users, tracked for compliance with privacy regulations.",
+      "adminNotes": "Platform-wide notes added by Super Admins, visible across all administrative views.",
+      "activityEvents": "Timeline of user activity including logins, profile changes, club memberships, and moderation actions.",
+      "savedSearches": "Saved search presets for quick access to common user queries."
+    },
+    "relationships": [
+      "UserAccounts extend the Player entity with admin-specific fields like account status and verification",
+      "PlayerNotes, PlayerWarnings, and MemberActions are scoped to a specific Club (clubId field)",
+      "PlatformActions and AdminNotes are platform-wide and visible to all Super Admins",
+      "EscalationCases link a Club Admin's concern to the Super Admin review queue",
+      "ActivityEvents form a chronological timeline of everything a user has done",
+      "GDPRRequests track the compliance workflow from request to completion"
+    ]
+  },
+  "userAccounts": [
+    {
+      "id": "user-001",
+      "email": "mike.chen@email.com",
+      "displayName": "Mike Chen",
+      "photoUrl": "https://randomuser.me/api/portraits/men/32.jpg",
+      "phone": "+1 (512) 555-0123",
+      "accountStatus": "active",
+      "isEmailVerified": true,
+      "skillRating": 4.0,
+      "duprId": "DUPR-28374",
+      "registeredAt": "2024-08-15T10:30:00Z",
+      "lastActiveAt": "2025-01-31T14:22:00Z",
+      "lastLoginAt": "2025-01-31T09:15:00Z",
+      "loginCount": 247,
+      "clubCount": 3,
+      "eventCount": 89,
+      "reportCount": 0,
+      "warningCount": 0,
+      "roles": ["player", "game_manager"],
+      "location": "Austin, TX"
+    },
+    {
+      "id": "user-002",
+      "email": "sarah.johnson@email.com",
+      "displayName": "Sarah Johnson",
+      "photoUrl": "https://randomuser.me/api/portraits/women/44.jpg",
+      "phone": "+1 (512) 555-0456",
+      "accountStatus": "active",
+      "isEmailVerified": true,
+      "skillRating": 3.5,
+      "duprId": null,
+      "registeredAt": "2024-06-01T08:00:00Z",
+      "lastActiveAt": "2025-01-30T16:45:00Z",
+      "lastLoginAt": "2025-01-30T08:30:00Z",
+      "loginCount": 312,
+      "clubCount": 2,
+      "eventCount": 156,
+      "reportCount": 0,
+      "warningCount": 0,
+      "roles": ["player", "club_admin"],
+      "location": "Round Rock, TX"
+    },
+    {
+      "id": "user-003",
+      "email": "james.wilson@email.com",
+      "displayName": "James Wilson",
+      "photoUrl": "https://randomuser.me/api/portraits/men/67.jpg",
+      "phone": "+1 (512) 555-0789",
+      "accountStatus": "suspended",
+      "isEmailVerified": true,
+      "skillRating": 3.75,
+      "duprId": "DUPR-91823",
+      "registeredAt": "2024-03-20T14:15:00Z",
+      "lastActiveAt": "2025-01-15T11:30:00Z",
+      "lastLoginAt": "2025-01-15T11:30:00Z",
+      "loginCount": 89,
+      "clubCount": 1,
+      "eventCount": 34,
+      "reportCount": 3,
+      "warningCount": 2,
+      "roles": ["player"],
+      "location": "Cedar Park, TX",
+      "suspendedUntil": "2025-02-15T00:00:00Z",
+      "suspensionReason": "Repeated unsportsmanlike conduct"
+    },
+    {
+      "id": "user-004",
+      "email": "lisa.martinez@email.com",
+      "displayName": "Lisa Martinez",
+      "photoUrl": "https://randomuser.me/api/portraits/women/28.jpg",
+      "phone": "+1 (512) 555-0321",
+      "accountStatus": "active",
+      "isEmailVerified": true,
+      "skillRating": 4.25,
+      "duprId": "DUPR-44521",
+      "registeredAt": "2024-01-10T09:00:00Z",
+      "lastActiveAt": "2025-01-31T18:00:00Z",
+      "lastLoginAt": "2025-01-31T17:45:00Z",
+      "loginCount": 523,
+      "clubCount": 4,
+      "eventCount": 203,
+      "reportCount": 0,
+      "warningCount": 0,
+      "roles": ["player", "club_admin", "game_manager"],
+      "location": "Austin, TX"
+    },
+    {
+      "id": "user-005",
+      "email": "robert.taylor@email.com",
+      "displayName": "Robert Taylor",
+      "photoUrl": "https://randomuser.me/api/portraits/men/45.jpg",
+      "phone": null,
+      "accountStatus": "banned",
+      "isEmailVerified": true,
+      "skillRating": 3.0,
+      "duprId": null,
+      "registeredAt": "2024-09-05T11:20:00Z",
+      "lastActiveAt": "2024-12-20T09:00:00Z",
+      "lastLoginAt": "2024-12-20T09:00:00Z",
+      "loginCount": 45,
+      "clubCount": 0,
+      "eventCount": 18,
+      "reportCount": 7,
+      "warningCount": 3,
+      "roles": ["player"],
+      "location": "Pflugerville, TX",
+      "bannedAt": "2024-12-22T10:00:00Z",
+      "banReason": "Harassment and threatening behavior toward other players"
+    },
+    {
+      "id": "user-006",
+      "email": "emily.nguyen@email.com",
+      "displayName": "Emily Nguyen",
+      "photoUrl": "https://randomuser.me/api/portraits/women/52.jpg",
+      "phone": "+1 (512) 555-0654",
+      "accountStatus": "pending_deletion",
+      "isEmailVerified": true,
+      "skillRating": 3.25,
+      "duprId": null,
+      "registeredAt": "2024-07-22T15:30:00Z",
+      "lastActiveAt": "2025-01-20T10:00:00Z",
+      "lastLoginAt": "2025-01-20T10:00:00Z",
+      "loginCount": 67,
+      "clubCount": 1,
+      "eventCount": 28,
+      "reportCount": 0,
+      "warningCount": 0,
+      "roles": ["player"],
+      "location": "Austin, TX",
+      "deletionRequestedAt": "2025-01-20T10:15:00Z",
+      "deletionScheduledFor": "2025-02-03T00:00:00Z"
+    },
+    {
+      "id": "user-007",
+      "email": "david.kim@email.com",
+      "displayName": "David Kim",
+      "photoUrl": "https://randomuser.me/api/portraits/men/22.jpg",
+      "phone": "+1 (512) 555-0987",
+      "accountStatus": "active",
+      "isEmailVerified": false,
+      "skillRating": 2.5,
+      "duprId": null,
+      "registeredAt": "2025-01-28T08:00:00Z",
+      "lastActiveAt": "2025-01-31T12:00:00Z",
+      "lastLoginAt": "2025-01-31T12:00:00Z",
+      "loginCount": 4,
+      "clubCount": 1,
+      "eventCount": 0,
+      "reportCount": 0,
+      "warningCount": 0,
+      "roles": ["player"],
+      "location": "Georgetown, TX"
+    },
+    {
+      "id": "user-008",
+      "email": "amanda.brown@email.com",
+      "displayName": "Amanda Brown",
+      "photoUrl": "https://randomuser.me/api/portraits/women/63.jpg",
+      "phone": "+1 (512) 555-0147",
+      "accountStatus": "active",
+      "isEmailVerified": true,
+      "skillRating": 3.75,
+      "duprId": "DUPR-55892",
+      "registeredAt": "2024-04-12T13:45:00Z",
+      "lastActiveAt": "2025-01-31T20:30:00Z",
+      "lastLoginAt": "2025-01-31T18:00:00Z",
+      "loginCount": 289,
+      "clubCount": 2,
+      "eventCount": 142,
+      "reportCount": 1,
+      "warningCount": 1,
+      "roles": ["player", "game_manager"],
+      "location": "Lakeway, TX"
+    }
+  ],
+  "playerNotes": [
+    {
+      "id": "note-001",
+      "playerId": "user-003",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "category": "concern",
+      "content": "Had a heated argument with opponent after disputed line call on 1/10. Calmed down after GM intervention but was visibly frustrated for remainder of session.",
+      "authorId": "user-002",
+      "authorName": "Sarah Johnson",
+      "createdAt": "2025-01-10T16:30:00Z"
+    },
+    {
+      "id": "note-002",
+      "playerId": "user-003",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "category": "incident",
+      "content": "Threw paddle against fence after losing match. Other players complained. Issued verbal warning on-site.",
+      "authorId": "user-004",
+      "authorName": "Lisa Martinez",
+      "createdAt": "2025-01-14T19:45:00Z"
+    },
+    {
+      "id": "note-003",
+      "playerId": "user-001",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "category": "positive",
+      "content": "Excellent sportsman. Helped a new player learn proper serving technique during open play. Always willing to play with beginners.",
+      "authorId": "user-002",
+      "authorName": "Sarah Johnson",
+      "createdAt": "2025-01-25T11:00:00Z"
+    },
+    {
+      "id": "note-004",
+      "playerId": "user-008",
+      "clubId": "club-002",
+      "clubName": "Round Rock Ralliers",
+      "category": "general",
+      "content": "Prefers playing on courts 1-2 due to lighting. Has mentioned mild knee issues - may need breaks during longer sessions.",
+      "authorId": "user-002",
+      "authorName": "Sarah Johnson",
+      "createdAt": "2024-11-15T10:20:00Z"
+    },
+    {
+      "id": "note-005",
+      "playerId": "user-005",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "category": "incident",
+      "content": "Made inappropriate comments to female player after losing. Multiple witnesses. Player asked to leave session early.",
+      "authorId": "user-004",
+      "authorName": "Lisa Martinez",
+      "createdAt": "2024-12-15T20:00:00Z"
+    }
+  ],
+  "playerWarnings": [
+    {
+      "id": "warning-001",
+      "playerId": "user-003",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "warningType": "unsportsmanlike_behavior",
+      "description": "Threw paddle after losing match, creating safety concern and disrupting other games.",
+      "incidentDate": "2025-01-14T19:30:00Z",
+      "expectedAction": "Maintain composure during competition. Any equipment throwing will result in immediate suspension.",
+      "issuedById": "user-004",
+      "issuedByName": "Lisa Martinez",
+      "issuedAt": "2025-01-14T20:15:00Z",
+      "acknowledgedAt": "2025-01-15T08:30:00Z",
+      "playerResponse": "I apologize for my behavior. The loss was frustrating but that's no excuse. It won't happen again."
+    },
+    {
+      "id": "warning-002",
+      "playerId": "user-005",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "warningType": "harassment",
+      "description": "Made inappropriate and demeaning comments to another player after a match loss. Comments were witnessed by three other members.",
+      "incidentDate": "2024-12-15T19:45:00Z",
+      "expectedAction": "Treat all players with respect regardless of match outcomes. Any further incidents will result in immediate ban.",
+      "issuedById": "user-004",
+      "issuedByName": "Lisa Martinez",
+      "issuedAt": "2024-12-15T21:00:00Z",
+      "acknowledgedAt": null,
+      "playerResponse": null
+    },
+    {
+      "id": "warning-003",
+      "playerId": "user-008",
+      "clubId": "club-002",
+      "clubName": "Round Rock Ralliers",
+      "warningType": "no_show_abuse",
+      "description": "Third no-show in the past month without cancellation. Taking spots from waitlisted players.",
+      "incidentDate": "2024-10-28T18:00:00Z",
+      "expectedAction": "Cancel registrations at least 24 hours in advance if unable to attend. Next no-show will result in 2-week suspension from event registration.",
+      "issuedById": "user-002",
+      "issuedByName": "Sarah Johnson",
+      "issuedAt": "2024-10-29T09:00:00Z",
+      "acknowledgedAt": "2024-10-29T12:15:00Z",
+      "playerResponse": "Understood. I had some personal issues but should have communicated. Will be more responsible going forward."
+    }
+  ],
+  "memberActions": [
+    {
+      "id": "action-001",
+      "playerId": "user-003",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "actionType": "suspension",
+      "reason": "unsportsmanlike_behavior",
+      "description": "Continued pattern of aggressive behavior including paddle throwing (1/14) and verbal confrontations with opponents. Two formal warnings issued within one month.",
+      "duration": "30_days",
+      "startDate": "2025-01-15T00:00:00Z",
+      "endDate": "2025-02-14T23:59:59Z",
+      "issuedById": "user-004",
+      "issuedByName": "Lisa Martinez",
+      "issuedAt": "2025-01-15T10:00:00Z",
+      "appealStatus": "none",
+      "appealNote": null,
+      "liftedEarly": false,
+      "liftedAt": null,
+      "liftedById": null
+    },
+    {
+      "id": "action-002",
+      "playerId": "user-005",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "actionType": "ban",
+      "reason": "harassment",
+      "description": "Despite formal warning on 12/15, player continued harassing behavior toward the same individual at 12/19 event. Multiple witnesses confirmed intimidating conduct in the parking lot.",
+      "duration": "permanent",
+      "startDate": "2024-12-20T00:00:00Z",
+      "endDate": null,
+      "issuedById": "user-004",
+      "issuedByName": "Lisa Martinez",
+      "issuedAt": "2024-12-20T08:00:00Z",
+      "appealStatus": "denied",
+      "appealNote": "Appeal reviewed by club owner. Behavior pattern and witness statements support permanent ban. Appeal denied 12/21.",
+      "liftedEarly": false,
+      "liftedAt": null,
+      "liftedById": null
+    }
+  ],
+  "platformActions": [
+    {
+      "id": "platform-001",
+      "playerId": "user-005",
+      "actionType": "ban",
+      "reason": "harassment",
+      "description": "Pattern of harassment across multiple clubs. Escalated from Austin Pickleball Club after permanent club ban. Investigation revealed similar complaints at two other venues. Platform ban protects all users.",
+      "duration": "permanent",
+      "startDate": "2024-12-22T00:00:00Z",
+      "endDate": null,
+      "issuedById": "admin-001",
+      "issuedByName": "Platform Admin",
+      "approvedById": "admin-002",
+      "approvedByName": "Senior Admin",
+      "issuedAt": "2024-12-22T10:00:00Z",
+      "relatedEscalationId": "escalation-001"
+    },
+    {
+      "id": "platform-002",
+      "playerId": "user-003",
+      "actionType": "warning",
+      "reason": "unsportsmanlike_behavior",
+      "description": "Platform-level warning issued following club suspension. User has been notified that any further incidents at any club may result in platform-wide suspension.",
+      "duration": null,
+      "startDate": "2025-01-16T00:00:00Z",
+      "endDate": null,
+      "issuedById": "admin-001",
+      "issuedByName": "Platform Admin",
+      "approvedById": null,
+      "approvedByName": null,
+      "issuedAt": "2025-01-16T14:00:00Z",
+      "relatedEscalationId": null
+    }
+  ],
+  "escalationCases": [
+    {
+      "id": "escalation-001",
+      "playerId": "user-005",
+      "playerName": "Robert Taylor",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "escalatedById": "user-004",
+      "escalatedByName": "Lisa Martinez",
+      "escalatedAt": "2024-12-20T08:30:00Z",
+      "reason": "harassment",
+      "description": "Player has been permanently banned from our club for repeated harassment of another member. The behavior escalated from verbal comments to intimidating conduct in the parking lot. We believe this player may pose a risk to users at other venues and recommend platform review.",
+      "evidence": [
+        "Witness statements from 3 members (attached)",
+        "Screenshot of threatening message sent via app",
+        "Prior warning documentation from 12/15"
+      ],
+      "clubActionTaken": "Permanent ban from Austin Pickleball Club effective 12/20",
+      "status": "resolved",
+      "priority": "urgent",
+      "assignedToId": "admin-001",
+      "assignedToName": "Platform Admin",
+      "reviewStartedAt": "2024-12-20T11:00:00Z",
+      "resolvedAt": "2024-12-22T10:00:00Z",
+      "resolution": "platform_ban",
+      "resolutionNotes": "Investigation confirmed pattern of harassment. Similar complaints found from Cedar Park Pickleball (informal, not escalated). Platform ban issued with dual approval."
+    },
+    {
+      "id": "escalation-002",
+      "playerId": "user-003",
+      "playerName": "James Wilson",
+      "clubId": "club-001",
+      "clubName": "Austin Pickleball Club",
+      "escalatedById": "user-004",
+      "escalatedByName": "Lisa Martinez",
+      "escalatedAt": "2025-01-15T10:30:00Z",
+      "reason": "unsportsmanlike_behavior",
+      "description": "Player has received 30-day suspension from our club for repeated aggressive behavior including throwing equipment. While not harassment, the pattern is concerning and we wanted platform awareness.",
+      "evidence": [
+        "Two formal warnings within 30 days",
+        "Incident reports from 1/10 and 1/14"
+      ],
+      "clubActionTaken": "30-day suspension from Austin Pickleball Club",
+      "status": "resolved",
+      "priority": "standard",
+      "assignedToId": "admin-001",
+      "assignedToName": "Platform Admin",
+      "reviewStartedAt": "2025-01-15T14:00:00Z",
+      "resolvedAt": "2025-01-16T14:00:00Z",
+      "resolution": "platform_warning",
+      "resolutionNotes": "Club-level suspension is appropriate response. Issued platform warning to create record and notify user of potential platform consequences for future incidents."
+    },
+    {
+      "id": "escalation-003",
+      "playerId": "user-008",
+      "playerName": "Amanda Brown",
+      "clubId": "club-003",
+      "clubName": "Lakeway Paddle Club",
+      "escalatedById": "user-009",
+      "escalatedByName": "Tom Richards",
+      "escalatedAt": "2025-01-29T16:00:00Z",
+      "reason": "other",
+      "description": "Player disputes rating manipulation. Claims opponent intentionally lost games to lower their rating before a tournament. Requesting platform investigation of match history.",
+      "evidence": [
+        "Match history showing unusual loss pattern",
+        "Screenshots of messages discussing strategy"
+      ],
+      "clubActionTaken": "None pending platform guidance",
+      "status": "in_review",
+      "priority": "standard",
+      "assignedToId": "admin-001",
+      "assignedToName": "Platform Admin",
+      "reviewStartedAt": "2025-01-30T09:00:00Z",
+      "resolvedAt": null,
+      "resolution": null,
+      "resolutionNotes": null
+    },
+    {
+      "id": "escalation-004",
+      "playerId": "user-010",
+      "playerName": "Chris Patterson",
+      "clubId": "club-002",
+      "clubName": "Round Rock Ralliers",
+      "escalatedById": "user-002",
+      "escalatedByName": "Sarah Johnson",
+      "escalatedAt": "2025-01-31T11:00:00Z",
+      "reason": "fraud",
+      "description": "Suspected fake account. User registered with suspicious email pattern and immediately tried to become a Game Manager. May be a previously banned user attempting to circumvent ban.",
+      "evidence": [
+        "Email matches pattern of banned user (robert.t***@protonmail.com)",
+        "Same geographic location as banned user",
+        "Attempted GM role request within 24 hours of registration"
+      ],
+      "clubActionTaken": "Membership request denied pending investigation",
+      "status": "new",
+      "priority": "urgent",
+      "assignedToId": null,
+      "assignedToName": null,
+      "reviewStartedAt": null,
+      "resolvedAt": null,
+      "resolution": null,
+      "resolutionNotes": null
+    }
+  ],
+  "gdprRequests": [
+    {
+      "id": "gdpr-001",
+      "playerId": "user-006",
+      "playerName": "Emily Nguyen",
+      "playerEmail": "emily.nguyen@email.com",
+      "requestType": "deletion",
+      "requestedAt": "2025-01-20T10:15:00Z",
+      "status": "pending",
+      "gracePeriodEnds": "2025-02-03T00:00:00Z",
+      "dataExportGenerated": true,
+      "dataExportUrl": "/exports/user-006-data-2025-01-20.zip",
+      "dataExportGeneratedAt": "2025-01-20T10:20:00Z",
+      "processedAt": null,
+      "processedById": null,
+      "notes": "User downloaded data export on 1/20. Deletion will proceed automatically after grace period unless cancelled."
+    },
+    {
+      "id": "gdpr-002",
+      "playerId": "user-011",
+      "playerName": "Jennifer Adams",
+      "playerEmail": "jennifer.adams@email.com",
+      "requestType": "export",
+      "requestedAt": "2025-01-28T14:30:00Z",
+      "status": "completed",
+      "gracePeriodEnds": null,
+      "dataExportGenerated": true,
+      "dataExportUrl": "/exports/user-011-data-2025-01-28.zip",
+      "dataExportGeneratedAt": "2025-01-28T14:35:00Z",
+      "processedAt": "2025-01-28T14:35:00Z",
+      "processedById": "system",
+      "notes": "Automated data export completed. User notified via email."
+    },
+    {
+      "id": "gdpr-003",
+      "playerId": "user-012",
+      "playerName": "Mark Stevens",
+      "playerEmail": "mark.stevens@email.com",
+      "requestType": "deletion",
+      "requestedAt": "2025-01-05T09:00:00Z",
+      "status": "completed",
+      "gracePeriodEnds": "2025-01-19T00:00:00Z",
+      "dataExportGenerated": true,
+      "dataExportUrl": null,
+      "dataExportGeneratedAt": "2025-01-05T09:05:00Z",
+      "processedAt": "2025-01-19T00:01:00Z",
+      "processedById": "system",
+      "notes": "Deletion completed automatically after grace period. Match history anonymized to 'Deleted User'."
+    }
+  ],
+  "adminNotes": [
+    {
+      "id": "admin-note-001",
+      "playerId": "user-005",
+      "content": "Platform ban issued 12/22 after investigation confirmed harassment pattern across multiple venues. User attempted to create new account on 12/28 - blocked by email filter.",
+      "authorId": "admin-001",
+      "authorName": "Platform Admin",
+      "createdAt": "2024-12-28T15:00:00Z"
+    },
+    {
+      "id": "admin-note-002",
+      "playerId": "user-003",
+      "content": "Monitoring situation. Club suspension ends 2/14. Will reassess if any incidents reported from other clubs during this period.",
+      "authorId": "admin-001",
+      "authorName": "Platform Admin",
+      "createdAt": "2025-01-16T14:30:00Z"
+    }
+  ],
+  "activityEvents": [
+    {
+      "id": "event-001",
+      "playerId": "user-003",
+      "eventType": "warning_received",
+      "description": "Formal warning issued by Austin Pickleball Club",
+      "metadata": {
+        "warningId": "warning-001",
+        "clubId": "club-001",
+        "reason": "unsportsmanlike_behavior"
+      },
+      "occurredAt": "2025-01-14T20:15:00Z"
+    },
+    {
+      "id": "event-002",
+      "playerId": "user-003",
+      "eventType": "suspension_started",
+      "description": "30-day suspension from Austin Pickleball Club",
+      "metadata": {
+        "actionId": "action-001",
+        "clubId": "club-001",
+        "duration": "30_days"
+      },
+      "occurredAt": "2025-01-15T00:00:00Z"
+    },
+    {
+      "id": "event-003",
+      "playerId": "user-003",
+      "eventType": "platform_warning",
+      "description": "Platform-level warning issued",
+      "metadata": {
+        "platformActionId": "platform-002"
+      },
+      "occurredAt": "2025-01-16T14:00:00Z"
+    },
+    {
+      "id": "event-004",
+      "playerId": "user-005",
+      "eventType": "club_ban",
+      "description": "Permanently banned from Austin Pickleball Club",
+      "metadata": {
+        "actionId": "action-002",
+        "clubId": "club-001"
+      },
+      "occurredAt": "2024-12-20T00:00:00Z"
+    },
+    {
+      "id": "event-005",
+      "playerId": "user-005",
+      "eventType": "platform_ban",
+      "description": "Platform-wide ban issued",
+      "metadata": {
+        "platformActionId": "platform-001"
+      },
+      "occurredAt": "2024-12-22T10:00:00Z"
+    },
+    {
+      "id": "event-006",
+      "playerId": "user-006",
+      "eventType": "deletion_requested",
+      "description": "Account deletion requested by user",
+      "metadata": {
+        "gdprRequestId": "gdpr-001",
+        "gracePeriodEnds": "2025-02-03T00:00:00Z"
+      },
+      "occurredAt": "2025-01-20T10:15:00Z"
+    },
+    {
+      "id": "event-007",
+      "playerId": "user-001",
+      "eventType": "login",
+      "description": "Logged in from Austin, TX",
+      "metadata": {
+        "ipAddress": "192.168.1.xxx",
+        "device": "iPhone 15 Pro",
+        "location": "Austin, TX"
+      },
+      "occurredAt": "2025-01-31T09:15:00Z"
+    },
+    {
+      "id": "event-008",
+      "playerId": "user-007",
+      "eventType": "account_created",
+      "description": "Account created",
+      "metadata": {
+        "registrationMethod": "email"
+      },
+      "occurredAt": "2025-01-28T08:00:00Z"
+    },
+    {
+      "id": "event-009",
+      "playerId": "user-007",
+      "eventType": "club_joined",
+      "description": "Joined Georgetown Paddle Club",
+      "metadata": {
+        "clubId": "club-004",
+        "clubName": "Georgetown Paddle Club"
+      },
+      "occurredAt": "2025-01-28T08:30:00Z"
+    }
+  ],
+  "savedSearches": [
+    {
+      "id": "search-001",
+      "name": "Suspended Users",
+      "description": "All currently suspended accounts",
+      "filters": {
+        "accountStatus": ["suspended"]
+      },
+      "createdById": "admin-001",
+      "createdByName": "Platform Admin",
+      "createdAt": "2024-11-01T10:00:00Z",
+      "isShared": true
+    },
+    {
+      "id": "search-002",
+      "name": "Unverified Accounts (7+ days)",
+      "description": "Accounts that haven't verified email after a week",
+      "filters": {
+        "isEmailVerified": false,
+        "registeredBefore": "7_days_ago"
+      },
+      "createdById": "admin-001",
+      "createdByName": "Platform Admin",
+      "createdAt": "2024-11-15T14:00:00Z",
+      "isShared": true
+    },
+    {
+      "id": "search-003",
+      "name": "High Report Count",
+      "description": "Users with 3+ reports filed against them",
+      "filters": {
+        "reportCountMin": 3
+      },
+      "createdById": "admin-002",
+      "createdByName": "Senior Admin",
+      "createdAt": "2024-12-01T09:00:00Z",
+      "isShared": true
+    },
+    {
+      "id": "search-004",
+      "name": "Recent Club Admins",
+      "description": "Users who became club admins in the last 30 days",
+      "filters": {
+        "roles": ["club_admin"],
+        "roleChangedWithin": "30_days"
+      },
+      "createdById": "admin-001",
+      "createdByName": "Platform Admin",
+      "createdAt": "2025-01-10T11:00:00Z",
+      "isShared": false
+    }
+  ]
+}
