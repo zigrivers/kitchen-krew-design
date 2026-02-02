@@ -16,13 +16,24 @@ import {
   ChevronRight,
   Settings,
   Monitor,
+  GitBranch,
+  Share2,
 } from 'lucide-react'
 import { CourtCard } from './CourtCard'
 import { MatchCard } from './MatchCard'
 import { StandingsTable } from './StandingsTable'
 import { MatchQueue } from './MatchQueue'
 import { EventProgressBar } from './EventProgressBar'
-import type { LivePlayProps, Match, Court } from '@/../product/sections/live-play/types'
+import { BracketView } from './BracketView'
+import type { LivePlayProps, Match, Court, BracketMatch } from '@/../product/sections/live-play/types'
+
+// =============================================================================
+// Helper Functions
+// =============================================================================
+
+function isTournamentFormat(format: string): boolean {
+  return ['single_elimination', 'double_elimination', 'pool_play'].includes(format)
+}
 
 // =============================================================================
 // Sub-Components
@@ -32,25 +43,32 @@ function EventHeader({
   event,
   isPaused,
   isGameManager,
+  isTournament,
+  currentRoundLabel,
   onPauseEvent,
   onResumeEvent,
   onEndEvent,
   onOpenCourtBoard,
+  onShareBracket,
 }: {
   event: LivePlayProps['event']
   isPaused: boolean
   isGameManager: boolean
+  isTournament: boolean
+  currentRoundLabel?: string
   onPauseEvent?: (reason: string) => void
   onResumeEvent?: () => void
   onEndEvent?: () => void
   onOpenCourtBoard?: () => void
+  onShareBracket?: () => void
 }) {
   const formatLabels: Record<string, string> = {
     round_robin: 'Round Robin',
     open_play: 'Open Play',
     king_of_court: 'King of Court',
-    single_elimination: 'Single Elim',
-    double_elimination: 'Double Elim',
+    single_elimination: 'Single Elimination',
+    double_elimination: 'Double Elimination',
+    pool_play: 'Pool Play',
     ladder: 'Ladder',
   }
 
@@ -82,13 +100,23 @@ function EventHeader({
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-lime-500/20 text-lime-300">
+                <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
+                  isTournament
+                    ? 'bg-gradient-to-r from-lime-500/20 to-sky-500/20 text-lime-300'
+                    : 'bg-lime-500/20 text-lime-300'
+                }`}>
+                  {isTournament && <Trophy className="w-3 h-3 inline mr-1" />}
                   {formatLabels[event.format]}
                 </span>
                 {event.status === 'in_progress' && !isPaused && (
                   <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-sky-500/20 text-sky-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
                     Live
+                  </span>
+                )}
+                {isTournament && currentRoundLabel && (
+                  <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-white/10 text-slate-300">
+                    {currentRoundLabel}
                   </span>
                 )}
               </div>
@@ -105,38 +133,52 @@ function EventHeader({
               </div>
             </div>
 
-            {/* GM Actions */}
-            {isGameManager && (
-              <div className="flex items-center gap-2">
-                {onOpenCourtBoard && (
-                  <button
-                    onClick={onOpenCourtBoard}
-                    className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
-                    title="Open Court Board"
-                  >
-                    <Monitor className="w-5 h-5" />
-                  </button>
-                )}
-                {!isPaused && onPauseEvent && (
-                  <button
-                    onClick={() => onPauseEvent('Break')}
-                    className="px-3 py-2 rounded-lg text-sm font-medium bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition-colors flex items-center gap-2"
-                  >
-                    <Pause className="w-4 h-4" />
-                    Pause
-                  </button>
-                )}
-                {onEndEvent && (
-                  <button
-                    onClick={onEndEvent}
-                    className="px-3 py-2 rounded-lg text-sm font-medium bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors flex items-center gap-2"
-                  >
-                    <Square className="w-4 h-4" />
-                    End
-                  </button>
-                )}
-              </div>
-            )}
+            {/* Actions */}
+            <div className="flex items-center gap-2">
+              {/* Share Bracket (for tournaments) */}
+              {isTournament && onShareBracket && (
+                <button
+                  onClick={onShareBracket}
+                  className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                  title="Share Bracket"
+                >
+                  <Share2 className="w-5 h-5" />
+                </button>
+              )}
+
+              {/* GM Actions */}
+              {isGameManager && (
+                <>
+                  {onOpenCourtBoard && (
+                    <button
+                      onClick={onOpenCourtBoard}
+                      className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                      title="Open Court Board"
+                    >
+                      <Monitor className="w-5 h-5" />
+                    </button>
+                  )}
+                  {!isPaused && onPauseEvent && (
+                    <button
+                      onClick={() => onPauseEvent('Break')}
+                      className="px-3 py-2 rounded-lg text-sm font-medium bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 transition-colors flex items-center gap-2"
+                    >
+                      <Pause className="w-4 h-4" />
+                      Pause
+                    </button>
+                  )}
+                  {onEndEvent && (
+                    <button
+                      onClick={onEndEvent}
+                      className="px-3 py-2 rounded-lg text-sm font-medium bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors flex items-center gap-2"
+                    >
+                      <Square className="w-4 h-4" />
+                      End
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
 
           {/* Scoring Info */}
@@ -166,11 +208,13 @@ function EventHeader({
 function YourMatchAlert({
   match,
   court,
+  bracketMatch,
   onCheckIn,
   onViewMatch,
 }: {
   match: Match
   court: Court | null
+  bracketMatch?: BracketMatch | null
   onCheckIn?: () => void
   onViewMatch?: () => void
 }) {
@@ -218,6 +262,19 @@ function YourMatchAlert({
             </p>
 
             <div className="flex flex-wrap items-center gap-3 mt-3">
+              {/* Bracket round indicator */}
+              {bracketMatch && (
+                <span
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
+                    isCalling
+                      ? 'bg-amber-200/50 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200'
+                      : 'bg-lime-200/50 dark:bg-lime-900/50 text-lime-800 dark:text-lime-200'
+                  }`}
+                >
+                  <Trophy className="w-4 h-4" />
+                  {bracketMatch.roundLabel}
+                </span>
+              )}
               {court && (
                 <span
                   className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${
@@ -268,12 +325,14 @@ function TabButton({
   icon: Icon,
   label,
   count,
+  highlight,
   onClick,
 }: {
   active: boolean
   icon: React.ElementType
   label: string
   count?: number
+  highlight?: boolean
   onClick: () => void
 }) {
   return (
@@ -281,7 +340,9 @@ function TabButton({
       onClick={onClick}
       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
         active
-          ? 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400'
+          ? highlight
+            ? 'bg-gradient-to-r from-lime-100 to-sky-100 dark:from-lime-900/30 dark:to-sky-900/30 text-lime-700 dark:text-lime-400'
+            : 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400'
           : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
       }`}
     >
@@ -317,6 +378,14 @@ export function LivePlay({
   standings,
   scoreDisputes,
   completedMatches,
+  // Tournament-specific
+  tournament,
+  seeds,
+  bracket,
+  bracketMatches,
+  completedBracketMatches,
+  tournamentResults,
+  // Callbacks
   onCourtCheckIn,
   onSubmitScore,
   onConfirmScore,
@@ -334,8 +403,15 @@ export function LivePlay({
   onViewPlayer,
   onViewMatch,
   onOpenCourtBoard,
+  onViewBracket,
+  onShareBracket,
 }: LivePlayProps) {
-  const [activeTab, setActiveTab] = useState<'courts' | 'standings' | 'queue' | 'history'>('courts')
+  const isTournament = isTournamentFormat(event.format)
+
+  // Default to bracket tab for tournaments, courts for other formats
+  const [activeTab, setActiveTab] = useState<'courts' | 'bracket' | 'standings' | 'queue' | 'history'>(
+    isTournament && bracket ? 'bracket' : 'courts'
+  )
 
   const isGameManager = currentUser.isGameManager
 
@@ -350,6 +426,11 @@ export function LivePlay({
     ? courts.find((c) => c.id === currentMatch.courtId)
     : null
 
+  // Find bracket match for current match
+  const currentBracketMatch = currentMatch?.bracketMatchId && bracketMatches
+    ? bracketMatches.find((bm) => bm.id === currentMatch.bracketMatchId)
+    : null
+
   // Get match for each court
   const getMatchForCourt = (courtId: string) => {
     return matches.find((m) => m.courtId === courtId && (m.status === 'calling' || m.status === 'in_progress'))
@@ -358,6 +439,9 @@ export function LivePlay({
   // Pending disputes count
   const pendingDisputes = scoreDisputes.filter((d) => d.status === 'pending').length
 
+  // In-progress bracket matches count
+  const inProgressBracketMatches = bracketMatches?.filter((m) => m.status === 'in_progress').length || 0
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       {/* Event Header */}
@@ -365,10 +449,13 @@ export function LivePlay({
         event={event}
         isPaused={event.isPaused}
         isGameManager={isGameManager}
+        isTournament={isTournament}
+        currentRoundLabel={eventProgress.currentRoundLabel}
         onPauseEvent={onPauseEvent}
         onResumeEvent={onResumeEvent}
         onEndEvent={onEndEvent}
         onOpenCourtBoard={onOpenCourtBoard}
+        onShareBracket={onShareBracket}
       />
 
       {/* Main Content */}
@@ -382,6 +469,7 @@ export function LivePlay({
             <YourMatchAlert
               match={currentMatch}
               court={currentMatchCourt ?? null}
+              bracketMatch={currentBracketMatch}
               onCheckIn={currentMatch.status === 'calling' ? () => onCourtCheckIn?.(currentMatch.id) : undefined}
               onViewMatch={() => onViewMatch?.(currentMatch.id)}
             />
@@ -406,6 +494,17 @@ export function LivePlay({
 
           {/* Tab Navigation */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+            {/* Bracket tab (only for tournaments) */}
+            {isTournament && bracket && (
+              <TabButton
+                active={activeTab === 'bracket'}
+                icon={GitBranch}
+                label="Bracket"
+                count={inProgressBracketMatches}
+                highlight={true}
+                onClick={() => setActiveTab('bracket')}
+              />
+            )}
             <TabButton
               active={activeTab === 'courts'}
               icon={LayoutGrid}
@@ -413,29 +512,64 @@ export function LivePlay({
               count={courts.filter((c) => c.status === 'in_progress').length}
               onClick={() => setActiveTab('courts')}
             />
-            <TabButton
-              active={activeTab === 'standings'}
-              icon={Trophy}
-              label="Standings"
-              onClick={() => setActiveTab('standings')}
-            />
-            <TabButton
-              active={activeTab === 'queue'}
-              icon={Clock}
-              label="Queue"
-              count={matchQueue.length}
-              onClick={() => setActiveTab('queue')}
-            />
+            {!isTournament && (
+              <TabButton
+                active={activeTab === 'standings'}
+                icon={Trophy}
+                label="Standings"
+                onClick={() => setActiveTab('standings')}
+              />
+            )}
+            {!isTournament && matchQueue.length > 0 && (
+              <TabButton
+                active={activeTab === 'queue'}
+                icon={Clock}
+                label="Queue"
+                count={matchQueue.length}
+                onClick={() => setActiveTab('queue')}
+              />
+            )}
             <TabButton
               active={activeTab === 'history'}
               icon={List}
               label="History"
-              count={completedMatches.length}
+              count={isTournament ? completedBracketMatches?.length : completedMatches.length}
               onClick={() => setActiveTab('history')}
             />
           </div>
 
           {/* Tab Content */}
+          {activeTab === 'bracket' && bracket && bracketMatches && (
+            <BracketView
+              bracket={bracket}
+              bracketMatches={bracketMatches}
+              currentUserId={currentUser.id}
+              isGameManager={isGameManager}
+              eventProgress={eventProgress}
+              tournament={tournament}
+              onViewMatch={(bracketMatchId) => {
+                const bm = bracketMatches.find((m) => m.id === bracketMatchId)
+                if (bm?.matchId) {
+                  onViewMatch?.(bm.matchId)
+                }
+              }}
+              onStartMatch={(bracketMatchId) => {
+                const bm = bracketMatches.find((m) => m.id === bracketMatchId)
+                if (bm?.matchId) {
+                  onStartMatch?.(bm.matchId)
+                }
+              }}
+              onEnterScore={(bracketMatchId) => {
+                const bm = bracketMatches.find((m) => m.id === bracketMatchId)
+                if (bm?.matchId) {
+                  // Would trigger score entry modal
+                  console.log('Enter score for:', bm.matchId)
+                }
+              }}
+              onShareBracket={onShareBracket}
+            />
+          )}
+
           {activeTab === 'courts' && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {courts.map((court) => (
@@ -465,7 +599,7 @@ export function LivePlay({
             </div>
           )}
 
-          {activeTab === 'standings' && (
+          {activeTab === 'standings' && !isTournament && (
             <StandingsTable
               standings={standings}
               currentUserId={currentUser.id}
@@ -473,7 +607,7 @@ export function LivePlay({
             />
           )}
 
-          {activeTab === 'queue' && (
+          {activeTab === 'queue' && !isTournament && (
             <MatchQueue
               queue={matchQueue}
               isGameManager={isGameManager}
@@ -489,12 +623,71 @@ export function LivePlay({
                   <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800">
                     <List className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                   </div>
-                  <h3 className="font-semibold text-slate-900 dark:text-white">Completed Matches</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-white">
+                    {isTournament ? 'Completed Bracket Matches' : 'Completed Matches'}
+                  </h3>
                 </div>
               </div>
 
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
-                {completedMatches.map((match) => (
+                {/* Tournament history */}
+                {isTournament && completedBracketMatches && completedBracketMatches.map((match) => (
+                  <div
+                    key={match.id}
+                    className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
+                    onClick={() => onViewMatch?.(match.id)}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 rounded text-xs font-medium bg-lime-100 dark:bg-lime-900/50 text-lime-700 dark:text-lime-400">
+                            {match.round}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <span
+                            className={`font-medium ${
+                              match.winner === match.team1Name
+                                ? 'text-lime-700 dark:text-lime-400'
+                                : 'text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            {match.team1Name}
+                          </span>
+                          <span className="text-slate-400">vs</span>
+                          <span
+                            className={`font-medium ${
+                              match.winner === match.team2Name
+                                ? 'text-lime-700 dark:text-lime-400'
+                                : 'text-slate-700 dark:text-slate-300'
+                            }`}
+                          >
+                            {match.team2Name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                          <span>{match.court}</span>
+                          <span>·</span>
+                          <span>
+                            {new Date(match.completedAt).toLocaleTimeString('en-US', {
+                              hour: 'numeric',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg font-bold text-slate-900 dark:text-white tabular-nums">
+                          {match.score}
+                        </span>
+                        <ChevronRight className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Non-tournament history */}
+                {!isTournament && completedMatches.map((match) => (
                   <div
                     key={match.id}
                     className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
@@ -545,7 +738,8 @@ export function LivePlay({
                 ))}
               </div>
 
-              {completedMatches.length === 0 && (
+              {((isTournament && (!completedBracketMatches || completedBracketMatches.length === 0)) ||
+                (!isTournament && completedMatches.length === 0)) && (
                 <div className="py-8 text-center">
                   <List className="w-8 h-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
                   <p className="text-sm text-slate-500 dark:text-slate-400">
