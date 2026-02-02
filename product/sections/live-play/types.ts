@@ -1,18 +1,20 @@
 // =============================================================================
-// Data Types
+// Data Types - Core
 // =============================================================================
 
 /** Simplified player reference used in matches and queues */
 export interface MatchPlayer {
   id: string
   name: string
-  skillRating: number
+  skillRating?: number
 }
 
 /** A team in a match (2 players for doubles) */
 export interface Team {
   players: MatchPlayer[]
-  score: number
+  score?: number
+  gamesWon?: number
+  currentGameScore?: number
   checkedIn: boolean[]
 }
 
@@ -54,7 +56,7 @@ export interface OrganizerReference {
 export interface LiveEvent {
   id: string
   name: string
-  format: 'round_robin' | 'open_play' | 'king_of_court' | 'single_elimination' | 'double_elimination' | 'ladder'
+  format: 'round_robin' | 'open_play' | 'king_of_court' | 'single_elimination' | 'double_elimination' | 'pool_play' | 'ladder'
   status: 'scheduled' | 'in_progress' | 'paused' | 'completed'
   isPaused: boolean
   pauseReason: string | null
@@ -74,6 +76,7 @@ export interface EventProgress {
   remainingMatches: number
   currentRound: number
   totalRounds: number
+  currentRoundLabel?: string
   elapsedMinutes: number
   estimatedRemainingMinutes: number
 }
@@ -95,14 +98,24 @@ export interface Court {
   attributes: CourtAttributes
 }
 
+/** Game score for a single game in a match */
+export interface GameScore {
+  team1: number
+  team2: number
+}
+
 /** An individual match/game */
 export interface Match {
   id: string
+  bracketMatchId?: string
   courtId: string | null
-  status: 'scheduled' | 'calling' | 'in_progress' | 'completed' | 'cancelled'
+  status: 'scheduled' | 'calling' | 'in_progress' | 'completed' | 'cancelled' | 'forfeit'
   round: number
+  roundLabel?: string
   team1: Team
   team2: Team
+  gameScores?: GameScore[]
+  gamesPerMatch?: number
   winner: 'team1' | 'team2' | null
   startedAt: string | null
   completedAt: string | null
@@ -127,9 +140,12 @@ export interface EventPlayer {
   skillRating: number
   checkedIn: boolean
   currentMatchId: string | null
-  wins: number
-  losses: number
+  wins?: number
+  losses?: number
   isOrganizer?: boolean
+  seed?: number
+  eliminated?: boolean
+  placement?: string
 }
 
 /** A player's standing in the leaderboard */
@@ -181,6 +197,262 @@ export interface CurrentUser {
   currentMatchId: string | null
   nextMatchId: string | null
   checkedInAt: string | null
+  seed?: number
+  bracketPosition?: string
+}
+
+// =============================================================================
+// Data Types - Tournament
+// =============================================================================
+
+/** Match format configuration for a round */
+export interface MatchFormat {
+  gamesPerMatch: 1 | 3 | 5
+  label: string
+}
+
+/** Match format configuration by round name */
+export interface MatchFormatByRound {
+  [roundName: string]: MatchFormat
+}
+
+/** Multi-day tournament configuration */
+export interface MultiDayConfig {
+  startDate: string
+  endDate: string
+  currentDay: number
+  totalDays: number
+  sessions: {
+    day: number
+    date: string
+    startTime: string
+    endTime: string
+    phases: string[]
+  }[]
+}
+
+/** Tournament-specific configuration */
+export interface Tournament {
+  id: string
+  eventId: string
+  bracketType: 'single_elimination' | 'double_elimination' | 'pool_play' | 'ladder'
+  bracketSize: 4 | 8 | 16 | 32 | 64
+  seedingMethod: 'random' | 'skill_based' | 'manual'
+  seedingLocked: boolean
+  seedingLockedAt: string | null
+  matchFormatByRound: MatchFormatByRound
+  consolationBracket: boolean
+  thirdPlaceMatch: boolean
+  grandFinalsReset: boolean
+  multiDay: MultiDayConfig | null
+  shareableLink: string | null
+  isPublic: boolean
+}
+
+/** A seeded entry in the tournament */
+export interface Seed {
+  seed: number
+  teamId: string
+  players: MatchPlayer[]
+  combinedRating: number
+  isBye: boolean
+}
+
+/** Round information in a bracket */
+export interface BracketRound {
+  roundNumber: number
+  label: string
+  matchFormat: MatchFormat
+  scheduledTime: string
+  status: 'upcoming' | 'in_progress' | 'completed'
+}
+
+/** The bracket structure */
+export interface Bracket {
+  id: string
+  tournamentId: string
+  type: 'winners' | 'losers' | 'consolation'
+  rounds: BracketRound[]
+}
+
+/** A team in a bracket match */
+export interface BracketTeam {
+  teamId: string
+  seed: number
+  players: MatchPlayer[]
+  displayName: string
+}
+
+/** A match within a bracket */
+export interface BracketMatch {
+  id: string
+  bracketId: string
+  roundNumber: number
+  roundLabel: string
+  position: number
+  matchId: string | null
+  seed1: number | null
+  seed2: number | null
+  team1: BracketTeam | null
+  team2: BracketTeam | null
+  scores: GameScore[]
+  winner: 'team1' | 'team2' | null
+  status: 'upcoming' | 'calling' | 'in_progress' | 'completed' | 'bye' | 'forfeit'
+  courtId: string | null
+  scheduledTime: string
+  startedAt: string | null
+  completedAt: string | null
+  winnerAdvancesTo: string | null
+  loserAdvancesTo: string | null
+  awaitingWinnerFrom?: string[]
+  awaitingLoserFrom?: string[]
+}
+
+/** Simplified completed bracket match for history display */
+export interface CompletedBracketMatchSummary {
+  id: string
+  round: string
+  team1Name: string
+  team2Name: string
+  score: string
+  winner: string
+  court: string
+  completedAt: string
+}
+
+// =============================================================================
+// Data Types - Pool Play
+// =============================================================================
+
+/** A team's standing within a pool */
+export interface PoolStanding {
+  teamId: string
+  displayName: string
+  wins: number
+  losses: number
+  pointDiff: number
+  rank: number
+  advances: boolean
+}
+
+/** A pool in pool play format */
+export interface Pool {
+  id: string
+  name: string
+  teams: string[]
+  standings: PoolStanding[]
+  matches: string[]
+  status: 'upcoming' | 'in_progress' | 'completed'
+}
+
+/** Pool play advancement rules */
+export interface PoolAdvancementRules {
+  teamsPerPool: number
+  teamsAdvancing: number
+  tiebreakers: ('head_to_head' | 'point_differential' | 'points_scored')[]
+}
+
+/** Pool play configuration */
+export interface PoolPlayConfig {
+  pools: Pool[]
+  advancementRules: PoolAdvancementRules
+}
+
+// =============================================================================
+// Data Types - Ladder
+// =============================================================================
+
+/** Ladder tournament configuration */
+export interface Ladder {
+  id: string
+  name: string
+  status: 'upcoming' | 'in_progress' | 'completed'
+  startDate: string
+  endDate: string | null
+  challengeRange: number
+  challengeDeadlineHours: number
+  inactivityDropDays: number
+  schedulingMode: 'self_scheduled' | 'system_scheduled'
+}
+
+/** A team's position on the ladder */
+export interface LadderPosition {
+  position: number
+  teamId: string
+  displayName: string
+  rating: number
+  challengeable: boolean
+  lastActive: string
+  inactivityWarning?: boolean
+}
+
+/** A challenge between ladder positions */
+export interface LadderChallenge {
+  id: string
+  challengerId: string
+  challengerPosition: number
+  defenderId: string
+  defenderPosition: number
+  status: 'pending' | 'accepted' | 'declined' | 'expired' | 'completed'
+  createdAt: string
+  deadline: string
+  scheduledMatchTime: string | null
+  matchId: string | null
+}
+
+/** Ladder configuration with standings and challenges */
+export interface LadderConfig {
+  ladder: Ladder
+  standings: LadderPosition[]
+  challenges: LadderChallenge[]
+}
+
+// =============================================================================
+// Data Types - Tournament Results
+// =============================================================================
+
+/** Podium placement for tournament results */
+export interface PodiumPlacement {
+  place: 1 | 2 | 3
+  teamId: string
+  displayName: string
+  players: MatchPlayer[]
+  seed: number
+}
+
+/** Tournament statistics summary */
+export interface TournamentStats {
+  totalMatches: number
+  closestMatch: { matchId: string; margin: number; teams: string }
+  biggestUpset: { matchId: string; seedDiff: number; winner: string; loser: string } | null
+  highestScoringMatch: { matchId: string; totalPoints: number; teams: string }
+}
+
+/** Complete tournament results */
+export interface TournamentResults {
+  podium: PodiumPlacement[]
+  bracket: Bracket
+  bracketMatches: BracketMatch[]
+  stats: TournamentStats
+  championPath: string[]
+}
+
+// =============================================================================
+// Double Elimination Specific
+// =============================================================================
+
+/** Grand Finals configuration for double elimination */
+export interface GrandFinals {
+  id: string
+  requiresReset: boolean
+  resetMatch: BracketMatch | null
+}
+
+/** Double elimination bracket structure */
+export interface DoubleEliminationBracket {
+  winnersBracket: Bracket
+  losersBracket: Bracket
+  grandFinals: GrandFinals
 }
 
 // =============================================================================
@@ -202,12 +474,34 @@ export interface LivePlayProps {
   matchQueue: QueuedMatch[]
   /** All players in the event */
   players: EventPlayer[]
-  /** Current standings/leaderboard */
+  /** Current standings/leaderboard (for round robin/open play) */
   standings: Standing[]
   /** Active score disputes */
   scoreDisputes: ScoreDispute[]
   /** Completed match summaries */
   completedMatches: CompletedMatchSummary[]
+
+  // Tournament-specific data
+  /** Tournament configuration (for tournament formats) */
+  tournament?: Tournament
+  /** Seeded entries */
+  seeds?: Seed[]
+  /** Bracket structure */
+  bracket?: Bracket
+  /** All bracket matches */
+  bracketMatches?: BracketMatch[]
+  /** Completed bracket match summaries */
+  completedBracketMatches?: CompletedBracketMatchSummary[]
+  /** Tournament results (when completed) */
+  tournamentResults?: TournamentResults
+
+  // Pool play data
+  /** Pool play configuration */
+  poolPlay?: PoolPlayConfig
+
+  // Ladder data
+  /** Ladder configuration */
+  ladderConfig?: LadderConfig
 
   // Player actions
   /** Called when player checks in at their court */
@@ -241,6 +535,34 @@ export interface LivePlayProps {
   /** Called when GM ends the event */
   onEndEvent?: () => void
 
+  // Tournament GM actions
+  /** Called when GM updates seeding */
+  onUpdateSeeding?: (seeds: Seed[]) => void
+  /** Called when GM locks seeding */
+  onLockSeeding?: () => void
+  /** Called when GM advances a winner manually */
+  onManualAdvance?: (bracketMatchId: string, winner: 'team1' | 'team2', reason: string) => void
+  /** Called when GM undoes last advancement */
+  onUndoAdvancement?: (bracketMatchId: string) => void
+  /** Called when GM marks a forfeit */
+  onMarkForfeit?: (bracketMatchId: string, forfeitingTeam: 'team1' | 'team2') => void
+  /** Called when GM handles a withdrawal */
+  onHandleWithdrawal?: (teamId: string, action: 'forfeit_remaining' | 'promote_alternate') => void
+  /** Called when GM announces next round */
+  onAnnounceRound?: (roundNumber: number) => void
+  /** Called when GM schedules a match time */
+  onScheduleMatch?: (bracketMatchId: string, scheduledTime: string) => void
+
+  // Ladder actions
+  /** Called when player issues a challenge */
+  onIssueChallenge?: (defenderId: string) => void
+  /** Called when player accepts a challenge */
+  onAcceptChallenge?: (challengeId: string) => void
+  /** Called when player declines a challenge */
+  onDeclineChallenge?: (challengeId: string) => void
+  /** Called when GM handles inactivity drop */
+  onInactivityDrop?: (teamId: string) => void
+
   // Navigation
   /** Called when user wants to view a player's profile */
   onViewPlayer?: (playerId: string) => void
@@ -248,6 +570,10 @@ export interface LivePlayProps {
   onViewMatch?: (matchId: string) => void
   /** Called when user wants full-screen court board */
   onOpenCourtBoard?: () => void
+  /** Called when user wants to view bracket */
+  onViewBracket?: () => void
+  /** Called when user wants to share bracket */
+  onShareBracket?: () => void
 }
 
 // =============================================================================
@@ -276,7 +602,9 @@ export interface MatchCardProps {
 export interface ScoreEntryProps {
   match: Match
   isGameManager: boolean
+  gamesPerMatch?: number
   onSubmit?: (team1Score: number, team2Score: number) => void
+  onSubmitGame?: (gameNumber: number, team1Score: number, team2Score: number) => void
   onCancel?: () => void
 }
 
@@ -303,4 +631,64 @@ export interface CourtStatusBoardProps {
   matches: Match[]
   event: LiveEvent
   onClose?: () => void
+}
+
+// =============================================================================
+// Tournament Sub-component Props
+// =============================================================================
+
+export interface BracketViewProps {
+  bracket: Bracket
+  bracketMatches: BracketMatch[]
+  currentUserId?: string
+  isGameManager: boolean
+  onViewMatch?: (bracketMatchId: string) => void
+  onStartMatch?: (bracketMatchId: string) => void
+  onEnterScore?: (bracketMatchId: string) => void
+}
+
+export interface SeedingManagerProps {
+  seeds: Seed[]
+  seedingLocked: boolean
+  seedingMethod: 'random' | 'skill_based' | 'manual'
+  onUpdateSeeding?: (seeds: Seed[]) => void
+  onLockSeeding?: () => void
+  onRandomize?: () => void
+  onSortByRating?: () => void
+}
+
+export interface BracketMatchCardProps {
+  bracketMatch: BracketMatch
+  isCurrentUserMatch: boolean
+  isGameManager: boolean
+  onStartMatch?: () => void
+  onEnterScore?: () => void
+  onViewMatch?: () => void
+}
+
+export interface PoolStandingsProps {
+  pool: Pool
+  currentUserId?: string
+  onViewPlayer?: (playerId: string) => void
+}
+
+export interface LadderStandingsProps {
+  standings: LadderPosition[]
+  challenges: LadderChallenge[]
+  currentUserId?: string
+  challengeRange: number
+  onIssueChallenge?: (defenderId: string) => void
+  onViewPlayer?: (playerId: string) => void
+}
+
+export interface TournamentResultsProps {
+  results: TournamentResults
+  onViewBracket?: () => void
+  onShareResults?: () => void
+  onViewPlayer?: (playerId: string) => void
+}
+
+export interface PodiumDisplayProps {
+  podium: PodiumPlacement[]
+  onViewPlayer?: (playerId: string) => void
 }
