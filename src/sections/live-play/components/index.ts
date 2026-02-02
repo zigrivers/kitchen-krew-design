@@ -10,5 +10,8 @@ export { BracketView } from './BracketView'
 export { BracketMatchCard } from './BracketMatchCard'
 export { SeedingManager } from './SeedingManager'
 
+// Pool Play components
+export { PoolPlayView, PoolStandings } from './PoolStandings'
+
 // Display components
 export { CourtStatusBoard } from './CourtStatusBoard'
