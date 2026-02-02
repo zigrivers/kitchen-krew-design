@@ -12,9 +12,13 @@ export { SeedingManager } from './SeedingManager'
 
 // Pool Play components
 export { PoolPlayView, PoolStandings } from './PoolStandings'
+export { FullPoolPlayView } from './FullPoolPlayView'
 
 // Ladder components
 export { LadderView, LadderStandings } from './LadderStandings'
+
+// Results components
+export { TournamentResults } from './TournamentResults'
 
 // Display components
 export { CourtStatusBoard } from './CourtStatusBoard'
