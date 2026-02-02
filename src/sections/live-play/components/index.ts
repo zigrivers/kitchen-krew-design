@@ -9,3 +9,6 @@ export { EventProgressBar } from './EventProgressBar'
 export { BracketView } from './BracketView'
 export { BracketMatchCard } from './BracketMatchCard'
 export { SeedingManager } from './SeedingManager'
+
+// Display components
+export { CourtStatusBoard } from './CourtStatusBoard'
