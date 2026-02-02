@@ -8,3 +8,4 @@ export { EventProgressBar } from './EventProgressBar'
 // Tournament components
 export { BracketView } from './BracketView'
 export { BracketMatchCard } from './BracketMatchCard'
+export { SeedingManager } from './SeedingManager'
