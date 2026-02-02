@@ -13,5 +13,8 @@ export { SeedingManager } from './SeedingManager'
 // Pool Play components
 export { PoolPlayView, PoolStandings } from './PoolStandings'
 
+// Ladder components
+export { LadderView, LadderStandings } from './LadderStandings'
+
 // Display components
 export { CourtStatusBoard } from './CourtStatusBoard'
