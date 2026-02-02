@@ -1,54 +1,76 @@
-<img width="1280" height="640" alt="Design OS" src="https://github.com/user-attachments/assets/a9c04258-7b9a-45b6-8475-3431cdf5dbe9" />
+# KitchenKrew
 
-## The missing design process between your idea and your codebase.
+**A pickleball game management platform that makes organizing events effortless.**
 
-[Design OS](https://buildermethods.com/design-os) is a product planning and design tool that helps you define your product vision, structure your data model, design your UI, and export production-ready components for implementation. Rather than jumping straight into code, you work through a guided process that captures what you're building and why—then hands off everything your coding agent needs to build it right.
-
-## The Problem
-
-AI coding tools are incredible at building fast. But the results often miss the mark. You describe what you want, the agent builds *something*, but it's not what you envisioned. The UI looks generic. Features get half-implemented. You spend as much time fixing and redirecting as you would have spent building.
-
-**The core issue:** we're asking coding agents to figure out what to build *and* build it simultaneously. Design decisions get made on the fly, buried in code, impossible to adjust without starting over. There's no spec. No shared understanding. No source of truth for what "done" looks like.
-
-## The Design OS Process
-
-Design OS powers a guided design and architecture process. You + AI, working together through structured steps:
-
-1. **Product Planning** — Define your vision, break down your roadmap, and model your data
-2. **Design System** — Choose colors, typography, and design your application shell
-3. **Section Design** — For each feature area: specify requirements, generate sample data, and design the screens
-4. **Export** — Generate a complete handoff package for implementation
-
-Each step is a conversation. The AI asks questions, you provide direction, and together you shape a product that matches your vision—before any implementation begins.
+KitchenKrew gives game managers powerful tools for player rotation, court assignments, and match scheduling—while providing players complete visibility into their matches, partners, and performance. It supports all major game formats with an elegant, intuitive interface.
 
 ---
 
-## Documentation & Installation
+## What We're Building
 
-Docs, installation, usage, & best practices 👉 [It's all here](https://buildermethods.com/design-os)
+### The Problems We're Solving
+
+| Problem | Solution |
+|---------|----------|
+| **Manual game organization is tedious** | Automates player rotation, court assignments, and match scheduling across 11+ game formats |
+| **Score tracking is chaotic** | Centralized score entry with configurable permissions, confirmation workflows, and dispute resolution |
+| **Players don't know what's happening** | Real-time notifications, "you're up next" alerts, and live game status views |
+| **No way to track improvement** | Comprehensive stats: win/loss records, partner analysis, rating trends, and streaks |
+| **Skill mismatches ruin games** | DUPR integration, skill-based matching, and configurable assignment rules |
+
+### Key Features
+
+- **Multiple Game Formats** — Open Play, Round Robin, King of the Court, Challenge Court, Single/Double Elimination, Pool Play, Ladder, Singles
+- **Club & Venue Management** — Court tracking, availability, membership workflows, subscription tiers
+- **Event Creation** — Registration, waitlists, QR code check-in, recurring events
+- **Live Game Dashboard** — Real-time status, configurable score entry, rotation visibility
+- **Player Profiles** — Ratings, preferences, partner/opponent history, achievements
+- **Leaderboards** — Event, club, and global rankings with streak tracking
 
 ---
 
-## Support, Training & Community
+## Product Sections
 
-For official support, training, and community as you use Design OS—for yourself or with your team, consider joining _Builder Methods Pro_. You'll get access to Brian Casel (the creator) for questions, a community of builders using Design OS, plus all Builder Methods workshops and training on AI-first development.
-
-👉 [Join Builder Methods Pro](https://buildermethods.com/pro)
-
----
-
-## Follow updates & releases
-
-Read the [changelog](CHANGELOG.md)
-
-[Subscribe to be notified of major new releases of Design OS](https://buildermethods.com/design-os)
+| Section | Description |
+|---------|-------------|
+| **Players** | User accounts, profiles, skill ratings, playing preferences, and achievement badges |
+| **Clubs & Venues** | Organization management, venue details, court configuration, and membership workflows |
+| **Events** | Event creation, game format selection, registration, waitlists, and check-in processes |
+| **Live Play** | Real-time game execution with court assignments, player rotations, and score entry |
+| **Stats & Leaderboards** | Player statistics, match history, partner/opponent records, and ranking systems |
 
 ---
 
-## Created by Brian Casel @ Builder Methods
+## About This Repository
 
-Created by Brian Casel, the creator of [Builder Methods](https://buildermethods.com), where Brian helps professional software developers and teams build with AI.
+This is a **design repository** built with [Design OS](https://buildermethods.com/design-os). It contains:
 
-Get Brian's free resources on building with AI:
-- [Builder Briefing newsletter](https://buildermethods.com)
-- [YouTube](https://youtube.com/@briancasel)
+- **Product specs** — Requirements and user flows for each section
+- **Data models** — TypeScript types and sample data
+- **Screen designs** — React components for UI preview
+- **Export packages** — Ready-to-implement handoff documentation
+
+The actual KitchenKrew application will be implemented in a separate codebase using the exports from this design repository.
+
+### Repository Structure
+
+```
+product/                    # Product definition files
+├── product-overview.md     # Vision, problems, features
+├── product-roadmap.md      # Section breakdown
+├── data-model/             # Entity relationships
+├── design-system/          # Colors, typography tokens
+├── shell/                  # Navigation spec
+└── sections/               # Per-section specs, types, data
+
+src/sections/               # Screen design components
+src/shell/                  # Shell preview components
+
+product-plan/               # Export package for implementation
+```
+
+---
+
+## Built With Design OS
+
+This product design was created using [Design OS](https://buildermethods.com/design-os) by [Builder Methods](https://buildermethods.com).
