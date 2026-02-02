@@ -3,6 +3,8 @@ import { Menu, X } from 'lucide-react'
 import { MainNav } from './MainNav'
 import { UserMenu } from './UserMenu'
 
+export type UserRole = 'user' | 'super_admin'
+
 export interface NavigationItem {
   label: string
   href: string
@@ -13,9 +15,11 @@ export interface NavigationItem {
 export interface AppShellProps {
   children: React.ReactNode
   navigationItems: NavigationItem[]
+  adminNavigationItems?: NavigationItem[]
   user?: {
     name: string
     avatarUrl?: string
+    role?: UserRole
   }
   onNavigate?: (href: string) => void
   onLogout?: () => void
@@ -24,11 +28,13 @@ export interface AppShellProps {
 export function AppShell({
   children,
   navigationItems,
+  adminNavigationItems,
   user,
   onNavigate,
   onLogout,
 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const isSuperAdmin = user?.role === 'super_admin'
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-[Outfit]">
@@ -93,6 +99,28 @@ export function AppShell({
                 setSidebarOpen(false)
               }}
             />
+
+            {/* Admin Navigation - Super Admins Only */}
+            {isSuperAdmin && adminNavigationItems && adminNavigationItems.length > 0 && (
+              <div className="mt-6">
+                <div className="px-4 mb-2">
+                  <div className="border-t border-slate-200 dark:border-slate-700" />
+                </div>
+                <div className="px-4 mb-2">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Admin
+                  </span>
+                </div>
+                <MainNav
+                  items={adminNavigationItems}
+                  onNavigate={(href) => {
+                    onNavigate?.(href)
+                    setSidebarOpen(false)
+                  }}
+                  variant="admin"
+                />
+              </div>
+            )}
           </nav>
 
           {/* User menu */}
