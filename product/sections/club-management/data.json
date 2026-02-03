@@ -1,0 +1,1159 @@
+{
+  "_meta": {
+    "models": {
+      "adminClubs": "Clubs as seen by Super Admins, with extended metrics like activity scores, flags, and suspension status.",
+      "nonProfitApplications": "Pending applications from organizations requesting the free Community Impact tier (501(c)(3), Parks & Rec, etc.).",
+      "subscriptionOverrides": "Manual tier overrides granted by Super Admins for partnerships, contests, or goodwill gestures.",
+      "ownershipDisputes": "Conflicts over club or venue ownership between multiple parties, requiring Super Admin resolution.",
+      "platformEscalations": "Users escalated by Club Admins for serious misconduct that may warrant platform-wide action.",
+      "suspiciousActivityAlerts": "Automated fraud detection alerts for rapid club creation, spam, or suspicious patterns.",
+      "rateLimitConfig": "Platform-wide settings for maximum clubs/venues per user and account age requirements.",
+      "rateLimitExceptions": "Per-user exceptions to rate limits for legitimate power users.",
+      "adminNotes": "Internal notes added by Super Admins to clubs or users for tracking and context.",
+      "auditLog": "Immutable record of all administrative actions for compliance and accountability.",
+      "adminUsers": "Super Admin users who can access this dashboard."
+    },
+    "relationships": [
+      "Each AdminClub links to the owner Player and tracks admin-specific metrics",
+      "NonProfitApplications are submitted by clubs requesting Community Impact tier",
+      "SubscriptionOverrides are applied to specific clubs by Super Admins",
+      "OwnershipDisputes involve two parties (claimant and current owner) for a club or venue",
+      "PlatformEscalations are submitted by Club Admins about specific users",
+      "SuspiciousActivityAlerts reference the user or club exhibiting suspicious behavior",
+      "AuditLog entries reference the admin who took action and the target entity"
+    ]
+  },
+
+  "adminUsers": [
+    {
+      "id": "admin-001",
+      "name": "Alex Rivera",
+      "email": "alex.rivera@kitchenkrew.com",
+      "role": "super_admin",
+      "photoUrl": "/avatars/alex-admin.jpg",
+      "lastActiveAt": "2025-02-02T14:30:00Z"
+    },
+    {
+      "id": "admin-002",
+      "name": "Jordan Kim",
+      "email": "jordan.kim@kitchenkrew.com",
+      "role": "super_admin",
+      "photoUrl": "/avatars/jordan-admin.jpg",
+      "lastActiveAt": "2025-02-02T10:15:00Z"
+    }
+  ],
+
+  "adminClubs": [
+    {
+      "id": "club-001",
+      "name": "Austin Pickleball Club",
+      "slug": "austin-pickleball-club",
+      "ownerName": "Marcus Chen",
+      "ownerEmail": "marcus.chen@email.com",
+      "ownerId": "player-001",
+      "location": { "city": "Austin", "state": "TX" },
+      "tier": "pro",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 247,
+      "eventCount": 156,
+      "eventsThisMonth": 18,
+      "revenueThisMonth": 1840.00,
+      "activityScore": 94,
+      "flags": [],
+      "createdAt": "2023-03-15T10:00:00Z",
+      "lastActivityAt": "2025-02-02T19:30:00Z"
+    },
+    {
+      "id": "club-002",
+      "name": "Hill Country Elite",
+      "slug": "hill-country-elite",
+      "ownerName": "David Park",
+      "ownerEmail": "dpark@email.com",
+      "ownerId": "player-003",
+      "location": { "city": "Lakeway", "state": "TX" },
+      "tier": "elite",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 64,
+      "eventCount": 89,
+      "eventsThisMonth": 12,
+      "revenueThisMonth": 2450.00,
+      "activityScore": 88,
+      "flags": [],
+      "createdAt": "2023-08-22T14:30:00Z",
+      "lastActivityAt": "2025-02-01T20:00:00Z"
+    },
+    {
+      "id": "club-003",
+      "name": "Cedar Park Recreation Pickleball",
+      "slug": "cedar-park-rec-pb",
+      "ownerName": "Jennifer Williams",
+      "ownerEmail": "jen.williams@cedarparktx.gov",
+      "ownerId": "player-004",
+      "location": { "city": "Cedar Park", "state": "TX" },
+      "tier": "community_impact",
+      "tierSource": "approved_nonprofit",
+      "status": "active",
+      "memberCount": 412,
+      "eventCount": 203,
+      "eventsThisMonth": 15,
+      "revenueThisMonth": 0,
+      "activityScore": 97,
+      "flags": [],
+      "createdAt": "2022-06-01T09:00:00Z",
+      "lastActivityAt": "2025-02-02T12:00:00Z",
+      "nonProfitVerifiedAt": "2022-06-05T14:00:00Z",
+      "nonProfitReVerifyDate": "2025-06-05"
+    },
+    {
+      "id": "club-004",
+      "name": "Suspicious Pickleball Network",
+      "slug": "suspicious-pb-network",
+      "ownerName": "John Smith",
+      "ownerEmail": "johnsmith12345@tempmail.com",
+      "ownerId": "player-099",
+      "location": { "city": "Houston", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "suspended",
+      "suspendedAt": "2025-01-28T09:00:00Z",
+      "suspendedReason": "Suspected spam/fraud - rapid club creation pattern",
+      "suspendedById": "admin-001",
+      "memberCount": 3,
+      "eventCount": 0,
+      "eventsThisMonth": 0,
+      "revenueThisMonth": 0,
+      "activityScore": 5,
+      "flags": ["rapid_creation", "temp_email", "no_events"],
+      "createdAt": "2025-01-27T23:45:00Z",
+      "lastActivityAt": "2025-01-28T01:30:00Z"
+    },
+    {
+      "id": "club-005",
+      "name": "Dallas Dink Dynasty",
+      "slug": "dallas-dink-dynasty",
+      "ownerName": "Sarah Mitchell",
+      "ownerEmail": "sarah.m@email.com",
+      "ownerId": "player-002",
+      "location": { "city": "Dallas", "state": "TX" },
+      "tier": "pro",
+      "tierSource": "override",
+      "status": "active",
+      "memberCount": 156,
+      "eventCount": 78,
+      "eventsThisMonth": 8,
+      "revenueThisMonth": 920.00,
+      "activityScore": 72,
+      "flags": [],
+      "createdAt": "2024-01-10T11:00:00Z",
+      "lastActivityAt": "2025-01-31T18:00:00Z"
+    },
+    {
+      "id": "club-006",
+      "name": "San Antonio Smashers",
+      "slug": "sa-smashers",
+      "ownerName": "Robert Thompson",
+      "ownerEmail": "rob.t@email.com",
+      "ownerId": "player-005",
+      "location": { "city": "San Antonio", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 89,
+      "eventCount": 34,
+      "eventsThisMonth": 6,
+      "revenueThisMonth": 180.00,
+      "activityScore": 61,
+      "flags": ["approaching_event_limit"],
+      "createdAt": "2024-05-20T14:00:00Z",
+      "lastActivityAt": "2025-02-01T16:30:00Z"
+    },
+    {
+      "id": "club-007",
+      "name": "Pflugerville Pickleball Society",
+      "slug": "pflugerville-pb",
+      "ownerName": "Lisa Garcia",
+      "ownerEmail": "lisa.garcia@email.com",
+      "ownerId": "player-006",
+      "location": { "city": "Pflugerville", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "under_review",
+      "reviewReason": "Ownership dispute filed",
+      "memberCount": 67,
+      "eventCount": 28,
+      "eventsThisMonth": 4,
+      "revenueThisMonth": 120.00,
+      "activityScore": 58,
+      "flags": ["ownership_dispute"],
+      "createdAt": "2024-03-15T10:00:00Z",
+      "lastActivityAt": "2025-01-30T14:00:00Z"
+    },
+    {
+      "id": "club-008",
+      "name": "Houston Heights Pickleball",
+      "slug": "houston-heights-pb",
+      "ownerName": "Michael Brown",
+      "ownerEmail": "mbrown@email.com",
+      "ownerId": "player-007",
+      "location": { "city": "Houston", "state": "TX" },
+      "tier": "pro",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 198,
+      "eventCount": 112,
+      "eventsThisMonth": 14,
+      "revenueThisMonth": 1560.00,
+      "activityScore": 85,
+      "flags": [],
+      "createdAt": "2023-11-08T09:00:00Z",
+      "lastActivityAt": "2025-02-02T11:00:00Z"
+    },
+    {
+      "id": "club-009",
+      "name": "Fort Worth Paddle Club",
+      "slug": "fw-paddle-club",
+      "ownerName": "Amanda Foster",
+      "ownerEmail": "amanda.f@email.com",
+      "ownerId": "player-008",
+      "location": { "city": "Fort Worth", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 45,
+      "eventCount": 18,
+      "eventsThisMonth": 3,
+      "revenueThisMonth": 60.00,
+      "activityScore": 42,
+      "flags": ["low_activity"],
+      "createdAt": "2024-08-12T15:00:00Z",
+      "lastActivityAt": "2025-01-25T10:00:00Z"
+    },
+    {
+      "id": "club-010",
+      "name": "Corpus Christi Coastal Pickleball",
+      "slug": "cc-coastal-pb",
+      "ownerName": "Kevin Nguyen",
+      "ownerEmail": "knguyen@email.com",
+      "ownerId": "player-009",
+      "location": { "city": "Corpus Christi", "state": "TX" },
+      "tier": "elite",
+      "tierSource": "override",
+      "status": "active",
+      "memberCount": 134,
+      "eventCount": 67,
+      "eventsThisMonth": 10,
+      "revenueThisMonth": 1890.00,
+      "activityScore": 79,
+      "flags": [],
+      "createdAt": "2024-02-28T11:00:00Z",
+      "lastActivityAt": "2025-02-01T19:00:00Z"
+    },
+    {
+      "id": "club-011",
+      "name": "El Paso Desert Dinkers",
+      "slug": "ep-desert-dinkers",
+      "ownerName": "Rachel Martinez",
+      "ownerEmail": "rachel.m@email.com",
+      "ownerId": "player-010",
+      "location": { "city": "El Paso", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "active",
+      "memberCount": 78,
+      "eventCount": 31,
+      "eventsThisMonth": 5,
+      "revenueThisMonth": 140.00,
+      "activityScore": 55,
+      "flags": [],
+      "createdAt": "2024-06-01T08:00:00Z",
+      "lastActivityAt": "2025-01-29T17:00:00Z"
+    },
+    {
+      "id": "club-012",
+      "name": "Abandoned Test Club",
+      "slug": "abandoned-test",
+      "ownerName": "Unknown User",
+      "ownerEmail": "deleted-user@email.com",
+      "ownerId": "player-deleted",
+      "location": { "city": "Austin", "state": "TX" },
+      "tier": "free",
+      "tierSource": "subscription",
+      "status": "flagged",
+      "flaggedReason": "Owner account deleted, club has no admins",
+      "memberCount": 12,
+      "eventCount": 2,
+      "eventsThisMonth": 0,
+      "revenueThisMonth": 0,
+      "activityScore": 0,
+      "flags": ["no_admin", "inactive_90_days", "orphaned"],
+      "createdAt": "2024-04-01T10:00:00Z",
+      "lastActivityAt": "2024-07-15T14:00:00Z"
+    }
+  ],
+
+  "nonProfitApplications": [
+    {
+      "id": "npa-001",
+      "clubId": "club-pending-001",
+      "clubName": "Round Rock YMCA Pickleball",
+      "organizationType": "ymca",
+      "organizationName": "YMCA of Greater Williamson County",
+      "applicantName": "Tom Henderson",
+      "applicantEmail": "thenderson@ymcagwc.org",
+      "applicantPhone": "(512) 555-0234",
+      "emailDomain": "ymcagwc.org",
+      "ein": "74-1234567",
+      "submittedDocuments": ["501c3_letter.pdf", "org_certificate.pdf"],
+      "status": "pending",
+      "submittedAt": "2025-01-28T14:00:00Z",
+      "notes": []
+    },
+    {
+      "id": "npa-002",
+      "clubId": "club-pending-002",
+      "clubName": "Georgetown Parks & Rec Pickleball",
+      "organizationType": "parks_rec",
+      "organizationName": "City of Georgetown Parks Department",
+      "applicantName": "Michelle Torres",
+      "applicantEmail": "mtorres@georgetown.gov",
+      "applicantPhone": "(512) 555-0456",
+      "emailDomain": "georgetown.gov",
+      "ein": null,
+      "submittedDocuments": [],
+      "status": "pending",
+      "submittedAt": "2025-01-30T09:00:00Z",
+      "notes": [],
+      "autoApprovalEligible": true,
+      "autoApprovalReason": ".gov email domain verified"
+    },
+    {
+      "id": "npa-003",
+      "clubId": "club-pending-003",
+      "clubName": "Seniors Active Living Pickleball",
+      "organizationType": "501c3",
+      "organizationName": "Seniors Active Living Foundation",
+      "applicantName": "Barbara Wilson",
+      "applicantEmail": "bwilson@seniorsalf.org",
+      "applicantPhone": "(512) 555-0789",
+      "emailDomain": "seniorsalf.org",
+      "ein": "81-9876543",
+      "submittedDocuments": ["irs_determination_letter.pdf"],
+      "status": "needs_info",
+      "submittedAt": "2025-01-20T11:00:00Z",
+      "reviewedAt": "2025-01-22T15:00:00Z",
+      "reviewedById": "admin-001",
+      "notes": [
+        {
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "IRS letter is from 2018. Requested current year verification from TechSoup or updated IRS documentation.",
+          "createdAt": "2025-01-22T15:00:00Z"
+        }
+      ],
+      "requestedInfo": "Please provide current TechSoup validation or IRS letter dated within last 3 years."
+    },
+    {
+      "id": "npa-004",
+      "clubId": "club-003",
+      "clubName": "Cedar Park Recreation Pickleball",
+      "organizationType": "parks_rec",
+      "organizationName": "City of Cedar Park Parks & Recreation",
+      "applicantName": "Jennifer Williams",
+      "applicantEmail": "jen.williams@cedarparktx.gov",
+      "applicantPhone": "(512) 555-0311",
+      "emailDomain": "cedarparktx.gov",
+      "ein": null,
+      "submittedDocuments": [],
+      "status": "approved",
+      "submittedAt": "2022-06-01T10:00:00Z",
+      "reviewedAt": "2022-06-05T14:00:00Z",
+      "reviewedById": "admin-002",
+      "approvedAt": "2022-06-05T14:00:00Z",
+      "notes": [
+        {
+          "authorId": "admin-002",
+          "authorName": "Jordan Kim",
+          "content": "Verified .gov email domain. Auto-approved per Parks & Rec policy.",
+          "createdAt": "2022-06-05T14:00:00Z"
+        }
+      ],
+      "reVerificationDate": "2025-06-05"
+    },
+    {
+      "id": "npa-005",
+      "clubId": "club-rejected-001",
+      "clubName": "Joe's Pickleball Emporium",
+      "organizationType": "501c3",
+      "organizationName": "Joe's Sports LLC",
+      "applicantName": "Joe Martinez",
+      "applicantEmail": "joe@joespickleball.com",
+      "applicantPhone": "(512) 555-0999",
+      "emailDomain": "joespickleball.com",
+      "ein": "82-1111111",
+      "submittedDocuments": ["business_license.pdf"],
+      "status": "rejected",
+      "submittedAt": "2025-01-15T16:00:00Z",
+      "reviewedAt": "2025-01-17T10:00:00Z",
+      "reviewedById": "admin-001",
+      "rejectedAt": "2025-01-17T10:00:00Z",
+      "rejectionReason": "Organization is a for-profit LLC, not eligible for Community Impact tier. Submitted business license instead of 501(c)(3) documentation.",
+      "notes": [
+        {
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "IRS lookup shows no 501(c)(3) status for this EIN. Business license confirms for-profit LLC structure. Rejected with explanation.",
+          "createdAt": "2025-01-17T10:00:00Z"
+        }
+      ]
+    }
+  ],
+
+  "subscriptionOverrides": [
+    {
+      "id": "override-001",
+      "clubId": "club-005",
+      "clubName": "Dallas Dink Dynasty",
+      "originalTier": "free",
+      "overrideTier": "pro",
+      "reason": "partnership",
+      "reasonDetails": "Partnership with Dallas Parks Foundation - 6-month promotional partnership to bring pickleball to underserved communities.",
+      "isPermanent": false,
+      "expiresAt": "2025-06-30T23:59:59Z",
+      "createdAt": "2025-01-01T00:00:00Z",
+      "createdById": "admin-002",
+      "createdByName": "Jordan Kim",
+      "notifiedOwner": true,
+      "notifiedAt": "2025-01-01T09:00:00Z"
+    },
+    {
+      "id": "override-002",
+      "clubId": "club-010",
+      "clubName": "Corpus Christi Coastal Pickleball",
+      "originalTier": "pro",
+      "overrideTier": "elite",
+      "reason": "contest_winner",
+      "reasonDetails": "Winner of Q4 2024 'Club of the Quarter' contest. 3-month Elite tier upgrade as prize.",
+      "isPermanent": false,
+      "expiresAt": "2025-03-31T23:59:59Z",
+      "createdAt": "2025-01-01T00:00:00Z",
+      "createdById": "admin-001",
+      "createdByName": "Alex Rivera",
+      "notifiedOwner": true,
+      "notifiedAt": "2025-01-02T10:00:00Z"
+    },
+    {
+      "id": "override-003",
+      "clubId": "club-legacy-001",
+      "clubName": "Austin Original Pickleball",
+      "originalTier": "free",
+      "overrideTier": "pro",
+      "reason": "goodwill",
+      "reasonDetails": "Founding club from beta period. Lifetime Pro access granted as thank you for early adoption and feedback.",
+      "isPermanent": true,
+      "expiresAt": null,
+      "createdAt": "2023-01-15T00:00:00Z",
+      "createdById": "admin-001",
+      "createdByName": "Alex Rivera",
+      "notifiedOwner": true,
+      "notifiedAt": "2023-01-15T10:00:00Z"
+    },
+    {
+      "id": "override-004",
+      "clubId": "club-beta-002",
+      "clubName": "Houston Beta Testers",
+      "originalTier": "free",
+      "overrideTier": "elite",
+      "reason": "beta_tester",
+      "reasonDetails": "Beta testing group for new tournament features. Elite access needed for feature testing.",
+      "isPermanent": false,
+      "expiresAt": "2025-04-30T23:59:59Z",
+      "createdAt": "2025-02-01T00:00:00Z",
+      "createdById": "admin-002",
+      "createdByName": "Jordan Kim",
+      "notifiedOwner": true,
+      "notifiedAt": "2025-02-01T11:00:00Z"
+    }
+  ],
+
+  "ownershipDisputes": [
+    {
+      "id": "dispute-001",
+      "type": "club",
+      "entityId": "club-007",
+      "entityName": "Pflugerville Pickleball Society",
+      "status": "pending",
+      "priority": "standard",
+      "currentOwner": {
+        "id": "player-006",
+        "name": "Lisa Garcia",
+        "email": "lisa.garcia@email.com"
+      },
+      "claimant": {
+        "id": "player-020",
+        "name": "Carlos Mendez",
+        "email": "carlos.mendez@email.com"
+      },
+      "claimReason": "unauthorized_creation",
+      "claimDescription": "I founded the original Pflugerville Pickleball group on Facebook in 2022. Lisa created this club on KitchenKrew using my group's name and branding without permission. I have screenshots showing I started the community.",
+      "submittedEvidence": ["facebook_group_screenshot.png", "original_flyer_2022.pdf"],
+      "createdAt": "2025-01-25T14:00:00Z",
+      "lastUpdatedAt": "2025-01-28T10:00:00Z",
+      "timeline": [
+        {
+          "type": "submitted",
+          "content": "Dispute submitted by Carlos Mendez",
+          "createdAt": "2025-01-25T14:00:00Z"
+        },
+        {
+          "type": "auto_action",
+          "content": "Club status changed to 'under_review'",
+          "createdAt": "2025-01-25T14:00:00Z"
+        },
+        {
+          "type": "admin_note",
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "Reviewed evidence. Facebook group does predate the KitchenKrew club. Contacted current owner for response.",
+          "createdAt": "2025-01-28T10:00:00Z"
+        }
+      ],
+      "assignedToId": "admin-001",
+      "assignedToName": "Alex Rivera"
+    },
+    {
+      "id": "dispute-002",
+      "type": "venue",
+      "entityId": "venue-disputed-001",
+      "entityName": "Central Austin Recreation Center",
+      "status": "resolved",
+      "priority": "standard",
+      "currentOwner": {
+        "id": "player-community",
+        "name": "Community User",
+        "email": "austin.player@email.com"
+      },
+      "claimant": {
+        "id": "player-facility",
+        "name": "City of Austin Parks Dept",
+        "email": "parks.admin@austintexas.gov"
+      },
+      "claimReason": "venue_ownership",
+      "claimDescription": "This is a City of Austin facility. A community member created the venue listing but we are the actual owners and operators. We need administrative control to manage court availability and official events.",
+      "submittedEvidence": ["facility_ownership_doc.pdf", "parks_dept_letterhead.pdf"],
+      "createdAt": "2025-01-10T09:00:00Z",
+      "resolvedAt": "2025-01-15T14:00:00Z",
+      "resolution": "transfer",
+      "resolutionDetails": "Ownership transferred to City of Austin Parks Dept. Original creator retained as venue contributor with limited permissions.",
+      "resolvedById": "admin-002",
+      "resolvedByName": "Jordan Kim",
+      "lastUpdatedAt": "2025-01-15T14:00:00Z",
+      "timeline": [
+        {
+          "type": "submitted",
+          "content": "Dispute submitted by City of Austin Parks Dept",
+          "createdAt": "2025-01-10T09:00:00Z"
+        },
+        {
+          "type": "admin_note",
+          "authorId": "admin-002",
+          "authorName": "Jordan Kim",
+          "content": "Verified .gov email and official documentation. Clear case of legitimate ownership claim.",
+          "createdAt": "2025-01-12T11:00:00Z"
+        },
+        {
+          "type": "resolution",
+          "content": "Ownership transferred to claimant. Original creator notified and given contributor access.",
+          "createdAt": "2025-01-15T14:00:00Z"
+        }
+      ],
+      "assignedToId": "admin-002",
+      "assignedToName": "Jordan Kim"
+    },
+    {
+      "id": "dispute-003",
+      "type": "club",
+      "entityId": "club-dormant-001",
+      "entityName": "Waco Pickleball Warriors",
+      "status": "appealed",
+      "priority": "low",
+      "currentOwner": {
+        "id": "player-dormant",
+        "name": "Former Owner",
+        "email": "inactive@oldmail.com"
+      },
+      "claimant": {
+        "id": "player-active-waco",
+        "name": "Patricia Young",
+        "email": "patricia.y@email.com"
+      },
+      "claimReason": "dormant_reclaim",
+      "claimDescription": "This club has been inactive for over a year. The owner hasn't logged in since 2023. I've been organizing the local Waco pickleball community and would like to take over this club name to avoid confusion.",
+      "submittedEvidence": ["local_event_flyers.pdf", "community_support_emails.pdf"],
+      "createdAt": "2025-01-05T10:00:00Z",
+      "resolvedAt": "2025-01-20T16:00:00Z",
+      "resolution": "rejected",
+      "resolutionDetails": "Original owner responded within appeal window and indicated intent to reactivate the club.",
+      "resolvedById": "admin-001",
+      "resolvedByName": "Alex Rivera",
+      "appealedAt": "2025-01-22T09:00:00Z",
+      "appealReason": "Owner has said they would reactivate for 3 weeks but no action taken. Request reconsideration.",
+      "lastUpdatedAt": "2025-01-22T09:00:00Z",
+      "timeline": [
+        {
+          "type": "submitted",
+          "content": "Dispute submitted by Patricia Young",
+          "createdAt": "2025-01-05T10:00:00Z"
+        },
+        {
+          "type": "admin_action",
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "Contacted original owner via email. Awaiting response.",
+          "createdAt": "2025-01-08T14:00:00Z"
+        },
+        {
+          "type": "owner_response",
+          "content": "Original owner responded: 'I plan to reactivate the club next month.'",
+          "createdAt": "2025-01-18T11:00:00Z"
+        },
+        {
+          "type": "resolution",
+          "content": "Claim rejected - owner intends to reactivate",
+          "createdAt": "2025-01-20T16:00:00Z"
+        },
+        {
+          "type": "appeal",
+          "content": "Claimant filed appeal",
+          "createdAt": "2025-01-22T09:00:00Z"
+        }
+      ],
+      "assignedToId": "admin-001",
+      "assignedToName": "Alex Rivera"
+    }
+  ],
+
+  "platformEscalations": [
+    {
+      "id": "escalation-001",
+      "status": "new",
+      "priority": "urgent",
+      "reportedUser": {
+        "id": "player-bad-actor",
+        "name": "Kevin Nguyen",
+        "email": "knguyen@email.com",
+        "photoUrl": "/avatars/kevin.jpg"
+      },
+      "escalatingClub": {
+        "id": "club-002",
+        "name": "Hill Country Elite"
+      },
+      "escalatingAdmin": {
+        "id": "player-003",
+        "name": "David Park",
+        "email": "dpark@email.com"
+      },
+      "reason": "harassment",
+      "description": "Kevin has received multiple warnings and was banned from our club for harassment. He has now created fake accounts to continue messaging members and leaving negative reviews on our events. This appears to be coordinated harassment.",
+      "evidence": ["screenshot_fake_account_1.png", "screenshot_messages.png", "review_screenshots.pdf"],
+      "clubActionTaken": "Banned from club, reported fake accounts",
+      "otherClubsAffected": ["club-001", "club-008"],
+      "previousEscalations": 0,
+      "crossClubWarnings": 2,
+      "createdAt": "2025-02-01T16:00:00Z",
+      "lastUpdatedAt": "2025-02-01T16:00:00Z",
+      "notes": []
+    },
+    {
+      "id": "escalation-002",
+      "status": "in_review",
+      "priority": "standard",
+      "reportedUser": {
+        "id": "player-fraud",
+        "name": "James Wilson",
+        "email": "jwilson@email.com",
+        "photoUrl": "/avatars/james.jpg"
+      },
+      "escalatingClub": {
+        "id": "club-008",
+        "name": "Houston Heights Pickleball"
+      },
+      "escalatingAdmin": {
+        "id": "player-007",
+        "name": "Michael Brown",
+        "email": "mbrown@email.com"
+      },
+      "reason": "fraud",
+      "description": "This user registered for multiple paid events using different email addresses and requested refunds after each one, claiming he didn't attend. We have check-in records showing he participated in all events. Total refund fraud estimated at $180.",
+      "evidence": ["checkin_records.pdf", "refund_requests.pdf", "payment_records.xlsx"],
+      "clubActionTaken": "Banned from club, denied further refunds",
+      "otherClubsAffected": [],
+      "previousEscalations": 0,
+      "crossClubWarnings": 0,
+      "createdAt": "2025-01-28T11:00:00Z",
+      "lastUpdatedAt": "2025-01-30T14:00:00Z",
+      "assignedToId": "admin-002",
+      "assignedToName": "Jordan Kim",
+      "notes": [
+        {
+          "authorId": "admin-002",
+          "authorName": "Jordan Kim",
+          "content": "Reviewed payment and refund records. Pattern is clear - 5 events with refund requests, all showing check-in. Contacting Stripe for transaction details.",
+          "createdAt": "2025-01-30T14:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "escalation-003",
+      "status": "resolved",
+      "priority": "standard",
+      "reportedUser": {
+        "id": "player-warned",
+        "name": "Thomas Lee",
+        "email": "tlee@email.com",
+        "photoUrl": "/avatars/thomas.jpg"
+      },
+      "escalatingClub": {
+        "id": "club-001",
+        "name": "Austin Pickleball Club"
+      },
+      "escalatingAdmin": {
+        "id": "player-001",
+        "name": "Marcus Chen",
+        "email": "marcus.chen@email.com"
+      },
+      "reason": "unsportsmanlike",
+      "description": "Repeated instances of poor sportsmanship and verbal abuse toward partners during matches. Has received 3 warnings at our club. Other members have complained and some have stopped attending events when he's registered.",
+      "evidence": ["incident_reports.pdf", "warning_history.pdf"],
+      "clubActionTaken": "3 warnings issued, 30-day suspension",
+      "otherClubsAffected": [],
+      "previousEscalations": 0,
+      "crossClubWarnings": 0,
+      "createdAt": "2025-01-15T10:00:00Z",
+      "resolvedAt": "2025-01-20T15:00:00Z",
+      "resolution": "platform_warning",
+      "resolutionDetails": "Issued platform-wide warning. User acknowledged and committed to improved behavior. Will escalate to suspension if further incidents reported.",
+      "resolvedById": "admin-001",
+      "resolvedByName": "Alex Rivera",
+      "lastUpdatedAt": "2025-01-20T15:00:00Z",
+      "notes": [
+        {
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "Contacted user directly. He was apologetic and explained personal stress contributed to behavior. Issuing warning with clear expectations.",
+          "createdAt": "2025-01-18T11:00:00Z"
+        },
+        {
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "Warning issued. User acknowledged via email. Case closed - will monitor for future incidents.",
+          "createdAt": "2025-01-20T15:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "escalation-004",
+      "status": "resolved",
+      "priority": "urgent",
+      "reportedUser": {
+        "id": "player-banned",
+        "name": "Banned User",
+        "email": "banned@example.com",
+        "photoUrl": null
+      },
+      "escalatingClub": {
+        "id": "club-002",
+        "name": "Hill Country Elite"
+      },
+      "escalatingAdmin": {
+        "id": "player-003",
+        "name": "David Park",
+        "email": "dpark@email.com"
+      },
+      "reason": "safety_threat",
+      "description": "User made threatening statements toward another member after a match dispute. Witnesses reported feeling unsafe. Police report was filed.",
+      "evidence": ["witness_statements.pdf", "police_report_number.txt"],
+      "clubActionTaken": "Immediate ban, reported to police",
+      "otherClubsAffected": [],
+      "previousEscalations": 0,
+      "crossClubWarnings": 0,
+      "createdAt": "2024-12-20T18:00:00Z",
+      "resolvedAt": "2024-12-22T10:00:00Z",
+      "resolution": "platform_ban",
+      "resolutionDetails": "Permanent platform ban issued due to safety threat. Second admin (Jordan Kim) approved. User notified and account deactivated.",
+      "resolvedById": "admin-001",
+      "resolvedByName": "Alex Rivera",
+      "secondApprovalById": "admin-002",
+      "secondApprovalByName": "Jordan Kim",
+      "lastUpdatedAt": "2024-12-22T10:00:00Z",
+      "notes": [
+        {
+          "authorId": "admin-001",
+          "authorName": "Alex Rivera",
+          "content": "Reviewed witness statements and police report. Clear safety threat. Recommending immediate platform ban.",
+          "createdAt": "2024-12-21T09:00:00Z"
+        },
+        {
+          "authorId": "admin-002",
+          "authorName": "Jordan Kim",
+          "content": "Second approval granted. Agree with permanent ban given police involvement and witness statements.",
+          "createdAt": "2024-12-22T10:00:00Z"
+        }
+      ]
+    }
+  ],
+
+  "suspiciousActivityAlerts": [
+    {
+      "id": "alert-001",
+      "type": "rapid_creation",
+      "severity": "high",
+      "status": "pending",
+      "title": "Rapid club creation detected",
+      "description": "User created 4 clubs within 2 hours. All clubs have similar names ('Texas Pickleball Network 1', 'Texas Pickleball Network 2', etc.) and no members besides the creator.",
+      "userId": "player-099",
+      "userName": "John Smith",
+      "userEmail": "johnsmith12345@tempmail.com",
+      "relatedEntityIds": ["club-004", "club-spam-001", "club-spam-002", "club-spam-003"],
+      "detectedAt": "2025-01-27T23:50:00Z",
+      "indicators": [
+        "4 clubs created in 2 hours",
+        "Temporary email domain",
+        "Account less than 24 hours old",
+        "No profile photo",
+        "Similar club names"
+      ]
+    },
+    {
+      "id": "alert-002",
+      "type": "mass_invitations",
+      "severity": "medium",
+      "status": "pending",
+      "title": "Unusual invitation volume",
+      "description": "Club sent 200+ invitation emails in the past hour. This exceeds normal patterns and may indicate spam behavior.",
+      "clubId": "club-new-001",
+      "clubName": "Super Pickleball Deals",
+      "userId": "player-spammer",
+      "userName": "Marketing Mike",
+      "userEmail": "mike@pickleballdeals.biz",
+      "relatedEntityIds": ["club-new-001"],
+      "detectedAt": "2025-02-01T08:30:00Z",
+      "indicators": [
+        "247 invitations in 1 hour",
+        "Commercial-sounding club name",
+        "Invitation text contains promotional language",
+        "Many invitees marking as spam"
+      ]
+    },
+    {
+      "id": "alert-003",
+      "type": "duplicate_names",
+      "severity": "low",
+      "status": "resolved",
+      "resolvedAction": "false_positive",
+      "title": "Similar club names detected",
+      "description": "Two clubs with very similar names: 'Austin Pickleball Club' and 'Austin Pickle Ball Club'. May indicate impersonation attempt.",
+      "relatedEntityIds": ["club-001", "club-similar-001"],
+      "detectedAt": "2025-01-20T14:00:00Z",
+      "resolvedAt": "2025-01-21T09:00:00Z",
+      "resolvedById": "admin-002",
+      "indicators": [
+        "Names differ only by spacing",
+        "Created within 1 week of each other",
+        "Different owners"
+      ],
+      "resolutionNotes": "Contacted second club owner. Legitimate new club, owner was unaware of naming conflict. Recommended name change, owner agreed to 'South Austin Pickleball'."
+    },
+    {
+      "id": "alert-004",
+      "type": "payment_failures",
+      "severity": "medium",
+      "status": "pending",
+      "title": "Multiple failed payment attempts",
+      "description": "User has 8 failed payment attempts across 3 different cards in the past week. May indicate stolen card testing.",
+      "userId": "player-card-test",
+      "userName": "Test Account",
+      "userEmail": "testaccount99@gmail.com",
+      "relatedEntityIds": [],
+      "detectedAt": "2025-01-31T22:00:00Z",
+      "indicators": [
+        "8 failed payments in 7 days",
+        "3 different cards used",
+        "Small amounts ($5-10)",
+        "Generic account name"
+      ]
+    },
+    {
+      "id": "alert-005",
+      "type": "report_spike",
+      "severity": "high",
+      "status": "investigating",
+      "assignedToId": "admin-001",
+      "title": "Sudden spike in user reports",
+      "description": "User received 6 reports from different clubs in the past 48 hours. All reports cite similar behavior (aggressive conduct during matches).",
+      "userId": "player-reported",
+      "userName": "Aggressive Andy",
+      "userEmail": "andy.aggressive@email.com",
+      "relatedEntityIds": ["club-001", "club-002", "club-005", "club-008"],
+      "detectedAt": "2025-02-01T12:00:00Z",
+      "indicators": [
+        "6 reports in 48 hours",
+        "Reports from 4 different clubs",
+        "Similar complaint themes",
+        "User is member of 7 clubs"
+      ]
+    },
+    {
+      "id": "alert-006",
+      "type": "geographic_anomaly",
+      "severity": "low",
+      "status": "resolved",
+      "resolvedAction": "false_positive",
+      "title": "Geographic pattern anomaly",
+      "description": "Club registered in Texas but all events created in Florida. May indicate location spoofing.",
+      "clubId": "club-snowbird",
+      "clubName": "Texas Snowbirds Pickleball",
+      "userId": "player-snowbird",
+      "userName": "Betty Snowbird",
+      "userEmail": "betty.snowbird@email.com",
+      "relatedEntityIds": ["club-snowbird"],
+      "detectedAt": "2025-01-15T10:00:00Z",
+      "resolvedAt": "2025-01-16T11:00:00Z",
+      "resolvedById": "admin-001",
+      "indicators": [
+        "Club location: Austin, TX",
+        "All 5 events in: Naples, FL",
+        "Events in January-March only"
+      ],
+      "resolutionNotes": "Contacted owner. Legitimate 'snowbird' club for Texas residents who winter in Florida. No violation."
+    }
+  ],
+
+  "rateLimitConfig": {
+    "maxClubsPerUser": 3,
+    "maxVenuesPerUser": 5,
+    "minAccountAgeDays": 1,
+    "requireVerifiedEmail": true,
+    "maxInvitationsPerDay": 50,
+    "maxEventsPerDayFree": 3,
+    "lastUpdatedAt": "2024-06-01T00:00:00Z",
+    "lastUpdatedById": "admin-001"
+  },
+
+  "rateLimitExceptions": [
+    {
+      "id": "exception-001",
+      "userId": "player-001",
+      "userName": "Marcus Chen",
+      "userEmail": "marcus.chen@email.com",
+      "exceptionType": "max_clubs",
+      "originalLimit": 3,
+      "newLimit": 10,
+      "reason": "Power user managing multiple legitimate communities across Texas",
+      "grantedAt": "2024-08-15T14:00:00Z",
+      "grantedById": "admin-001",
+      "grantedByName": "Alex Rivera",
+      "expiresAt": null,
+      "isPermanent": true
+    },
+    {
+      "id": "exception-002",
+      "userId": "player-franchise",
+      "userName": "Pickleball Partners LLC",
+      "userEmail": "admin@pickleballpartners.com",
+      "exceptionType": "max_venues",
+      "originalLimit": 5,
+      "newLimit": 25,
+      "reason": "Franchise operator with verified business license. Manages facilities across 4 states.",
+      "grantedAt": "2025-01-10T10:00:00Z",
+      "grantedById": "admin-002",
+      "grantedByName": "Jordan Kim",
+      "expiresAt": "2026-01-10T10:00:00Z",
+      "isPermanent": false
+    }
+  ],
+
+  "auditLog": [
+    {
+      "id": "audit-001",
+      "action": "club_suspended",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "club",
+      "targetId": "club-004",
+      "targetName": "Suspicious Pickleball Network",
+      "details": "Suspended for suspected spam/fraud activity",
+      "timestamp": "2025-01-28T09:00:00Z"
+    },
+    {
+      "id": "audit-002",
+      "action": "nonprofit_approved",
+      "adminId": "admin-002",
+      "adminName": "Jordan Kim",
+      "targetType": "nonprofit_application",
+      "targetId": "npa-004",
+      "targetName": "Cedar Park Recreation Pickleball",
+      "details": "Auto-approved: .gov email domain verified",
+      "timestamp": "2022-06-05T14:00:00Z"
+    },
+    {
+      "id": "audit-003",
+      "action": "nonprofit_rejected",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "nonprofit_application",
+      "targetId": "npa-005",
+      "targetName": "Joe's Pickleball Emporium",
+      "details": "Rejected: For-profit LLC, not eligible",
+      "timestamp": "2025-01-17T10:00:00Z"
+    },
+    {
+      "id": "audit-004",
+      "action": "override_created",
+      "adminId": "admin-002",
+      "adminName": "Jordan Kim",
+      "targetType": "club",
+      "targetId": "club-005",
+      "targetName": "Dallas Dink Dynasty",
+      "details": "Tier override: free → pro (partnership with Dallas Parks Foundation)",
+      "timestamp": "2025-01-01T00:00:00Z"
+    },
+    {
+      "id": "audit-005",
+      "action": "dispute_resolved",
+      "adminId": "admin-002",
+      "adminName": "Jordan Kim",
+      "targetType": "ownership_dispute",
+      "targetId": "dispute-002",
+      "targetName": "Central Austin Recreation Center",
+      "details": "Ownership transferred to City of Austin Parks Dept",
+      "timestamp": "2025-01-15T14:00:00Z"
+    },
+    {
+      "id": "audit-006",
+      "action": "platform_warning_issued",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "user",
+      "targetId": "player-warned",
+      "targetName": "Thomas Lee",
+      "details": "Platform warning for unsportsmanlike conduct (escalation-003)",
+      "timestamp": "2025-01-20T15:00:00Z"
+    },
+    {
+      "id": "audit-007",
+      "action": "platform_ban_issued",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "user",
+      "targetId": "player-banned",
+      "targetName": "Banned User",
+      "details": "Permanent ban for safety threat. Second approval by Jordan Kim.",
+      "timestamp": "2024-12-22T10:00:00Z"
+    },
+    {
+      "id": "audit-008",
+      "action": "rate_limit_exception_granted",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "user",
+      "targetId": "player-001",
+      "targetName": "Marcus Chen",
+      "details": "Max clubs increased from 3 to 10 (power user)",
+      "timestamp": "2024-08-15T14:00:00Z"
+    },
+    {
+      "id": "audit-009",
+      "action": "alert_resolved",
+      "adminId": "admin-002",
+      "adminName": "Jordan Kim",
+      "targetType": "suspicious_activity",
+      "targetId": "alert-003",
+      "targetName": "Similar club names detected",
+      "details": "Marked as false positive - legitimate new club",
+      "timestamp": "2025-01-21T09:00:00Z"
+    },
+    {
+      "id": "audit-010",
+      "action": "alert_resolved",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "suspicious_activity",
+      "targetId": "alert-006",
+      "targetName": "Geographic pattern anomaly",
+      "details": "Marked as false positive - snowbird club",
+      "timestamp": "2025-01-16T11:00:00Z"
+    },
+    {
+      "id": "audit-011",
+      "action": "nonprofit_info_requested",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "nonprofit_application",
+      "targetId": "npa-003",
+      "targetName": "Seniors Active Living Pickleball",
+      "details": "Requested updated IRS documentation or TechSoup verification",
+      "timestamp": "2025-01-22T15:00:00Z"
+    },
+    {
+      "id": "audit-012",
+      "action": "dispute_assigned",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "ownership_dispute",
+      "targetId": "dispute-001",
+      "targetName": "Pflugerville Pickleball Society",
+      "details": "Self-assigned for investigation",
+      "timestamp": "2025-01-26T09:00:00Z"
+    },
+    {
+      "id": "audit-013",
+      "action": "escalation_assigned",
+      "adminId": "admin-002",
+      "adminName": "Jordan Kim",
+      "targetType": "platform_escalation",
+      "targetId": "escalation-002",
+      "targetName": "James Wilson (fraud)",
+      "details": "Self-assigned for investigation",
+      "timestamp": "2025-01-29T10:00:00Z"
+    },
+    {
+      "id": "audit-014",
+      "action": "club_ownership_contacted",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "ownership_dispute",
+      "targetId": "dispute-001",
+      "targetName": "Pflugerville Pickleball Society",
+      "details": "Contacted current owner Lisa Garcia for response to claim",
+      "timestamp": "2025-01-28T10:00:00Z"
+    },
+    {
+      "id": "audit-015",
+      "action": "rate_limit_config_updated",
+      "adminId": "admin-001",
+      "adminName": "Alex Rivera",
+      "targetType": "system_config",
+      "targetId": "rate_limits",
+      "targetName": "Rate Limit Configuration",
+      "details": "Updated maxInvitationsPerDay from 100 to 50",
+      "timestamp": "2024-06-01T00:00:00Z"
+    }
+  ],
+
+  "dashboardStats": {
+    "totalClubs": 847,
+    "activeClubs": 812,
+    "suspendedClubs": 23,
+    "underReviewClubs": 8,
+    "flaggedClubs": 4,
+    "pendingNonProfitApplications": 12,
+    "activeOverrides": 4,
+    "openDisputes": 3,
+    "openEscalations": 2,
+    "pendingAlerts": 4,
+    "clubsCreatedThisWeek": 28,
+    "clubsCreatedThisMonth": 94
+  }
+}
