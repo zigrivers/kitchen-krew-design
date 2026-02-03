@@ -14,7 +14,13 @@
       "bracketMatches": "Matches within a bracket with position info, round designation, winner/loser advancement paths, and scheduled times.",
       "pools": "Pool play groups where players compete in round robin before advancing to bracket playoffs.",
       "ladder": "Ladder tournament standings with challenge configuration, position tracking, and activity monitoring.",
-      "ladderChallenges": "Active or pending challenges between ladder positions, with deadlines and match scheduling."
+      "ladderChallenges": "Active or pending challenges between ladder positions, with deadlines and match scheduling.",
+      "roundRobinConfig": "Round Robin event configuration including partner format (fixed, rotating, blind draw), pool structure, time format (games or timed), and standings calculation method.",
+      "roundRobinSchedule": "The complete round robin schedule generated using Berger/Circle method, showing all rounds with match assignments, partners, courts, and timing.",
+      "roundRobinStandings": "Standings table with USA Pickleball official tiebreaker hierarchy: head-to-head, overall point differential, H2H point differential, vs next-highest, coin flip.",
+      "roundRobinPools": "Pools for larger round robin events, each containing teams, internal standings, round robin matches, and advancement status.",
+      "partnerRotation": "Preview of partner assignments across all rounds for rotating partner formats, showing who plays with whom in each round.",
+      "roundRobinMatches": "Matches in the round robin with partner info (for rotating formats), opponent info, court assignment, round number, and scores."
     },
     "relationships": [
       "Each Event has many Courts available for play",
@@ -27,7 +33,12 @@
       "BracketMatch links to Match for actual game data and tracks bracket position",
       "Seeds determine initial bracket positions before tournament starts",
       "Pools contain Matches for round robin play and advance top players to Bracket",
-      "Ladder contains LadderChallenges which create Matches when accepted"
+      "Ladder contains LadderChallenges which create Matches when accepted",
+      "RoundRobinConfig belongs to Event and defines partner format, pool structure, and standings rules",
+      "RoundRobinSchedule contains all RoundRobinMatches organized by round",
+      "RoundRobinPools each contain a subset of teams and their internal round robin",
+      "RoundRobinStandings tracks player/team performance with tiebreaker details",
+      "PartnerRotation previews partner assignments for rotating partner format"
     ]
   },
   "currentUser": {
@@ -35,15 +46,16 @@
     "name": "Sarah Martinez",
     "isGameManager": false,
     "currentMatchId": null,
-    "nextMatchId": "bm-sf-1",
-    "checkedInAt": "2026-02-01T09:45:00",
-    "seed": 3,
-    "bracketPosition": "SF1"
+    "nextMatchId": "rr-match-034",
+    "checkedInAt": "2026-02-01T08:45:00",
+    "poolId": "pool-A",
+    "poolRank": 2
   },
-  "event": {
-    "id": "evt-002",
-    "name": "Spring Doubles Championship",
-    "format": "single_elimination",
+
+  "roundRobinEvent": {
+    "id": "evt-rr-001",
+    "name": "Saturday Morning Round Robin",
+    "format": "round_robin",
     "status": "in_progress",
     "isPaused": false,
     "pauseReason": null,
@@ -53,712 +65,2034 @@
       "address": "1250 Riverside Dr, Austin, TX"
     },
     "organizer": {
-      "id": "plr-002",
+      "id": "plr-gm-001",
       "name": "Marcus Chen"
     },
-    "startedAt": "2026-02-01T10:00:00",
-    "scheduledEndTime": "2026-02-01T15:00:00",
+    "startedAt": "2026-02-01T09:00:00",
+    "scheduledEndTime": "2026-02-01T13:00:00",
     "scoringRules": {
       "pointsToWin": 11,
       "winByTwo": true,
       "pointCap": 15,
-      "gamesPerMatch": 3,
-      "rallyScoring": true
+      "gamesPerMatch": 1,
+      "rallyScoring": false
     },
     "settings": {
       "allowPlayerScoreEntry": true,
       "requireScoreConfirmation": true,
-      "gracePeriodMinutes": 5
+      "gracePeriodMinutes": 3
     }
   },
-  "tournament": {
-    "id": "tourn-001",
-    "eventId": "evt-002",
-    "bracketType": "single_elimination",
-    "bracketSize": 8,
-    "seedingMethod": "skill_based",
-    "seedingLocked": true,
-    "seedingLockedAt": "2026-02-01T09:50:00",
-    "matchFormatByRound": {
-      "quarterfinals": { "gamesPerMatch": 1, "label": "Single Game" },
-      "semifinals": { "gamesPerMatch": 3, "label": "Best of 3" },
-      "finals": { "gamesPerMatch": 3, "label": "Best of 3" }
+
+  "roundRobinConfig": {
+    "id": "rr-config-001",
+    "eventId": "evt-rr-001",
+    "partnerFormat": "fixed",
+    "poolStructure": {
+      "type": "multiple",
+      "poolCount": 4,
+      "teamsPerPool": 6,
+      "poolAssignmentMethod": "serpentine_seeding"
     },
-    "consolationBracket": false,
-    "thirdPlaceMatch": true,
-    "grandFinalsReset": false,
-    "multiDay": null,
-    "shareableLink": "https://kitchenkrew.app/bracket/tourn-001",
-    "isPublic": true
+    "timeFormat": {
+      "type": "games_based",
+      "pointsToWin": 11,
+      "winByTwo": true,
+      "pointCap": 15,
+      "gamesPerMatch": 1,
+      "estimatedMatchDuration": 12
+    },
+    "standingsConfig": {
+      "scoringMethod": "win_loss_points",
+      "tiebreakers": ["head_to_head", "overall_point_diff", "h2h_point_diff", "vs_next_highest", "coin_flip"],
+      "socialMode": false
+    },
+    "playoffConfig": {
+      "enabled": true,
+      "format": "single_elimination",
+      "teamsAdvancing": 2,
+      "bracketSize": 8,
+      "seedingMethod": "cross_pool",
+      "breakTimeBetweenPoolAndPlayoff": 15
+    },
+    "mixedDoublesMode": false,
+    "spouseAvoidance": []
   },
-  "eventProgress": {
-    "totalMatches": 7,
-    "completedMatches": 4,
-    "inProgressMatches": 2,
-    "remainingMatches": 1,
-    "currentRound": 2,
-    "totalRounds": 3,
-    "currentRoundLabel": "Semifinals",
-    "elapsedMinutes": 90,
-    "estimatedRemainingMinutes": 60
+
+  "roundRobinEventProgress": {
+    "totalMatches": 60,
+    "completedMatches": 38,
+    "inProgressMatches": 4,
+    "remainingMatches": 18,
+    "currentRound": 4,
+    "totalRounds": 5,
+    "currentRoundLabel": "Round 4 of 5",
+    "elapsedMinutes": 120,
+    "estimatedRemainingMinutes": 75,
+    "poolProgress": {
+      "pool-A": { "matchesPlayed": 11, "matchesTotal": 15, "percentComplete": 73 },
+      "pool-B": { "matchesPlayed": 10, "matchesTotal": 15, "percentComplete": 67 },
+      "pool-C": { "matchesPlayed": 9, "matchesTotal": 15, "percentComplete": 60 },
+      "pool-D": { "matchesPlayed": 8, "matchesTotal": 15, "percentComplete": 53 }
+    }
   },
-  "seeds": [
+
+  "roundRobinTeams": [
     {
+      "id": "rr-team-01",
       "seed": 1,
-      "teamId": "team-001",
+      "displayName": "Walsh / Kim",
       "players": [
-        { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.5 },
-        { "id": "plr-004", "name": "David Kim", "skillRating": 4.25 }
+        { "id": "plr-101", "name": "Jennifer Walsh", "skillRating": 4.5 },
+        { "id": "plr-102", "name": "David Kim", "skillRating": 4.25 }
       ],
       "combinedRating": 8.75,
-      "isBye": false
+      "poolId": "pool-A"
     },
     {
+      "id": "rr-team-02",
       "seed": 2,
-      "teamId": "team-002",
+      "displayName": "Torres / Thompson",
       "players": [
-        { "id": "plr-005", "name": "Michael Torres", "skillRating": 4.5 },
-        { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0 }
+        { "id": "plr-103", "name": "Michael Torres", "skillRating": 4.5 },
+        { "id": "plr-104", "name": "Brian Thompson", "skillRating": 4.0 }
       ],
       "combinedRating": 8.5,
-      "isBye": false
+      "poolId": "pool-B"
     },
     {
+      "id": "rr-team-03",
       "seed": 3,
-      "teamId": "team-003",
+      "displayName": "Martinez / Patel",
       "players": [
         { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 4.0 },
-        { "id": "plr-007", "name": "Lisa Patel", "skillRating": 4.0 }
+        { "id": "plr-105", "name": "Lisa Patel", "skillRating": 4.0 }
       ],
       "combinedRating": 8.0,
-      "isBye": false
+      "poolId": "pool-A"
     },
     {
+      "id": "rr-team-04",
       "seed": 4,
-      "teamId": "team-004",
+      "displayName": "Chen / Foster",
       "players": [
-        { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0 },
-        { "id": "plr-008", "name": "Amanda Foster", "skillRating": 3.75 }
+        { "id": "plr-gm-001", "name": "Marcus Chen", "skillRating": 4.0 },
+        { "id": "plr-106", "name": "Amanda Foster", "skillRating": 3.75 }
       ],
       "combinedRating": 7.75,
-      "isBye": false
+      "poolId": "pool-B"
     },
     {
+      "id": "rr-team-05",
       "seed": 5,
-      "teamId": "team-005",
+      "displayName": "Johnson / Garcia",
       "players": [
-        { "id": "plr-009", "name": "Robert Johnson", "skillRating": 3.75 },
-        { "id": "plr-010", "name": "Nicole Garcia", "skillRating": 3.75 }
+        { "id": "plr-107", "name": "Robert Johnson", "skillRating": 3.75 },
+        { "id": "plr-108", "name": "Nicole Garcia", "skillRating": 3.75 }
       ],
       "combinedRating": 7.5,
-      "isBye": false
+      "poolId": "pool-A"
     },
     {
+      "id": "rr-team-06",
       "seed": 6,
-      "teamId": "team-006",
+      "displayName": "Williams / Rodriguez",
       "players": [
-        { "id": "plr-011", "name": "Chris Williams", "skillRating": 3.5 },
-        { "id": "plr-012", "name": "Emily Rodriguez", "skillRating": 3.75 }
+        { "id": "plr-109", "name": "Chris Williams", "skillRating": 3.5 },
+        { "id": "plr-110", "name": "Emily Rodriguez", "skillRating": 3.75 }
       ],
       "combinedRating": 7.25,
-      "isBye": false
+      "poolId": "pool-B"
     },
     {
+      "id": "rr-team-07",
       "seed": 7,
-      "teamId": "team-007",
+      "displayName": "Wilson / Brown",
       "players": [
-        { "id": "plr-013", "name": "James Wilson", "skillRating": 3.5 },
-        { "id": "plr-014", "name": "Olivia Brown", "skillRating": 3.5 }
+        { "id": "plr-111", "name": "James Wilson", "skillRating": 3.5 },
+        { "id": "plr-112", "name": "Olivia Brown", "skillRating": 3.5 }
       ],
       "combinedRating": 7.0,
-      "isBye": false
+      "poolId": "pool-A"
     },
     {
+      "id": "rr-team-08",
       "seed": 8,
-      "teamId": "team-008",
+      "displayName": "Lee / Martinez",
       "players": [
-        { "id": "plr-015", "name": "Daniel Lee", "skillRating": 3.25 },
-        { "id": "plr-016", "name": "Sophia Martinez", "skillRating": 3.5 }
+        { "id": "plr-113", "name": "Daniel Lee", "skillRating": 3.25 },
+        { "id": "plr-114", "name": "Sophia Martinez", "skillRating": 3.5 }
       ],
       "combinedRating": 6.75,
-      "isBye": false
+      "poolId": "pool-B"
+    },
+    {
+      "id": "rr-team-09",
+      "seed": 9,
+      "displayName": "Anderson / Taylor",
+      "players": [
+        { "id": "plr-115", "name": "Kevin Anderson", "skillRating": 3.5 },
+        { "id": "plr-116", "name": "Rachel Taylor", "skillRating": 3.25 }
+      ],
+      "combinedRating": 6.75,
+      "poolId": "pool-A"
+    },
+    {
+      "id": "rr-team-10",
+      "seed": 10,
+      "displayName": "Harris / Clark",
+      "players": [
+        { "id": "plr-117", "name": "Steven Harris", "skillRating": 3.25 },
+        { "id": "plr-118", "name": "Jessica Clark", "skillRating": 3.25 }
+      ],
+      "combinedRating": 6.5,
+      "poolId": "pool-B"
+    },
+    {
+      "id": "rr-team-11",
+      "seed": 11,
+      "displayName": "Moore / Jackson",
+      "players": [
+        { "id": "plr-119", "name": "Andrew Moore", "skillRating": 3.25 },
+        { "id": "plr-120", "name": "Ashley Jackson", "skillRating": 3.25 }
+      ],
+      "combinedRating": 6.5,
+      "poolId": "pool-A"
+    },
+    {
+      "id": "rr-team-12",
+      "seed": 12,
+      "displayName": "White / Martin",
+      "players": [
+        { "id": "plr-121", "name": "Brandon White", "skillRating": 3.0 },
+        { "id": "plr-122", "name": "Megan Martin", "skillRating": 3.25 }
+      ],
+      "combinedRating": 6.25,
+      "poolId": "pool-B"
+    },
+    {
+      "id": "rr-team-13",
+      "seed": 13,
+      "displayName": "Garcia / Lewis",
+      "players": [
+        { "id": "plr-123", "name": "Carlos Garcia", "skillRating": 3.25 },
+        { "id": "plr-124", "name": "Kimberly Lewis", "skillRating": 3.0 }
+      ],
+      "combinedRating": 6.25,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-14",
+      "seed": 14,
+      "displayName": "Robinson / Walker",
+      "players": [
+        { "id": "plr-125", "name": "Derek Robinson", "skillRating": 3.0 },
+        { "id": "plr-126", "name": "Lauren Walker", "skillRating": 3.0 }
+      ],
+      "combinedRating": 6.0,
+      "poolId": "pool-D"
+    },
+    {
+      "id": "rr-team-15",
+      "seed": 15,
+      "displayName": "Hall / Young",
+      "players": [
+        { "id": "plr-127", "name": "Eric Hall", "skillRating": 3.0 },
+        { "id": "plr-128", "name": "Michelle Young", "skillRating": 3.0 }
+      ],
+      "combinedRating": 6.0,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-16",
+      "seed": 16,
+      "displayName": "Allen / King",
+      "players": [
+        { "id": "plr-129", "name": "Timothy Allen", "skillRating": 3.0 },
+        { "id": "plr-130", "name": "Stephanie King", "skillRating": 2.75 }
+      ],
+      "combinedRating": 5.75,
+      "poolId": "pool-D"
+    },
+    {
+      "id": "rr-team-17",
+      "seed": 17,
+      "displayName": "Wright / Lopez",
+      "players": [
+        { "id": "plr-131", "name": "Nathan Wright", "skillRating": 2.75 },
+        { "id": "plr-132", "name": "Christina Lopez", "skillRating": 2.75 }
+      ],
+      "combinedRating": 5.5,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-18",
+      "seed": 18,
+      "displayName": "Hill / Scott",
+      "players": [
+        { "id": "plr-133", "name": "Gregory Hill", "skillRating": 2.75 },
+        { "id": "plr-134", "name": "Jennifer Scott", "skillRating": 2.75 }
+      ],
+      "combinedRating": 5.5,
+      "poolId": "pool-D"
+    },
+    {
+      "id": "rr-team-19",
+      "seed": 19,
+      "displayName": "Green / Adams",
+      "players": [
+        { "id": "plr-135", "name": "Patrick Green", "skillRating": 2.5 },
+        { "id": "plr-136", "name": "Rebecca Adams", "skillRating": 2.75 }
+      ],
+      "combinedRating": 5.25,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-20",
+      "seed": 20,
+      "displayName": "Baker / Nelson",
+      "players": [
+        { "id": "plr-137", "name": "Ryan Baker", "skillRating": 2.5 },
+        { "id": "plr-138", "name": "Amanda Nelson", "skillRating": 2.5 }
+      ],
+      "combinedRating": 5.0,
+      "poolId": "pool-D"
+    },
+    {
+      "id": "rr-team-21",
+      "seed": 21,
+      "displayName": "Carter / Mitchell",
+      "players": [
+        { "id": "plr-139", "name": "Jonathan Carter", "skillRating": 2.5 },
+        { "id": "plr-140", "name": "Heather Mitchell", "skillRating": 2.5 }
+      ],
+      "combinedRating": 5.0,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-22",
+      "seed": 22,
+      "displayName": "Perez / Roberts",
+      "players": [
+        { "id": "plr-141", "name": "Anthony Perez", "skillRating": 2.5 },
+        { "id": "plr-142", "name": "Samantha Roberts", "skillRating": 2.25 }
+      ],
+      "combinedRating": 4.75,
+      "poolId": "pool-D"
+    },
+    {
+      "id": "rr-team-23",
+      "seed": 23,
+      "displayName": "Turner / Phillips",
+      "players": [
+        { "id": "plr-143", "name": "Mark Turner", "skillRating": 2.25 },
+        { "id": "plr-144", "name": "Julie Phillips", "skillRating": 2.25 }
+      ],
+      "combinedRating": 4.5,
+      "poolId": "pool-C"
+    },
+    {
+      "id": "rr-team-24",
+      "seed": 24,
+      "displayName": "Campbell / Evans",
+      "players": [
+        { "id": "plr-145", "name": "Scott Campbell", "skillRating": 2.0 },
+        { "id": "plr-146", "name": "Laura Evans", "skillRating": 2.25 }
+      ],
+      "combinedRating": 4.25,
+      "poolId": "pool-D"
     }
   ],
-  "bracket": {
-    "id": "bracket-001",
-    "tournamentId": "tourn-001",
-    "type": "winners",
+
+  "roundRobinPools": [
+    {
+      "id": "pool-A",
+      "name": "Pool A",
+      "color": "lime",
+      "status": "in_progress",
+      "teams": ["rr-team-01", "rr-team-03", "rr-team-05", "rr-team-07", "rr-team-09", "rr-team-11"],
+      "advancementLine": 2,
+      "standings": [
+        {
+          "rank": 1,
+          "teamId": "rr-team-01",
+          "displayName": "Walsh / Kim",
+          "seed": 1,
+          "wins": 4,
+          "losses": 0,
+          "pointsFor": 44,
+          "pointsAgainst": 22,
+          "pointDiff": 22,
+          "advances": true,
+          "headToHead": {
+            "rr-team-03": "W",
+            "rr-team-05": "W",
+            "rr-team-07": "W",
+            "rr-team-09": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 2,
+          "teamId": "rr-team-03",
+          "displayName": "Martinez / Patel",
+          "seed": 3,
+          "wins": 3,
+          "losses": 1,
+          "pointsFor": 38,
+          "pointsAgainst": 28,
+          "pointDiff": 10,
+          "advances": true,
+          "headToHead": {
+            "rr-team-01": "L",
+            "rr-team-05": "W",
+            "rr-team-07": "W",
+            "rr-team-09": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 3,
+          "teamId": "rr-team-05",
+          "displayName": "Johnson / Garcia",
+          "seed": 5,
+          "wins": 2,
+          "losses": 2,
+          "pointsFor": 36,
+          "pointsAgainst": 34,
+          "pointDiff": 2,
+          "advances": false,
+          "headToHead": {
+            "rr-team-01": "L",
+            "rr-team-03": "L",
+            "rr-team-07": "W",
+            "rr-team-11": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": {
+            "reason": "Tied with Wilson/Brown at 2-2. Broke tie via: Head-to-head (W)",
+            "tiedWith": ["rr-team-07"],
+            "appliedRule": "head_to_head"
+          }
+        },
+        {
+          "rank": 4,
+          "teamId": "rr-team-07",
+          "displayName": "Wilson / Brown",
+          "seed": 7,
+          "wins": 2,
+          "losses": 2,
+          "pointsFor": 33,
+          "pointsAgainst": 35,
+          "pointDiff": -2,
+          "advances": false,
+          "headToHead": {
+            "rr-team-01": "L",
+            "rr-team-03": "L",
+            "rr-team-05": "L",
+            "rr-team-09": "W",
+            "rr-team-11": "W"
+          },
+          "matchesPlayed": 5,
+          "matchesRemaining": 0,
+          "tiebreaker": {
+            "reason": "Tied with Johnson/Garcia at 2-2. Lost tie via: Head-to-head (L)",
+            "tiedWith": ["rr-team-05"],
+            "appliedRule": "head_to_head"
+          }
+        },
+        {
+          "rank": 5,
+          "teamId": "rr-team-09",
+          "displayName": "Anderson / Taylor",
+          "seed": 9,
+          "wins": 0,
+          "losses": 3,
+          "pointsFor": 18,
+          "pointsAgainst": 33,
+          "pointDiff": -15,
+          "advances": false,
+          "headToHead": {
+            "rr-team-01": "L",
+            "rr-team-03": "L",
+            "rr-team-07": "L"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 6,
+          "teamId": "rr-team-11",
+          "displayName": "Moore / Jackson",
+          "seed": 11,
+          "wins": 0,
+          "losses": 3,
+          "pointsFor": 15,
+          "pointsAgainst": 33,
+          "pointDiff": -18,
+          "advances": false,
+          "headToHead": {
+            "rr-team-05": "L",
+            "rr-team-07": "L"
+          },
+          "matchesPlayed": 2,
+          "matchesRemaining": 3,
+          "tiebreaker": {
+            "reason": "Tied with Anderson/Taylor at 0-3. Broke tie via: Overall point differential (+3 better)",
+            "tiedWith": ["rr-team-09"],
+            "appliedRule": "overall_point_diff"
+          }
+        }
+      ],
+      "scheduleComplete": false
+    },
+    {
+      "id": "pool-B",
+      "name": "Pool B",
+      "color": "sky",
+      "status": "in_progress",
+      "teams": ["rr-team-02", "rr-team-04", "rr-team-06", "rr-team-08", "rr-team-10", "rr-team-12"],
+      "advancementLine": 2,
+      "standings": [
+        {
+          "rank": 1,
+          "teamId": "rr-team-02",
+          "displayName": "Torres / Thompson",
+          "seed": 2,
+          "wins": 3,
+          "losses": 0,
+          "pointsFor": 33,
+          "pointsAgainst": 18,
+          "pointDiff": 15,
+          "advances": true,
+          "headToHead": {
+            "rr-team-04": "W",
+            "rr-team-06": "W",
+            "rr-team-10": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 2,
+          "teamId": "rr-team-04",
+          "displayName": "Chen / Foster",
+          "seed": 4,
+          "wins": 3,
+          "losses": 1,
+          "pointsFor": 41,
+          "pointsAgainst": 30,
+          "pointDiff": 11,
+          "advances": true,
+          "headToHead": {
+            "rr-team-02": "L",
+            "rr-team-06": "W",
+            "rr-team-08": "W",
+            "rr-team-10": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 3,
+          "teamId": "rr-team-06",
+          "displayName": "Williams / Rodriguez",
+          "seed": 6,
+          "wins": 2,
+          "losses": 2,
+          "pointsFor": 35,
+          "pointsAgainst": 33,
+          "pointDiff": 2,
+          "advances": false,
+          "headToHead": {
+            "rr-team-02": "L",
+            "rr-team-04": "L",
+            "rr-team-08": "W",
+            "rr-team-12": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 4,
+          "teamId": "rr-team-08",
+          "displayName": "Lee / Martinez",
+          "seed": 8,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 25,
+          "pointsAgainst": 29,
+          "pointDiff": -4,
+          "advances": false,
+          "headToHead": {
+            "rr-team-04": "L",
+            "rr-team-06": "L",
+            "rr-team-12": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 5,
+          "teamId": "rr-team-10",
+          "displayName": "Harris / Clark",
+          "seed": 10,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 24,
+          "pointsAgainst": 30,
+          "pointDiff": -6,
+          "advances": false,
+          "headToHead": {
+            "rr-team-02": "L",
+            "rr-team-04": "L",
+            "rr-team-12": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": {
+            "reason": "Tied with Lee/Martinez at 1-2. Broke tie via: Overall point differential (+2 better)",
+            "tiedWith": ["rr-team-08"],
+            "appliedRule": "overall_point_diff"
+          }
+        },
+        {
+          "rank": 6,
+          "teamId": "rr-team-12",
+          "displayName": "White / Martin",
+          "seed": 12,
+          "wins": 0,
+          "losses": 3,
+          "pointsFor": 15,
+          "pointsAgainst": 33,
+          "pointDiff": -18,
+          "advances": false,
+          "headToHead": {
+            "rr-team-06": "L",
+            "rr-team-08": "L",
+            "rr-team-10": "L"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        }
+      ],
+      "scheduleComplete": false
+    },
+    {
+      "id": "pool-C",
+      "name": "Pool C",
+      "color": "amber",
+      "status": "in_progress",
+      "teams": ["rr-team-13", "rr-team-15", "rr-team-17", "rr-team-19", "rr-team-21", "rr-team-23"],
+      "advancementLine": 2,
+      "standings": [
+        {
+          "rank": 1,
+          "teamId": "rr-team-13",
+          "displayName": "Garcia / Lewis",
+          "seed": 13,
+          "wins": 3,
+          "losses": 0,
+          "pointsFor": 33,
+          "pointsAgainst": 21,
+          "pointDiff": 12,
+          "advances": true,
+          "headToHead": {
+            "rr-team-15": "W",
+            "rr-team-17": "W",
+            "rr-team-19": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 2,
+          "teamId": "rr-team-15",
+          "displayName": "Hall / Young",
+          "seed": 15,
+          "wins": 2,
+          "losses": 1,
+          "pointsFor": 30,
+          "pointsAgainst": 26,
+          "pointDiff": 4,
+          "advances": true,
+          "headToHead": {
+            "rr-team-13": "L",
+            "rr-team-17": "W",
+            "rr-team-21": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 3,
+          "teamId": "rr-team-17",
+          "displayName": "Wright / Lopez",
+          "seed": 17,
+          "wins": 2,
+          "losses": 2,
+          "pointsFor": 38,
+          "pointsAgainst": 37,
+          "pointDiff": 1,
+          "advances": false,
+          "headToHead": {
+            "rr-team-13": "L",
+            "rr-team-15": "L",
+            "rr-team-19": "W",
+            "rr-team-23": "W"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 4,
+          "teamId": "rr-team-19",
+          "displayName": "Green / Adams",
+          "seed": 19,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 27,
+          "pointsAgainst": 30,
+          "pointDiff": -3,
+          "advances": false,
+          "headToHead": {
+            "rr-team-13": "L",
+            "rr-team-17": "L",
+            "rr-team-23": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 5,
+          "teamId": "rr-team-21",
+          "displayName": "Carter / Mitchell",
+          "seed": 21,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 25,
+          "pointsAgainst": 29,
+          "pointDiff": -4,
+          "advances": false,
+          "headToHead": {
+            "rr-team-15": "L",
+            "rr-team-23": "W"
+          },
+          "matchesPlayed": 2,
+          "matchesRemaining": 3,
+          "tiebreaker": {
+            "reason": "Tied with Green/Adams at 1-2. Lost tie via: Overall point differential (-1 worse)",
+            "tiedWith": ["rr-team-19"],
+            "appliedRule": "overall_point_diff"
+          }
+        },
+        {
+          "rank": 6,
+          "teamId": "rr-team-23",
+          "displayName": "Turner / Phillips",
+          "seed": 23,
+          "wins": 0,
+          "losses": 3,
+          "pointsFor": 18,
+          "pointsAgainst": 33,
+          "pointDiff": -15,
+          "advances": false,
+          "headToHead": {
+            "rr-team-17": "L",
+            "rr-team-19": "L",
+            "rr-team-21": "L"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        }
+      ],
+      "scheduleComplete": false
+    },
+    {
+      "id": "pool-D",
+      "name": "Pool D",
+      "color": "violet",
+      "status": "in_progress",
+      "teams": ["rr-team-14", "rr-team-16", "rr-team-18", "rr-team-20", "rr-team-22", "rr-team-24"],
+      "advancementLine": 2,
+      "standings": [
+        {
+          "rank": 1,
+          "teamId": "rr-team-14",
+          "displayName": "Robinson / Walker",
+          "seed": 14,
+          "wins": 2,
+          "losses": 0,
+          "pointsFor": 22,
+          "pointsAgainst": 14,
+          "pointDiff": 8,
+          "advances": true,
+          "headToHead": {
+            "rr-team-16": "W",
+            "rr-team-18": "W"
+          },
+          "matchesPlayed": 2,
+          "matchesRemaining": 3,
+          "tiebreaker": null
+        },
+        {
+          "rank": 2,
+          "teamId": "rr-team-16",
+          "displayName": "Allen / King",
+          "seed": 16,
+          "wins": 2,
+          "losses": 1,
+          "pointsFor": 31,
+          "pointsAgainst": 27,
+          "pointDiff": 4,
+          "advances": true,
+          "headToHead": {
+            "rr-team-14": "L",
+            "rr-team-20": "W",
+            "rr-team-22": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 3,
+          "teamId": "rr-team-18",
+          "displayName": "Hill / Scott",
+          "seed": 18,
+          "wins": 2,
+          "losses": 2,
+          "pointsFor": 40,
+          "pointsAgainst": 39,
+          "pointDiff": 1,
+          "advances": false,
+          "headToHead": {
+            "rr-team-14": "L",
+            "rr-team-20": "W",
+            "rr-team-22": "W",
+            "rr-team-24": "L"
+          },
+          "matchesPlayed": 4,
+          "matchesRemaining": 1,
+          "tiebreaker": null
+        },
+        {
+          "rank": 4,
+          "teamId": "rr-team-20",
+          "displayName": "Baker / Nelson",
+          "seed": 20,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 26,
+          "pointsAgainst": 30,
+          "pointDiff": -4,
+          "advances": false,
+          "headToHead": {
+            "rr-team-16": "L",
+            "rr-team-18": "L",
+            "rr-team-24": "W"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": null
+        },
+        {
+          "rank": 5,
+          "teamId": "rr-team-24",
+          "displayName": "Campbell / Evans",
+          "seed": 24,
+          "wins": 1,
+          "losses": 2,
+          "pointsFor": 28,
+          "pointsAgainst": 32,
+          "pointDiff": -4,
+          "advances": false,
+          "headToHead": {
+            "rr-team-18": "W",
+            "rr-team-20": "L",
+            "rr-team-22": "L"
+          },
+          "matchesPlayed": 3,
+          "matchesRemaining": 2,
+          "tiebreaker": {
+            "reason": "Tied with Baker/Nelson at 1-2, same PD. Broke tie via: Head-to-head (W over Baker/Nelson... wait, L). Actually lost H2H. Using H2H PD: -1 vs Baker/Nelson",
+            "tiedWith": ["rr-team-20"],
+            "appliedRule": "h2h_point_diff"
+          }
+        },
+        {
+          "rank": 6,
+          "teamId": "rr-team-22",
+          "displayName": "Perez / Roberts",
+          "seed": 22,
+          "wins": 0,
+          "losses": 2,
+          "pointsFor": 12,
+          "pointsAgainst": 22,
+          "pointDiff": -10,
+          "advances": false,
+          "headToHead": {
+            "rr-team-16": "L",
+            "rr-team-24": "W"
+          },
+          "matchesPlayed": 2,
+          "matchesRemaining": 3,
+          "tiebreaker": null
+        }
+      ],
+      "scheduleComplete": false
+    }
+  ],
+
+  "roundRobinSchedule": {
+    "id": "rr-schedule-001",
+    "eventId": "evt-rr-001",
+    "generatedAt": "2026-02-01T08:50:00",
+    "algorithm": "berger_circle",
+    "totalRounds": 5,
+    "rounds": [
+      {
+        "roundNumber": 1,
+        "status": "completed",
+        "scheduledTime": "2026-02-01T09:00:00",
+        "estimatedDuration": 25
+      },
+      {
+        "roundNumber": 2,
+        "status": "completed",
+        "scheduledTime": "2026-02-01T09:30:00",
+        "estimatedDuration": 25
+      },
+      {
+        "roundNumber": 3,
+        "status": "completed",
+        "scheduledTime": "2026-02-01T10:00:00",
+        "estimatedDuration": 25
+      },
+      {
+        "roundNumber": 4,
+        "status": "in_progress",
+        "scheduledTime": "2026-02-01T10:30:00",
+        "estimatedDuration": 25
+      },
+      {
+        "roundNumber": 5,
+        "status": "upcoming",
+        "scheduledTime": "2026-02-01T11:00:00",
+        "estimatedDuration": 25
+      }
+    ]
+  },
+
+  "roundRobinMatches": [
+    {
+      "id": "rr-match-001",
+      "poolId": "pool-A",
+      "roundNumber": 1,
+      "team1Id": "rr-team-01",
+      "team2Id": "rr-team-11",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 4 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:02:00",
+      "completedAt": "2026-02-01T09:18:00",
+      "duration": 16
+    },
+    {
+      "id": "rr-match-002",
+      "poolId": "pool-A",
+      "roundNumber": 1,
+      "team1Id": "rr-team-03",
+      "team2Id": "rr-team-09",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:03:00",
+      "completedAt": "2026-02-01T09:22:00",
+      "duration": 19
+    },
+    {
+      "id": "rr-match-003",
+      "poolId": "pool-A",
+      "roundNumber": 1,
+      "team1Id": "rr-team-05",
+      "team2Id": "rr-team-07",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 8 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:01:00",
+      "completedAt": "2026-02-01T09:20:00",
+      "duration": 19
+    },
+    {
+      "id": "rr-match-004",
+      "poolId": "pool-B",
+      "roundNumber": 1,
+      "team1Id": "rr-team-02",
+      "team2Id": "rr-team-10",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 5 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:00:00",
+      "completedAt": "2026-02-01T09:15:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-005",
+      "poolId": "pool-B",
+      "roundNumber": 1,
+      "team1Id": "rr-team-04",
+      "team2Id": "rr-team-08",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:02:00",
+      "completedAt": "2026-02-01T09:19:00",
+      "duration": 17
+    },
+    {
+      "id": "rr-match-006",
+      "poolId": "pool-B",
+      "roundNumber": 1,
+      "team1Id": "rr-team-06",
+      "team2Id": "rr-team-12",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:01:00",
+      "completedAt": "2026-02-01T09:17:00",
+      "duration": 16
+    },
+    {
+      "id": "rr-match-007",
+      "poolId": "pool-C",
+      "roundNumber": 1,
+      "team1Id": "rr-team-13",
+      "team2Id": "rr-team-17",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 8 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:25:00",
+      "completedAt": "2026-02-01T09:43:00",
+      "duration": 18
+    },
+    {
+      "id": "rr-match-008",
+      "poolId": "pool-C",
+      "roundNumber": 1,
+      "team1Id": "rr-team-15",
+      "team2Id": "rr-team-21",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:26:00",
+      "completedAt": "2026-02-01T09:48:00",
+      "duration": 22
+    },
+    {
+      "id": "rr-match-009",
+      "poolId": "pool-C",
+      "roundNumber": 1,
+      "team1Id": "rr-team-17",
+      "team2Id": "rr-team-23",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:50:00",
+      "completedAt": "2026-02-01T10:07:00",
+      "duration": 17
+    },
+    {
+      "id": "rr-match-010",
+      "poolId": "pool-D",
+      "roundNumber": 1,
+      "team1Id": "rr-team-14",
+      "team2Id": "rr-team-16",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:22:00",
+      "completedAt": "2026-02-01T09:40:00",
+      "duration": 18
+    },
+    {
+      "id": "rr-match-011",
+      "poolId": "pool-D",
+      "roundNumber": 1,
+      "team1Id": "rr-team-16",
+      "team2Id": "rr-team-20",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:45:00",
+      "completedAt": "2026-02-01T10:05:00",
+      "duration": 20
+    },
+    {
+      "id": "rr-match-012",
+      "poolId": "pool-D",
+      "roundNumber": 1,
+      "team1Id": "rr-team-18",
+      "team2Id": "rr-team-22",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:23:00",
+      "completedAt": "2026-02-01T09:38:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-013",
+      "poolId": "pool-A",
+      "roundNumber": 2,
+      "team1Id": "rr-team-01",
+      "team2Id": "rr-team-09",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:32:00",
+      "completedAt": "2026-02-01T09:48:00",
+      "duration": 16
+    },
+    {
+      "id": "rr-match-014",
+      "poolId": "pool-A",
+      "roundNumber": 2,
+      "team1Id": "rr-team-03",
+      "team2Id": "rr-team-07",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:33:00",
+      "completedAt": "2026-02-01T09:55:00",
+      "duration": 22
+    },
+    {
+      "id": "rr-match-015",
+      "poolId": "pool-A",
+      "roundNumber": 2,
+      "team1Id": "rr-team-05",
+      "team2Id": "rr-team-11",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 5 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:30:00",
+      "completedAt": "2026-02-01T09:44:00",
+      "duration": 14
+    },
+    {
+      "id": "rr-match-016",
+      "poolId": "pool-B",
+      "roundNumber": 2,
+      "team1Id": "rr-team-02",
+      "team2Id": "rr-team-06",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 8 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:30:00",
+      "completedAt": "2026-02-01T09:50:00",
+      "duration": 20
+    },
+    {
+      "id": "rr-match-017",
+      "poolId": "pool-B",
+      "roundNumber": 2,
+      "team1Id": "rr-team-04",
+      "team2Id": "rr-team-10",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:32:00",
+      "completedAt": "2026-02-01T09:53:00",
+      "duration": 21
+    },
+    {
+      "id": "rr-match-018",
+      "poolId": "pool-B",
+      "roundNumber": 2,
+      "team1Id": "rr-team-08",
+      "team2Id": "rr-team-12",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 4 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:31:00",
+      "completedAt": "2026-02-01T09:45:00",
+      "duration": 14
+    },
+    {
+      "id": "rr-match-019",
+      "poolId": "pool-A",
+      "roundNumber": 3,
+      "team1Id": "rr-team-01",
+      "team2Id": "rr-team-07",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:02:00",
+      "completedAt": "2026-02-01T10:18:00",
+      "duration": 16
+    },
+    {
+      "id": "rr-match-020",
+      "poolId": "pool-A",
+      "roundNumber": 3,
+      "team1Id": "rr-team-03",
+      "team2Id": "rr-team-05",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 8 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:03:00",
+      "completedAt": "2026-02-01T10:22:00",
+      "duration": 19
+    },
+    {
+      "id": "rr-match-021",
+      "poolId": "pool-A",
+      "roundNumber": 3,
+      "team1Id": "rr-team-07",
+      "team2Id": "rr-team-09",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 5 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:25:00",
+      "completedAt": "2026-02-01T10:40:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-022",
+      "poolId": "pool-B",
+      "roundNumber": 3,
+      "team1Id": "rr-team-02",
+      "team2Id": "rr-team-04",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 5 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:00:00",
+      "completedAt": "2026-02-01T10:15:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-023",
+      "poolId": "pool-B",
+      "roundNumber": 3,
+      "team1Id": "rr-team-06",
+      "team2Id": "rr-team-08",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:02:00",
+      "completedAt": "2026-02-01T10:19:00",
+      "duration": 17
+    },
+    {
+      "id": "rr-match-024",
+      "poolId": "pool-B",
+      "roundNumber": 3,
+      "team1Id": "rr-team-10",
+      "team2Id": "rr-team-12",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 5 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:01:00",
+      "completedAt": "2026-02-01T10:14:00",
+      "duration": 13
+    },
+    {
+      "id": "rr-match-025",
+      "poolId": "pool-C",
+      "roundNumber": 2,
+      "team1Id": "rr-team-13",
+      "team2Id": "rr-team-15",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T09:55:00",
+      "completedAt": "2026-02-01T10:10:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-026",
+      "poolId": "pool-C",
+      "roundNumber": 2,
+      "team1Id": "rr-team-17",
+      "team2Id": "rr-team-19",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:12:00",
+      "completedAt": "2026-02-01T10:33:00",
+      "duration": 21
+    },
+    {
+      "id": "rr-match-027",
+      "poolId": "pool-C",
+      "roundNumber": 2,
+      "team1Id": "rr-team-19",
+      "team2Id": "rr-team-23",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 4 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:15:00",
+      "completedAt": "2026-02-01T10:28:00",
+      "duration": 13
+    },
+    {
+      "id": "rr-match-028",
+      "poolId": "pool-C",
+      "roundNumber": 3,
+      "team1Id": "rr-team-13",
+      "team2Id": "rr-team-19",
+      "courtId": "court-001",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:35:00",
+      "completedAt": "2026-02-01T10:52:00",
+      "duration": 17
+    },
+    {
+      "id": "rr-match-029",
+      "poolId": "pool-C",
+      "roundNumber": 3,
+      "team1Id": "rr-team-15",
+      "team2Id": "rr-team-17",
+      "courtId": "court-002",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:37:00",
+      "completedAt": "2026-02-01T10:58:00",
+      "duration": 21
+    },
+    {
+      "id": "rr-match-030",
+      "poolId": "pool-C",
+      "roundNumber": 3,
+      "team1Id": "rr-team-21",
+      "team2Id": "rr-team-23",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:35:00",
+      "completedAt": "2026-02-01T10:50:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-031",
+      "poolId": "pool-D",
+      "roundNumber": 2,
+      "team1Id": "rr-team-14",
+      "team2Id": "rr-team-18",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 7 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:08:00",
+      "completedAt": "2026-02-01T10:25:00",
+      "duration": 17
+    },
+    {
+      "id": "rr-match-032",
+      "poolId": "pool-D",
+      "roundNumber": 2,
+      "team1Id": "rr-team-18",
+      "team2Id": "rr-team-20",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:28:00",
+      "completedAt": "2026-02-01T10:42:00",
+      "duration": 14
+    },
+    {
+      "id": "rr-match-033",
+      "poolId": "pool-D",
+      "roundNumber": 2,
+      "team1Id": "rr-team-16",
+      "team2Id": "rr-team-22",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:10:00",
+      "completedAt": "2026-02-01T10:24:00",
+      "duration": 14
+    },
+    {
+      "id": "rr-match-034",
+      "poolId": "pool-A",
+      "roundNumber": 4,
+      "team1Id": "rr-team-01",
+      "team2Id": "rr-team-05",
+      "courtId": "court-001",
+      "status": "in_progress",
+      "score": { "team1": 7, "team2": 5 },
+      "winner": null,
+      "startedAt": "2026-02-01T10:55:00",
+      "completedAt": null,
+      "duration": null
+    },
+    {
+      "id": "rr-match-035",
+      "poolId": "pool-A",
+      "roundNumber": 4,
+      "team1Id": "rr-team-03",
+      "team2Id": "rr-team-11",
+      "courtId": "court-002",
+      "status": "in_progress",
+      "score": { "team1": 8, "team2": 6 },
+      "winner": null,
+      "startedAt": "2026-02-01T10:56:00",
+      "completedAt": null,
+      "duration": null
+    },
+    {
+      "id": "rr-match-036",
+      "poolId": "pool-A",
+      "roundNumber": 4,
+      "team1Id": "rr-team-07",
+      "team2Id": "rr-team-11",
+      "courtId": "court-003",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 6 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:45:00",
+      "completedAt": "2026-02-01T11:00:00",
+      "duration": 15
+    },
+    {
+      "id": "rr-match-037",
+      "poolId": "pool-B",
+      "roundNumber": 4,
+      "team1Id": "rr-team-04",
+      "team2Id": "rr-team-06",
+      "courtId": "court-004",
+      "status": "in_progress",
+      "score": { "team1": 9, "team2": 7 },
+      "winner": null,
+      "startedAt": "2026-02-01T10:52:00",
+      "completedAt": null,
+      "duration": null
+    },
+    {
+      "id": "rr-match-038",
+      "poolId": "pool-B",
+      "roundNumber": 4,
+      "team1Id": "rr-team-04",
+      "team2Id": "rr-team-12",
+      "courtId": "court-005",
+      "status": "in_progress",
+      "score": { "team1": 6, "team2": 4 },
+      "winner": null,
+      "startedAt": "2026-02-01T10:54:00",
+      "completedAt": null,
+      "duration": null
+    },
+    {
+      "id": "rr-match-039",
+      "poolId": "pool-D",
+      "roundNumber": 3,
+      "team1Id": "rr-team-20",
+      "team2Id": "rr-team-24",
+      "courtId": "court-006",
+      "status": "completed",
+      "score": { "team1": 11, "team2": 9 },
+      "winner": "team1",
+      "startedAt": "2026-02-01T10:45:00",
+      "completedAt": "2026-02-01T11:05:00",
+      "duration": 20
+    },
+    {
+      "id": "rr-match-040",
+      "poolId": "pool-D",
+      "roundNumber": 3,
+      "team1Id": "rr-team-18",
+      "team2Id": "rr-team-24",
+      "courtId": "court-004",
+      "status": "completed",
+      "score": { "team1": 9, "team2": 11 },
+      "winner": "team2",
+      "startedAt": "2026-02-01T10:30:00",
+      "completedAt": "2026-02-01T10:50:00",
+      "duration": 20
+    },
+    {
+      "id": "rr-match-041",
+      "poolId": "pool-D",
+      "roundNumber": 3,
+      "team1Id": "rr-team-22",
+      "team2Id": "rr-team-24",
+      "courtId": "court-005",
+      "status": "completed",
+      "score": { "team1": 8, "team2": 11 },
+      "winner": "team2",
+      "startedAt": "2026-02-01T10:32:00",
+      "completedAt": "2026-02-01T10:53:00",
+      "duration": 21
+    }
+  ],
+
+  "upcomingRoundRobinMatches": [
+    {
+      "id": "rr-match-042",
+      "poolId": "pool-A",
+      "roundNumber": 5,
+      "team1Id": "rr-team-01",
+      "team2Id": "rr-team-03",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 5
+    },
+    {
+      "id": "rr-match-043",
+      "poolId": "pool-A",
+      "roundNumber": 5,
+      "team1Id": "rr-team-05",
+      "team2Id": "rr-team-09",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 5
+    },
+    {
+      "id": "rr-match-044",
+      "poolId": "pool-A",
+      "roundNumber": 5,
+      "team1Id": "rr-team-09",
+      "team2Id": "rr-team-11",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 5
+    },
+    {
+      "id": "rr-match-045",
+      "poolId": "pool-B",
+      "roundNumber": 5,
+      "team1Id": "rr-team-02",
+      "team2Id": "rr-team-08",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 8
+    },
+    {
+      "id": "rr-match-046",
+      "poolId": "pool-B",
+      "roundNumber": 5,
+      "team1Id": "rr-team-02",
+      "team2Id": "rr-team-12",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 8
+    },
+    {
+      "id": "rr-match-047",
+      "poolId": "pool-B",
+      "roundNumber": 5,
+      "team1Id": "rr-team-06",
+      "team2Id": "rr-team-10",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:00:00",
+      "estimatedWait": 8
+    },
+    {
+      "id": "rr-match-048",
+      "poolId": "pool-B",
+      "roundNumber": 5,
+      "team1Id": "rr-team-08",
+      "team2Id": "rr-team-10",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:25:00",
+      "estimatedWait": 30
+    },
+    {
+      "id": "rr-match-049",
+      "poolId": "pool-C",
+      "roundNumber": 4,
+      "team1Id": "rr-team-13",
+      "team2Id": "rr-team-21",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:05:00",
+      "estimatedWait": 10
+    },
+    {
+      "id": "rr-match-050",
+      "poolId": "pool-C",
+      "roundNumber": 4,
+      "team1Id": "rr-team-15",
+      "team2Id": "rr-team-19",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:05:00",
+      "estimatedWait": 10
+    },
+    {
+      "id": "rr-match-051",
+      "poolId": "pool-C",
+      "roundNumber": 4,
+      "team1Id": "rr-team-17",
+      "team2Id": "rr-team-21",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:05:00",
+      "estimatedWait": 10
+    },
+    {
+      "id": "rr-match-052",
+      "poolId": "pool-C",
+      "roundNumber": 5,
+      "team1Id": "rr-team-13",
+      "team2Id": "rr-team-23",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:30:00",
+      "estimatedWait": 35
+    },
+    {
+      "id": "rr-match-053",
+      "poolId": "pool-C",
+      "roundNumber": 5,
+      "team1Id": "rr-team-15",
+      "team2Id": "rr-team-23",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:30:00",
+      "estimatedWait": 35
+    },
+    {
+      "id": "rr-match-054",
+      "poolId": "pool-C",
+      "roundNumber": 5,
+      "team1Id": "rr-team-19",
+      "team2Id": "rr-team-21",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:30:00",
+      "estimatedWait": 35
+    },
+    {
+      "id": "rr-match-055",
+      "poolId": "pool-D",
+      "roundNumber": 4,
+      "team1Id": "rr-team-14",
+      "team2Id": "rr-team-20",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:10:00",
+      "estimatedWait": 15
+    },
+    {
+      "id": "rr-match-056",
+      "poolId": "pool-D",
+      "roundNumber": 4,
+      "team1Id": "rr-team-16",
+      "team2Id": "rr-team-18",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:10:00",
+      "estimatedWait": 15
+    },
+    {
+      "id": "rr-match-057",
+      "poolId": "pool-D",
+      "roundNumber": 4,
+      "team1Id": "rr-team-20",
+      "team2Id": "rr-team-22",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:10:00",
+      "estimatedWait": 15
+    },
+    {
+      "id": "rr-match-058",
+      "poolId": "pool-D",
+      "roundNumber": 5,
+      "team1Id": "rr-team-14",
+      "team2Id": "rr-team-22",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:35:00",
+      "estimatedWait": 40
+    },
+    {
+      "id": "rr-match-059",
+      "poolId": "pool-D",
+      "roundNumber": 5,
+      "team1Id": "rr-team-14",
+      "team2Id": "rr-team-24",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:35:00",
+      "estimatedWait": 40
+    },
+    {
+      "id": "rr-match-060",
+      "poolId": "pool-D",
+      "roundNumber": 5,
+      "team1Id": "rr-team-16",
+      "team2Id": "rr-team-24",
+      "courtId": null,
+      "status": "upcoming",
+      "scheduledTime": "2026-02-01T11:35:00",
+      "estimatedWait": 40
+    }
+  ],
+
+  "pendingPlayoffBracket": {
+    "id": "playoff-bracket-001",
+    "status": "pending",
+    "format": "single_elimination",
+    "size": 8,
+    "seedingMethod": "cross_pool",
+    "estimatedStartTime": "2026-02-01T12:00:00",
+    "breakTimeMinutes": 15,
     "rounds": [
       {
         "roundNumber": 1,
         "label": "Quarterfinals",
         "matchFormat": { "gamesPerMatch": 1, "label": "Single Game" },
-        "scheduledTime": "2026-02-01T10:00:00",
-        "status": "completed"
+        "status": "pending"
       },
       {
         "roundNumber": 2,
         "label": "Semifinals",
         "matchFormat": { "gamesPerMatch": 3, "label": "Best of 3" },
-        "scheduledTime": "2026-02-01T11:30:00",
-        "status": "in_progress"
+        "status": "pending"
       },
       {
         "roundNumber": 3,
         "label": "Finals",
         "matchFormat": { "gamesPerMatch": 3, "label": "Best of 3" },
-        "scheduledTime": "2026-02-01T13:00:00",
-        "status": "upcoming"
+        "status": "pending"
+      }
+    ],
+    "projectedMatchups": [
+      {
+        "position": "QF1",
+        "team1Source": "Pool A #1",
+        "team2Source": "Pool B #2",
+        "projectedTeam1": "Walsh / Kim",
+        "projectedTeam2": "Chen / Foster"
+      },
+      {
+        "position": "QF2",
+        "team1Source": "Pool C #1",
+        "team2Source": "Pool D #2",
+        "projectedTeam1": "Garcia / Lewis",
+        "projectedTeam2": "Allen / King"
+      },
+      {
+        "position": "QF3",
+        "team1Source": "Pool B #1",
+        "team2Source": "Pool A #2",
+        "projectedTeam1": "Torres / Thompson",
+        "projectedTeam2": "Martinez / Patel"
+      },
+      {
+        "position": "QF4",
+        "team1Source": "Pool D #1",
+        "team2Source": "Pool C #2",
+        "projectedTeam1": "Robinson / Walker",
+        "projectedTeam2": "Hall / Young"
       }
     ]
   },
-  "bracketMatches": [
-    {
-      "id": "bm-qf-1",
-      "bracketId": "bracket-001",
-      "roundNumber": 1,
-      "roundLabel": "Quarterfinals",
-      "position": 1,
-      "matchId": "match-101",
-      "seed1": 1,
-      "seed2": 8,
-      "team1": {
-        "teamId": "team-001",
-        "seed": 1,
-        "players": [
-          { "id": "plr-003", "name": "Jennifer Walsh" },
-          { "id": "plr-004", "name": "David Kim" }
-        ],
-        "displayName": "(1) Walsh/Kim"
+
+  "playerScheduleView": {
+    "playerId": "plr-001",
+    "teamId": "rr-team-03",
+    "teamName": "Martinez / Patel",
+    "poolId": "pool-A",
+    "poolName": "Pool A",
+    "currentRank": 2,
+    "advances": true,
+    "schedule": [
+      {
+        "roundNumber": 1,
+        "opponent": "Anderson / Taylor",
+        "opponentSeed": 9,
+        "courtId": "court-002",
+        "courtName": "Court 2",
+        "scheduledTime": "2026-02-01T09:03:00",
+        "status": "completed",
+        "result": "W",
+        "score": "11-7"
       },
-      "team2": {
-        "teamId": "team-008",
-        "seed": 8,
-        "players": [
-          { "id": "plr-015", "name": "Daniel Lee" },
-          { "id": "plr-016", "name": "Sophia Martinez" }
-        ],
-        "displayName": "(8) Lee/Martinez"
+      {
+        "roundNumber": 2,
+        "opponent": "Wilson / Brown",
+        "opponentSeed": 7,
+        "courtId": "court-002",
+        "courtName": "Court 2",
+        "scheduledTime": "2026-02-01T09:33:00",
+        "status": "completed",
+        "result": "W",
+        "score": "11-9"
       },
-      "scores": [{ "team1": 11, "team2": 5 }],
-      "winner": "team1",
-      "status": "completed",
-      "courtId": "court-001",
-      "scheduledTime": "2026-02-01T10:00:00",
-      "startedAt": "2026-02-01T10:02:00",
-      "completedAt": "2026-02-01T10:18:00",
-      "winnerAdvancesTo": "bm-sf-1",
-      "loserAdvancesTo": null
-    },
-    {
-      "id": "bm-qf-2",
-      "bracketId": "bracket-001",
-      "roundNumber": 1,
-      "roundLabel": "Quarterfinals",
-      "position": 2,
-      "matchId": "match-102",
-      "seed1": 4,
-      "seed2": 5,
-      "team1": {
-        "teamId": "team-004",
-        "seed": 4,
-        "players": [
-          { "id": "plr-002", "name": "Marcus Chen" },
-          { "id": "plr-008", "name": "Amanda Foster" }
-        ],
-        "displayName": "(4) Chen/Foster"
+      {
+        "roundNumber": 3,
+        "opponent": "Johnson / Garcia",
+        "opponentSeed": 5,
+        "courtId": "court-002",
+        "courtName": "Court 2",
+        "scheduledTime": "2026-02-01T10:03:00",
+        "status": "completed",
+        "result": "W",
+        "score": "11-8"
       },
-      "team2": {
-        "teamId": "team-005",
-        "seed": 5,
-        "players": [
-          { "id": "plr-009", "name": "Robert Johnson" },
-          { "id": "plr-010", "name": "Nicole Garcia" }
-        ],
-        "displayName": "(5) Johnson/Garcia"
+      {
+        "roundNumber": 4,
+        "opponent": "Moore / Jackson",
+        "opponentSeed": 11,
+        "courtId": "court-002",
+        "courtName": "Court 2",
+        "scheduledTime": "2026-02-01T10:56:00",
+        "status": "in_progress",
+        "result": null,
+        "score": "8-6"
       },
-      "scores": [{ "team1": 11, "team2": 9 }],
-      "winner": "team1",
-      "status": "completed",
-      "courtId": "court-002",
-      "scheduledTime": "2026-02-01T10:00:00",
-      "startedAt": "2026-02-01T10:03:00",
-      "completedAt": "2026-02-01T10:25:00",
-      "winnerAdvancesTo": "bm-sf-1",
-      "loserAdvancesTo": null
-    },
-    {
-      "id": "bm-qf-3",
-      "bracketId": "bracket-001",
-      "roundNumber": 1,
-      "roundLabel": "Quarterfinals",
-      "position": 3,
-      "matchId": "match-103",
-      "seed1": 3,
-      "seed2": 6,
-      "team1": {
-        "teamId": "team-003",
-        "seed": 3,
-        "players": [
-          { "id": "plr-001", "name": "Sarah Martinez" },
-          { "id": "plr-007", "name": "Lisa Patel" }
-        ],
-        "displayName": "(3) Martinez/Patel"
-      },
-      "team2": {
-        "teamId": "team-006",
-        "seed": 6,
-        "players": [
-          { "id": "plr-011", "name": "Chris Williams" },
-          { "id": "plr-012", "name": "Emily Rodriguez" }
-        ],
-        "displayName": "(6) Williams/Rodriguez"
-      },
-      "scores": [{ "team1": 11, "team2": 7 }],
-      "winner": "team1",
-      "status": "completed",
-      "courtId": "court-003",
-      "scheduledTime": "2026-02-01T10:00:00",
-      "startedAt": "2026-02-01T10:01:00",
-      "completedAt": "2026-02-01T10:20:00",
-      "winnerAdvancesTo": "bm-sf-2",
-      "loserAdvancesTo": null
-    },
-    {
-      "id": "bm-qf-4",
-      "bracketId": "bracket-001",
-      "roundNumber": 1,
-      "roundLabel": "Quarterfinals",
-      "position": 4,
-      "matchId": "match-104",
-      "seed1": 2,
-      "seed2": 7,
-      "team1": {
-        "teamId": "team-002",
-        "seed": 2,
-        "players": [
-          { "id": "plr-005", "name": "Michael Torres" },
-          { "id": "plr-006", "name": "Brian Thompson" }
-        ],
-        "displayName": "(2) Torres/Thompson"
-      },
-      "team2": {
-        "teamId": "team-007",
-        "seed": 7,
-        "players": [
-          { "id": "plr-013", "name": "James Wilson" },
-          { "id": "plr-014", "name": "Olivia Brown" }
-        ],
-        "displayName": "(7) Wilson/Brown"
-      },
-      "scores": [{ "team1": 11, "team2": 4 }],
-      "winner": "team1",
-      "status": "completed",
-      "courtId": "court-004",
-      "scheduledTime": "2026-02-01T10:00:00",
-      "startedAt": "2026-02-01T10:00:00",
-      "completedAt": "2026-02-01T10:15:00",
-      "winnerAdvancesTo": "bm-sf-2",
-      "loserAdvancesTo": null
-    },
-    {
-      "id": "bm-sf-1",
-      "bracketId": "bracket-001",
-      "roundNumber": 2,
-      "roundLabel": "Semifinals",
-      "position": 1,
-      "matchId": "match-105",
-      "seed1": 1,
-      "seed2": 4,
-      "team1": {
-        "teamId": "team-001",
-        "seed": 1,
-        "players": [
-          { "id": "plr-003", "name": "Jennifer Walsh" },
-          { "id": "plr-004", "name": "David Kim" }
-        ],
-        "displayName": "(1) Walsh/Kim"
-      },
-      "team2": {
-        "teamId": "team-004",
-        "seed": 4,
-        "players": [
-          { "id": "plr-002", "name": "Marcus Chen" },
-          { "id": "plr-008", "name": "Amanda Foster" }
-        ],
-        "displayName": "(4) Chen/Foster"
-      },
-      "scores": [
-        { "team1": 11, "team2": 8 },
-        { "team1": 9, "team2": 11 },
-        { "team1": 6, "team2": 4 }
-      ],
-      "winner": null,
-      "status": "in_progress",
-      "courtId": "court-001",
-      "scheduledTime": "2026-02-01T11:30:00",
-      "startedAt": "2026-02-01T11:32:00",
-      "completedAt": null,
-      "winnerAdvancesTo": "bm-f",
-      "loserAdvancesTo": "bm-3rd"
-    },
-    {
-      "id": "bm-sf-2",
-      "bracketId": "bracket-001",
-      "roundNumber": 2,
-      "roundLabel": "Semifinals",
-      "position": 2,
-      "matchId": "match-106",
-      "seed1": 3,
-      "seed2": 2,
-      "team1": {
-        "teamId": "team-003",
-        "seed": 3,
-        "players": [
-          { "id": "plr-001", "name": "Sarah Martinez" },
-          { "id": "plr-007", "name": "Lisa Patel" }
-        ],
-        "displayName": "(3) Martinez/Patel"
-      },
-      "team2": {
-        "teamId": "team-002",
-        "seed": 2,
-        "players": [
-          { "id": "plr-005", "name": "Michael Torres" },
-          { "id": "plr-006", "name": "Brian Thompson" }
-        ],
-        "displayName": "(2) Torres/Thompson"
-      },
-      "scores": [
-        { "team1": 8, "team2": 11 },
-        { "team1": 11, "team2": 9 },
-        { "team1": 3, "team2": 5 }
-      ],
-      "winner": null,
-      "status": "in_progress",
-      "courtId": "court-002",
-      "scheduledTime": "2026-02-01T11:30:00",
-      "startedAt": "2026-02-01T11:35:00",
-      "completedAt": null,
-      "winnerAdvancesTo": "bm-f",
-      "loserAdvancesTo": "bm-3rd"
-    },
-    {
-      "id": "bm-3rd",
-      "bracketId": "bracket-001",
-      "roundNumber": 3,
-      "roundLabel": "Third Place",
-      "position": 1,
-      "matchId": null,
-      "seed1": null,
-      "seed2": null,
-      "team1": null,
-      "team2": null,
-      "scores": [],
-      "winner": null,
-      "status": "upcoming",
-      "courtId": null,
-      "scheduledTime": "2026-02-01T13:00:00",
-      "startedAt": null,
-      "completedAt": null,
-      "winnerAdvancesTo": null,
-      "loserAdvancesTo": null,
-      "awaitingLoserFrom": ["bm-sf-1", "bm-sf-2"]
-    },
-    {
-      "id": "bm-f",
-      "bracketId": "bracket-001",
-      "roundNumber": 3,
-      "roundLabel": "Finals",
-      "position": 2,
-      "matchId": null,
-      "seed1": null,
-      "seed2": null,
-      "team1": null,
-      "team2": null,
-      "scores": [],
-      "winner": null,
-      "status": "upcoming",
-      "courtId": null,
-      "scheduledTime": "2026-02-01T14:00:00",
-      "startedAt": null,
-      "completedAt": null,
-      "winnerAdvancesTo": null,
-      "loserAdvancesTo": null,
-      "awaitingWinnerFrom": ["bm-sf-1", "bm-sf-2"]
-    }
-  ],
+      {
+        "roundNumber": 5,
+        "opponent": "Walsh / Kim",
+        "opponentSeed": 1,
+        "courtId": null,
+        "courtName": "TBD",
+        "scheduledTime": "2026-02-01T11:00:00",
+        "status": "upcoming",
+        "result": null,
+        "score": null
+      }
+    ],
+    "advancementScenarios": [
+      "Win Round 4: Clinch #2 seed regardless of Round 5 result",
+      "Lose Round 4, Win Round 5: Clinch #2 seed",
+      "Lose both: Fall to #3 if Johnson/Garcia wins out"
+    ]
+  },
+
   "courts": [
     {
       "id": "court-001",
       "name": "Court 1",
       "status": "in_progress",
-      "currentMatchId": "match-105",
-      "attributes": {
-        "indoor": true,
-        "surface": "sport_court",
-        "lighting": true
-      }
+      "currentMatchId": "rr-match-034",
+      "attributes": { "indoor": true, "surface": "sport_court", "lighting": true }
     },
     {
       "id": "court-002",
       "name": "Court 2",
       "status": "in_progress",
-      "currentMatchId": "match-106",
-      "attributes": {
-        "indoor": true,
-        "surface": "sport_court",
-        "lighting": true
-      }
+      "currentMatchId": "rr-match-035",
+      "attributes": { "indoor": true, "surface": "sport_court", "lighting": true }
     },
     {
       "id": "court-003",
       "name": "Court 3",
       "status": "available",
       "currentMatchId": null,
-      "attributes": {
-        "indoor": true,
-        "surface": "sport_court",
-        "lighting": true
-      }
+      "attributes": { "indoor": true, "surface": "sport_court", "lighting": true }
     },
     {
       "id": "court-004",
       "name": "Court 4",
+      "status": "in_progress",
+      "currentMatchId": "rr-match-037",
+      "attributes": { "indoor": true, "surface": "sport_court", "lighting": true }
+    },
+    {
+      "id": "court-005",
+      "name": "Court 5",
+      "status": "in_progress",
+      "currentMatchId": "rr-match-038",
+      "attributes": { "indoor": false, "surface": "concrete", "lighting": true }
+    },
+    {
+      "id": "court-006",
+      "name": "Court 6",
       "status": "available",
       "currentMatchId": null,
-      "attributes": {
-        "indoor": false,
-        "surface": "concrete",
-        "lighting": false
-      }
+      "attributes": { "indoor": false, "surface": "concrete", "lighting": true }
     }
   ],
-  "matches": [
+
+  "roundRobinNotifications": [
     {
-      "id": "match-105",
-      "bracketMatchId": "bm-sf-1",
-      "courtId": "court-001",
-      "status": "in_progress",
-      "round": 2,
-      "roundLabel": "Semifinals",
-      "team1": {
-        "players": [
-          { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.5 },
-          { "id": "plr-004", "name": "David Kim", "skillRating": 4.25 }
-        ],
-        "gamesWon": 1,
-        "currentGameScore": 6,
-        "checkedIn": [true, true]
-      },
-      "team2": {
-        "players": [
-          { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0 },
-          { "id": "plr-008", "name": "Amanda Foster", "skillRating": 3.75 }
-        ],
-        "gamesWon": 1,
-        "currentGameScore": 4,
-        "checkedIn": [true, true]
-      },
-      "gameScores": [
-        { "team1": 11, "team2": 8 },
-        { "team1": 9, "team2": 11 }
-      ],
-      "gamesPerMatch": 3,
-      "winner": null,
-      "startedAt": "2026-02-01T11:32:00",
-      "completedAt": null,
-      "duration": null,
-      "scoreConfirmed": false
+      "id": "notif-001",
+      "type": "match_starting",
+      "message": "Your match is starting on Court 2!",
+      "timestamp": "2026-02-01T10:55:00",
+      "matchId": "rr-match-035",
+      "forUserId": "plr-001",
+      "read": false
     },
     {
-      "id": "match-106",
-      "bracketMatchId": "bm-sf-2",
-      "courtId": "court-002",
-      "status": "in_progress",
-      "round": 2,
-      "roundLabel": "Semifinals",
-      "team1": {
-        "players": [
-          { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 4.0 },
-          { "id": "plr-007", "name": "Lisa Patel", "skillRating": 4.0 }
-        ],
-        "gamesWon": 1,
-        "currentGameScore": 3,
-        "checkedIn": [true, true]
-      },
-      "team2": {
-        "players": [
-          { "id": "plr-005", "name": "Michael Torres", "skillRating": 4.5 },
-          { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0 }
-        ],
-        "gamesWon": 1,
-        "currentGameScore": 5,
-        "checkedIn": [true, true]
-      },
-      "gameScores": [
-        { "team1": 8, "team2": 11 },
-        { "team1": 11, "team2": 9 }
-      ],
-      "gamesPerMatch": 3,
-      "winner": null,
-      "startedAt": "2026-02-01T11:35:00",
-      "completedAt": null,
-      "duration": null,
-      "scoreConfirmed": false
+      "id": "notif-002",
+      "type": "advancement",
+      "message": "You're currently in position to advance to playoffs!",
+      "timestamp": "2026-02-01T10:45:00",
+      "poolId": "pool-A",
+      "forUserId": "plr-001",
+      "read": true
+    },
+    {
+      "id": "notif-003",
+      "type": "pool_complete",
+      "message": "Pool A is 73% complete. Estimated finish: 11:30 AM",
+      "timestamp": "2026-02-01T10:50:00",
+      "poolId": "pool-A",
+      "forUserId": null,
+      "read": false
+    },
+    {
+      "id": "notif-004",
+      "type": "tiebreaker",
+      "message": "Tiebreaker applied in Pool A: Johnson/Garcia ranked above Wilson/Brown via head-to-head",
+      "timestamp": "2026-02-01T10:42:00",
+      "poolId": "pool-A",
+      "forUserId": null,
+      "read": false
     }
   ],
-  "players": [
-    { "id": "plr-001", "name": "Sarah Martinez", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-106", "seed": 3, "eliminated": false },
-    { "id": "plr-002", "name": "Marcus Chen", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-105", "seed": 4, "eliminated": false, "isOrganizer": true },
-    { "id": "plr-003", "name": "Jennifer Walsh", "skillRating": 4.5, "checkedIn": true, "currentMatchId": "match-105", "seed": 1, "eliminated": false },
-    { "id": "plr-004", "name": "David Kim", "skillRating": 4.25, "checkedIn": true, "currentMatchId": "match-105", "seed": 1, "eliminated": false },
-    { "id": "plr-005", "name": "Michael Torres", "skillRating": 4.5, "checkedIn": true, "currentMatchId": "match-106", "seed": 2, "eliminated": false },
-    { "id": "plr-006", "name": "Brian Thompson", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-106", "seed": 2, "eliminated": false },
-    { "id": "plr-007", "name": "Lisa Patel", "skillRating": 4.0, "checkedIn": true, "currentMatchId": "match-106", "seed": 3, "eliminated": false },
-    { "id": "plr-008", "name": "Amanda Foster", "skillRating": 3.75, "checkedIn": true, "currentMatchId": "match-105", "seed": 4, "eliminated": false },
-    { "id": "plr-009", "name": "Robert Johnson", "skillRating": 3.75, "checkedIn": true, "currentMatchId": null, "seed": 5, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-010", "name": "Nicole Garcia", "skillRating": 3.75, "checkedIn": true, "currentMatchId": null, "seed": 5, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-011", "name": "Chris Williams", "skillRating": 3.5, "checkedIn": true, "currentMatchId": null, "seed": 6, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-012", "name": "Emily Rodriguez", "skillRating": 3.75, "checkedIn": true, "currentMatchId": null, "seed": 6, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-013", "name": "James Wilson", "skillRating": 3.5, "checkedIn": true, "currentMatchId": null, "seed": 7, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-014", "name": "Olivia Brown", "skillRating": 3.5, "checkedIn": true, "currentMatchId": null, "seed": 7, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-015", "name": "Daniel Lee", "skillRating": 3.25, "checkedIn": true, "currentMatchId": null, "seed": 8, "eliminated": true, "placement": "Quarterfinals" },
-    { "id": "plr-016", "name": "Sophia Martinez", "skillRating": 3.5, "checkedIn": true, "currentMatchId": null, "seed": 8, "eliminated": true, "placement": "Quarterfinals" }
-  ],
-  "matchQueue": [],
-  "standings": [],
-  "scoreDisputes": [],
-  "completedBracketMatches": [
-    {
-      "id": "bm-qf-1",
-      "round": "Quarterfinals",
-      "team1Name": "(1) Walsh/Kim",
-      "team2Name": "(8) Lee/Martinez",
-      "score": "11-5",
-      "winner": "(1) Walsh/Kim",
-      "court": "Court 1",
-      "completedAt": "2026-02-01T10:18:00"
-    },
-    {
-      "id": "bm-qf-2",
-      "round": "Quarterfinals",
-      "team1Name": "(4) Chen/Foster",
-      "team2Name": "(5) Johnson/Garcia",
-      "score": "11-9",
-      "winner": "(4) Chen/Foster",
-      "court": "Court 2",
-      "completedAt": "2026-02-01T10:25:00"
-    },
-    {
-      "id": "bm-qf-3",
-      "round": "Quarterfinals",
-      "team1Name": "(3) Martinez/Patel",
-      "team2Name": "(6) Williams/Rodriguez",
-      "score": "11-7",
-      "winner": "(3) Martinez/Patel",
-      "court": "Court 3",
-      "completedAt": "2026-02-01T10:20:00"
-    },
-    {
-      "id": "bm-qf-4",
-      "round": "Quarterfinals",
-      "team1Name": "(2) Torres/Thompson",
-      "team2Name": "(7) Wilson/Brown",
-      "score": "11-4",
-      "winner": "(2) Torres/Thompson",
-      "court": "Court 4",
-      "completedAt": "2026-02-01T10:15:00"
-    }
-  ],
-  "tournamentResults": null,
-  "poolPlayExample": {
-    "_note": "Example pool play data structure - not part of current tournament",
-    "pools": [
+
+  "rotatingPartnersExample": {
+    "eventId": "evt-rr-002",
+    "format": "rotating_partners",
+    "playerCount": 8,
+    "players": [
+      { "id": "rp-001", "name": "Alex Rivera", "skillRating": 3.5 },
+      { "id": "rp-002", "name": "Jordan Chen", "skillRating": 3.5 },
+      { "id": "rp-003", "name": "Taylor Smith", "skillRating": 3.25 },
+      { "id": "rp-004", "name": "Morgan Lee", "skillRating": 3.25 },
+      { "id": "rp-005", "name": "Casey Brown", "skillRating": 3.0 },
+      { "id": "rp-006", "name": "Jamie Wilson", "skillRating": 3.0 },
+      { "id": "rp-007", "name": "Drew Martinez", "skillRating": 2.75 },
+      { "id": "rp-008", "name": "Sam Thompson", "skillRating": 2.75 }
+    ],
+    "partnerRotation": [
       {
-        "id": "pool-A",
-        "name": "Pool A",
-        "teams": ["team-001", "team-004", "team-005", "team-008"],
-        "standings": [
-          { "teamId": "team-001", "displayName": "(1) Walsh/Kim", "wins": 3, "losses": 0, "pointDiff": 15, "rank": 1, "advances": true },
-          { "teamId": "team-004", "displayName": "(4) Chen/Foster", "wins": 2, "losses": 1, "pointDiff": 5, "rank": 2, "advances": true },
-          { "teamId": "team-005", "displayName": "(5) Johnson/Garcia", "wins": 1, "losses": 2, "pointDiff": -8, "rank": 3, "advances": false },
-          { "teamId": "team-008", "displayName": "(8) Lee/Martinez", "wins": 0, "losses": 3, "pointDiff": -12, "rank": 4, "advances": false }
-        ],
-        "matches": [],
-        "status": "completed"
+        "roundNumber": 1,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-002", "opponentIds": ["rp-003", "rp-004"] },
+          { "playerId": "rp-003", "partnerId": "rp-004", "opponentIds": ["rp-001", "rp-002"] },
+          { "playerId": "rp-005", "partnerId": "rp-006", "opponentIds": ["rp-007", "rp-008"] },
+          { "playerId": "rp-007", "partnerId": "rp-008", "opponentIds": ["rp-005", "rp-006"] }
+        ]
       },
       {
-        "id": "pool-B",
-        "name": "Pool B",
-        "teams": ["team-002", "team-003", "team-006", "team-007"],
-        "standings": [
-          { "teamId": "team-002", "displayName": "(2) Torres/Thompson", "wins": 3, "losses": 0, "pointDiff": 18, "rank": 1, "advances": true },
-          { "teamId": "team-003", "displayName": "(3) Martinez/Patel", "wins": 2, "losses": 1, "pointDiff": 7, "rank": 2, "advances": true },
-          { "teamId": "team-006", "displayName": "(6) Williams/Rodriguez", "wins": 1, "losses": 2, "pointDiff": -6, "rank": 3, "advances": false },
-          { "teamId": "team-007", "displayName": "(7) Wilson/Brown", "wins": 0, "losses": 3, "pointDiff": -19, "rank": 4, "advances": false }
-        ],
-        "matches": [],
-        "status": "completed"
+        "roundNumber": 2,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-003", "opponentIds": ["rp-005", "rp-007"] },
+          { "playerId": "rp-005", "partnerId": "rp-007", "opponentIds": ["rp-001", "rp-003"] },
+          { "playerId": "rp-002", "partnerId": "rp-004", "opponentIds": ["rp-006", "rp-008"] },
+          { "playerId": "rp-006", "partnerId": "rp-008", "opponentIds": ["rp-002", "rp-004"] }
+        ]
+      },
+      {
+        "roundNumber": 3,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-004", "opponentIds": ["rp-002", "rp-003"] },
+          { "playerId": "rp-002", "partnerId": "rp-003", "opponentIds": ["rp-001", "rp-004"] },
+          { "playerId": "rp-005", "partnerId": "rp-008", "opponentIds": ["rp-006", "rp-007"] },
+          { "playerId": "rp-006", "partnerId": "rp-007", "opponentIds": ["rp-005", "rp-008"] }
+        ]
+      },
+      {
+        "roundNumber": 4,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-005", "opponentIds": ["rp-002", "rp-006"] },
+          { "playerId": "rp-002", "partnerId": "rp-006", "opponentIds": ["rp-001", "rp-005"] },
+          { "playerId": "rp-003", "partnerId": "rp-007", "opponentIds": ["rp-004", "rp-008"] },
+          { "playerId": "rp-004", "partnerId": "rp-008", "opponentIds": ["rp-003", "rp-007"] }
+        ]
+      },
+      {
+        "roundNumber": 5,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-006", "opponentIds": ["rp-003", "rp-008"] },
+          { "playerId": "rp-003", "partnerId": "rp-008", "opponentIds": ["rp-001", "rp-006"] },
+          { "playerId": "rp-002", "partnerId": "rp-005", "opponentIds": ["rp-004", "rp-007"] },
+          { "playerId": "rp-004", "partnerId": "rp-007", "opponentIds": ["rp-002", "rp-005"] }
+        ]
+      },
+      {
+        "roundNumber": 6,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-007", "opponentIds": ["rp-004", "rp-006"] },
+          { "playerId": "rp-004", "partnerId": "rp-006", "opponentIds": ["rp-001", "rp-007"] },
+          { "playerId": "rp-002", "partnerId": "rp-008", "opponentIds": ["rp-003", "rp-005"] },
+          { "playerId": "rp-003", "partnerId": "rp-005", "opponentIds": ["rp-002", "rp-008"] }
+        ]
+      },
+      {
+        "roundNumber": 7,
+        "pairings": [
+          { "playerId": "rp-001", "partnerId": "rp-008", "opponentIds": ["rp-002", "rp-007"] },
+          { "playerId": "rp-002", "partnerId": "rp-007", "opponentIds": ["rp-001", "rp-008"] },
+          { "playerId": "rp-003", "partnerId": "rp-006", "opponentIds": ["rp-004", "rp-005"] },
+          { "playerId": "rp-004", "partnerId": "rp-005", "opponentIds": ["rp-003", "rp-006"] }
+        ]
       }
     ],
-    "advancementRules": {
-      "teamsPerPool": 4,
-      "teamsAdvancing": 2,
-      "tiebreakers": ["head_to_head", "point_differential", "points_scored"]
-    }
-  },
-  "ladderExample": {
-    "_note": "Example ladder tournament data structure - not part of current tournament",
-    "ladder": {
-      "id": "ladder-001",
-      "name": "Spring Ladder League",
-      "status": "in_progress",
-      "startDate": "2026-01-15",
-      "endDate": "2026-03-15",
-      "challengeRange": 3,
-      "challengeDeadlineHours": 72,
-      "inactivityDropDays": 14,
-      "schedulingMode": "self_scheduled"
-    },
-    "standings": [
-      { "position": 1, "teamId": "team-001", "displayName": "Walsh/Kim", "rating": 4.38, "challengeable": false, "lastActive": "2026-02-01" },
-      { "position": 2, "teamId": "team-002", "displayName": "Torres/Thompson", "rating": 4.25, "challengeable": true, "lastActive": "2026-01-30" },
-      { "position": 3, "teamId": "team-003", "displayName": "Martinez/Patel", "rating": 4.0, "challengeable": true, "lastActive": "2026-02-01" },
-      { "position": 4, "teamId": "team-004", "displayName": "Chen/Foster", "rating": 3.88, "challengeable": true, "lastActive": "2026-01-28" },
-      { "position": 5, "teamId": "team-005", "displayName": "Johnson/Garcia", "rating": 3.75, "challengeable": true, "lastActive": "2026-01-25", "inactivityWarning": true }
-    ],
-    "challenges": [
-      {
-        "id": "challenge-001",
-        "challengerId": "team-003",
-        "challengerPosition": 3,
-        "defenderId": "team-002",
-        "defenderPosition": 2,
-        "status": "accepted",
-        "createdAt": "2026-01-30T14:00:00",
-        "deadline": "2026-02-02T14:00:00",
-        "scheduledMatchTime": "2026-02-01T18:00:00",
-        "matchId": null
-      }
+    "individualStandings": [
+      { "rank": 1, "playerId": "rp-001", "name": "Alex Rivera", "wins": 6, "losses": 1, "pointDiff": 18 },
+      { "rank": 2, "playerId": "rp-003", "name": "Taylor Smith", "wins": 5, "losses": 2, "pointDiff": 12 },
+      { "rank": 3, "playerId": "rp-002", "name": "Jordan Chen", "wins": 5, "losses": 2, "pointDiff": 8 },
+      { "rank": 4, "playerId": "rp-005", "name": "Casey Brown", "wins": 4, "losses": 3, "pointDiff": 3 },
+      { "rank": 5, "playerId": "rp-004", "name": "Morgan Lee", "wins": 3, "losses": 4, "pointDiff": -2 },
+      { "rank": 6, "playerId": "rp-006", "name": "Jamie Wilson", "wins": 2, "losses": 5, "pointDiff": -8 },
+      { "rank": 7, "playerId": "rp-007", "name": "Drew Martinez", "wins": 2, "losses": 5, "pointDiff": -14 },
+      { "rank": 8, "playerId": "rp-008", "name": "Sam Thompson", "wins": 1, "losses": 6, "pointDiff": -17 }
     ]
-  },
-  "doubleEliminationExample": {
-    "_note": "Example double elimination structure - not part of current tournament",
-    "winnersBracket": {
-      "id": "bracket-winners",
-      "type": "winners",
-      "rounds": []
-    },
-    "losersBracket": {
-      "id": "bracket-losers",
-      "type": "losers",
-      "rounds": []
-    },
-    "grandFinals": {
-      "id": "bm-grand-finals",
-      "requiresReset": true,
-      "resetMatch": null
-    }
   }
 }

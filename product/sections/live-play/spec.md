@@ -1,7 +1,7 @@
 # Live Play Specification
 
 ## Overview
-Live Play is the real-time game execution interface used during active events. Players see their match assignments and can check in at courts, while Game Managers control the flow—calling players to courts, entering scores, handling no-shows, and tracking overall event progress. For tournament formats, Live Play includes interactive bracket views, seeding management, and tournament-specific notifications. A full-screen Court Status Board provides a TV/projector-friendly display for venues.
+Live Play is the real-time game execution interface used during active events. Players see their match assignments and can check in at courts, while Game Managers control the flow—calling players to courts, entering scores, handling no-shows, and tracking overall event progress. For tournament formats, Live Play includes interactive bracket views, seeding management, and tournament-specific notifications. For Round Robin events, players see their complete schedule, current standings, and partner assignments, while Game Managers manage the full round robin lifecycle including schedule generation, score entry, tiebreaker resolution, and optional playoff bracket transitions. A full-screen Court Status Board provides a TV/projector-friendly display for venues.
 
 ## User Flows
 
@@ -26,6 +26,18 @@ Live Play is the real-time game execution interface used during active events. P
 - Challenge players above in ladder (for ladder tournaments)
 - Share bracket via link or to social media
 - View final results with podium display and champion's path
+
+#### Round Robin Player Flows
+- View complete round robin schedule with round numbers, opponents, partners (if rotating), and court assignments
+- See current/next match highlighted with estimated start time
+- View real-time standings with W-L record, point differential, and rank
+- See tiebreaker explanations when ties exist (USA Pickleball hierarchy)
+- View pool standings and advancement line ("Top 2 advance to playoffs")
+- Track bye rounds clearly marked as "Bye - No Match"
+- See partner assignments for each round (rotating/blind draw formats)
+- View "What I need to advance" scenarios in pool play
+- Tap any match to see full details (score, who entered, timestamp)
+- View final standings and placement after event ends
 
 ### Game Manager Flows
 
@@ -79,6 +91,45 @@ Live Play is the real-time game execution interface used during active events. P
 - Handle inactivity drops
 - Set ladder end conditions (fixed date, rolling, or season-based)
 
+#### Round Robin Management Flows
+- Generate round robin schedule (single or double round robin)
+- Set custom number of rounds (1-20)
+- Configure partner format:
+  - Fixed Partners (pre-registered pairs)
+  - Rotating Partners (each player partners with every other once)
+  - Blind Draw (random assignment before event)
+  - Pick-a-Number Random (new random partner each round)
+- Configure spouse/pair avoidance rules
+- Preview partner rotation before starting event
+- Configure pool structure:
+  - Single Pool (all players in one round robin, 4-14 players recommended)
+  - Multiple Pools (2-4 pools for 12-32 players)
+- Configure pool assignment method (Random, Serpentine Seeding, Manual, Skill-Balanced)
+- Configure time format:
+  - Games-Based (complete games to 11, 15, or 21 points)
+  - Time-Based (fixed duration per round: 8, 10, 12, 15 minutes)
+  - Hybrid (complete as many games as possible within time limit)
+- Configure win-by margin and point caps
+- Configure rally scoring vs traditional side-out
+- Configure standings calculation (Win-Loss Points, Points-For, or Social Mode)
+- Apply USA Pickleball official tiebreaker hierarchy
+- View master schedule with all matches across all rounds
+- Handle mid-event changes:
+  - Player leaves → remaining matches become forfeits or byes
+  - Late arrival → add player and regenerate remaining rounds only
+  - Schedule regeneration preserves completed match scores
+- Configure playoff format after pool play:
+  - No Playoffs (standings determine final placements)
+  - Single Elimination
+  - Double Elimination
+  - Medal Rounds (1v4 and 2v3 semifinals, Gold/Silver and Bronze matches)
+- Configure advancement (how many advance from each pool: 1, 2, 3, or 4)
+- Configure bracket seeding (Standard Cross vs Performance-Based)
+- Lock standings and transition to playoff bracket
+- Send notifications: "You've advanced to playoffs!" / "Thank you for playing"
+- Configure break time between pool play and playoffs
+- Configure mixed doubles mode with gender-balanced rotations
+
 ## UI Requirements
 
 ### General
@@ -106,6 +157,29 @@ Live Play is the real-time game execution interface used during active events. P
 - Multi-day tournament progress indicator ("Day 1 of 2")
 - Match format indicator by round (Bo3, Bo5, etc.)
 - Bye display and handling in bracket visualization
+
+### Round Robin UI
+- Round robin schedule view with round-by-round match list
+- Current round highlighted, completed rounds grayed
+- Standings table with real-time updates (Rank, Player/Team, W, L, Point Differential)
+- Expandable head-to-head records in standings
+- Tiebreaker explanation tooltips (USA Pickleball hierarchy: H2H → Overall PD → H2H PD → vs Next Highest → Coin Flip)
+- Pool standings tables with advancement line indicator ("Top 2 advance")
+- Pool selector to toggle between Pool A, Pool B, etc.
+- Partner rotation preview before event starts
+- Partner assignments visible in schedule view for each round
+- Bye distribution visualization for odd player counts
+- "Pool Play Complete" transition screen
+- Advancing/eliminated player notification banners
+- Schedule regeneration confirmation dialog with score preservation warning
+- Time-based round timer with countdown display
+- Whistle/horn notification trigger when time expires
+- Buffer time indicator between rounds
+- Mixed doubles team display (Player A (M) / Player B (F))
+- Event duration estimate based on player count and court availability
+- Rounds remaining and time-to-completion display
+- Podium display for top 3 with certificates/badges
+- Results export options (PDF, CSV)
 
 ## Configuration
 - shell: true

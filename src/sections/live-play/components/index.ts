@@ -9,10 +9,18 @@ export { EventProgressBar } from './EventProgressBar'
 export { BracketView } from './BracketView'
 export { BracketMatchCard } from './BracketMatchCard'
 export { SeedingManager } from './SeedingManager'
+export { TournamentDashboard } from './TournamentDashboard'
+export { ScoreEntryModal } from './ScoreEntryModal'
 
 // Pool Play components
 export { PoolPlayView, PoolStandings } from './PoolStandings'
 export { FullPoolPlayView } from './FullPoolPlayView'
+export { PoolDetailView } from './PoolDetailView'
+
+// Round Robin components
+export { RoundRobinPoolStandings } from './RoundRobinPoolStandings'
+export { RoundRobinPlayerSchedule } from './RoundRobinPlayerSchedule'
+export { RoundRobinGMDashboard } from './RoundRobinGMDashboard'
 
 // Ladder components
 export { LadderView, LadderStandings } from './LadderStandings'

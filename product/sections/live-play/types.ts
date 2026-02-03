@@ -692,3 +692,737 @@ export interface PodiumDisplayProps {
   podium: PodiumPlacement[]
   onViewPlayer?: (playerId: string) => void
 }
+
+// =============================================================================
+// Enhanced Pool Play Types
+// =============================================================================
+
+/** Extended pool standing with additional stats for full pool play view */
+export interface ExtendedPoolStanding {
+  teamId: string
+  displayName: string
+  seed: number
+  wins: number
+  losses: number
+  pointsFor: number
+  pointsAgainst: number
+  pointDiff: number
+  rank: number
+  advances: boolean
+  headToHead: { [teamId: string]: 'W' | 'L' }
+}
+
+/** A match within a pool (round robin) */
+export interface PoolMatch {
+  id: string
+  team1Id: string
+  team2Id: string
+  score: { team1: number; team2: number } | null
+  winner: 'team1' | 'team2' | null
+  status: 'upcoming' | 'calling' | 'in_progress' | 'completed'
+  courtId: string | null
+  scheduledTime: string
+  startedAt?: string
+  completedAt?: string
+}
+
+/** Extended pool with full match details and color coding */
+export interface ExtendedPool {
+  id: string
+  name: string
+  color: 'lime' | 'sky' | 'amber' | 'violet' | 'rose' | 'cyan'
+  status: 'upcoming' | 'in_progress' | 'completed'
+  teams: string[]
+  standings: ExtendedPoolStanding[]
+  matches: PoolMatch[]
+  scheduleComplete: boolean
+}
+
+/** Pool progress tracking */
+export interface PoolProgressItem {
+  matchesPlayed: number
+  matchesTotal: number
+  percentComplete: number
+}
+
+/** Projected playoff matchup before bracket is finalized */
+export interface ProjectedMatchup {
+  position: string
+  team1Source: string
+  team2Source: string
+  projectedTeam1: string
+  projectedTeam2: string
+}
+
+/** Pending playoff bracket structure */
+export interface PendingPlayoffBracket {
+  id: string
+  status: 'pending' | 'ready' | 'in_progress' | 'completed'
+  rounds: {
+    roundNumber: number
+    label: string
+    matchFormat: MatchFormat
+    status: 'pending' | 'upcoming' | 'in_progress' | 'completed'
+  }[]
+  projectedMatchups: ProjectedMatchup[]
+}
+
+/** Extended pool play configuration */
+export interface ExtendedPoolPlayConfig {
+  advancementRules: PoolAdvancementRules
+  playoffBracketSize: 4 | 8 | 16
+  playoffSeeding: 'cross_pool' | 'straight' | 'snake'
+}
+
+/** Upcoming match summary for quick view */
+export interface UpcomingMatchSummary {
+  id: string
+  poolId: string
+  team1: string
+  team2: string
+  scheduledTime: string
+  estimatedWait: number
+}
+
+/** Pool play notification */
+export interface PoolPlayNotification {
+  id: string
+  type: 'pool_complete' | 'match_starting' | 'advancement' | 'tiebreaker'
+  message: string
+  timestamp: string
+  poolId?: string
+  matchId?: string
+  forUserId?: string
+}
+
+/** Team info for pool play */
+export interface PoolTeam {
+  id: string
+  seed: number
+  displayName: string
+  players: MatchPlayer[]
+  combinedRating: number
+  poolId: string
+}
+
+// =============================================================================
+// Full Pool Play View Props
+// =============================================================================
+
+export interface FullPoolPlayViewProps {
+  /** Tournament event info */
+  event: LiveEvent
+  /** Event progress summary */
+  eventProgress: EventProgress
+  /** Pool play configuration */
+  poolPlayConfig: ExtendedPoolPlayConfig
+  /** All pools with standings and matches */
+  pools: ExtendedPool[]
+  /** All teams in the tournament */
+  teams: PoolTeam[]
+  /** Progress tracking per pool */
+  poolProgress: { [poolId: string]: PoolProgressItem }
+  /** Upcoming matches across all pools */
+  upcomingMatches: UpcomingMatchSummary[]
+  /** Playoff bracket (pending or active) */
+  playoffBracket: PendingPlayoffBracket
+  /** Available courts */
+  courts: Court[]
+  /** Current user context */
+  currentUser?: {
+    id: string
+    name: string
+    isGameManager: boolean
+    currentMatchId: string | null
+    nextMatchId: string | null
+    poolId: string
+    poolRank: number
+  }
+  /** Notifications */
+  notifications?: PoolPlayNotification[]
+
+  // Callbacks
+  /** Called when user views a specific pool */
+  onViewPool?: (poolId: string) => void
+  /** Called when user views match details */
+  onViewMatch?: (matchId: string) => void
+  /** Called when GM starts a match */
+  onStartMatch?: (matchId: string) => void
+  /** Called when GM enters score */
+  onEnterScore?: (matchId: string) => void
+  /** Called when user views team/player details */
+  onViewTeam?: (teamId: string) => void
+  /** Called when user shares pool standings */
+  onSharePool?: (poolId: string) => void
+  /** Called when user views playoff bracket preview */
+  onViewPlayoffBracket?: () => void
+}
+
+// =============================================================================
+// Tournament Dashboard Types
+// =============================================================================
+
+/** Court assignment for tournament match scheduling */
+export interface CourtAssignment {
+  courtId: string
+  courtName: string
+  currentMatch: BracketMatch | null
+  upcomingMatches: BracketMatch[]
+  isAvailable: boolean
+  attributes: CourtAttributes
+}
+
+/** Round schedule with court assignments */
+export interface RoundSchedule {
+  roundNumber: number
+  roundLabel: string
+  matchFormat: MatchFormat
+  scheduledTime: string
+  status: 'upcoming' | 'in_progress' | 'completed'
+  matches: BracketMatch[]
+  courtAssignments: { [matchId: string]: string }
+}
+
+/** Tournament timeline event for activity log */
+export interface TournamentTimelineEvent {
+  id: string
+  timestamp: string
+  type: 'match_started' | 'match_completed' | 'round_started' | 'round_completed' | 'score_entered' | 'forfeit' | 'manual_advance' | 'announcement' | 'pause' | 'resume'
+  title: string
+  description: string
+  matchId?: string
+  roundNumber?: number
+}
+
+/** Alert for GM attention */
+export interface TournamentAlert {
+  id: string
+  type: 'match_delay' | 'score_dispute' | 'no_show' | 'court_issue' | 'round_ready'
+  severity: 'info' | 'warning' | 'urgent'
+  title: string
+  description: string
+  timestamp: string
+  matchId?: string
+  courtId?: string
+  actionRequired: boolean
+}
+
+/** Quick stats for dashboard header */
+export interface TournamentQuickStats {
+  teamsRemaining: number
+  teamsEliminated: number
+  matchesCompleted: number
+  matchesInProgress: number
+  matchesRemaining: number
+  avgMatchDuration: number
+  estimatedEndTime: string
+}
+
+/** Tournament Dashboard Props */
+export interface TournamentDashboardProps {
+  /** Tournament event info */
+  event: LiveEvent
+  /** Tournament configuration */
+  tournament: Tournament
+  /** Event progress summary */
+  eventProgress: EventProgress
+  /** Bracket structure */
+  bracket: Bracket
+  /** All bracket matches */
+  bracketMatches: BracketMatch[]
+  /** Court status and assignments */
+  courtAssignments: CourtAssignment[]
+  /** Round schedules */
+  roundSchedules: RoundSchedule[]
+  /** Recent activity timeline */
+  timeline: TournamentTimelineEvent[]
+  /** Active alerts requiring attention */
+  alerts: TournamentAlert[]
+  /** Quick stats for header */
+  quickStats: TournamentQuickStats
+  /** All seeds/teams */
+  seeds: Seed[]
+  /** Completed match summaries */
+  completedMatches: CompletedBracketMatchSummary[]
+  /** Score disputes pending resolution */
+  scoreDisputes: ScoreDispute[]
+
+  // GM Actions
+  /** Called when GM calls a match to a court */
+  onCallMatch?: (bracketMatchId: string, courtId: string) => void
+  /** Called when GM starts a match */
+  onStartMatch?: (bracketMatchId: string) => void
+  /** Called when GM enters/updates a score */
+  onEnterScore?: (bracketMatchId: string) => void
+  /** Called when GM marks a forfeit */
+  onMarkForfeit?: (bracketMatchId: string, forfeitingTeam: 'team1' | 'team2') => void
+  /** Called when GM advances a winner manually */
+  onManualAdvance?: (bracketMatchId: string, winner: 'team1' | 'team2', reason: string) => void
+  /** Called when GM undoes last advancement */
+  onUndoAdvancement?: (bracketMatchId: string) => void
+  /** Called when GM announces next round */
+  onAnnounceRound?: (roundNumber: number) => void
+  /** Called when GM schedules a match time */
+  onScheduleMatch?: (bracketMatchId: string, scheduledTime: string) => void
+  /** Called when GM assigns match to court */
+  onAssignCourt?: (bracketMatchId: string, courtId: string) => void
+  /** Called when GM pauses the event */
+  onPauseEvent?: (reason: string) => void
+  /** Called when GM resumes the event */
+  onResumeEvent?: () => void
+  /** Called when GM resolves a score dispute */
+  onResolveDispute?: (disputeId: string, team1Score: number, team2Score: number) => void
+  /** Called when GM dismisses an alert */
+  onDismissAlert?: (alertId: string) => void
+  /** Called when GM views full bracket */
+  onViewBracket?: () => void
+  /** Called when GM opens court status board */
+  onOpenCourtBoard?: () => void
+  /** Called when GM shares tournament */
+  onShareTournament?: () => void
+}
+
+// =============================================================================
+// Score Entry Modal Types
+// =============================================================================
+
+/** Team display info for score entry */
+export interface ScoreEntryTeam {
+  teamId: string
+  displayName: string
+  seed?: number
+  players: MatchPlayer[]
+}
+
+/** Match info context for score entry */
+export interface ScoreEntryMatchContext {
+  matchId: string
+  bracketMatchId?: string
+  roundLabel: string
+  courtName?: string
+  startedAt: string | null
+  team1: ScoreEntryTeam
+  team2: ScoreEntryTeam
+  existingScores: GameScore[]
+  gamesPerMatch: 1 | 3 | 5
+}
+
+/** Validation result for score entry */
+export interface ScoreValidation {
+  isValid: boolean
+  errors: string[]
+  warnings: string[]
+  winner: 'team1' | 'team2' | null
+  team1GamesWon: number
+  team2GamesWon: number
+  matchComplete: boolean
+}
+
+/** Score Entry Modal Props */
+export interface ScoreEntryModalProps {
+  /** Match context */
+  match: ScoreEntryMatchContext
+  /** Scoring rules from event */
+  scoringRules: ScoringRules
+  /** Whether to show as a modal overlay */
+  isModal?: boolean
+
+  // Callbacks
+  /** Called when score is submitted */
+  onSubmit?: (scores: GameScore[], winner: 'team1' | 'team2') => void
+  /** Called when individual game score is submitted (for live scoring) */
+  onSubmitGame?: (gameNumber: number, score: GameScore) => void
+  /** Called when modal is closed/cancelled */
+  onClose?: () => void
+  /** Called when user requests to mark forfeit */
+  onMarkForfeit?: (forfeitingTeam: 'team1' | 'team2') => void
+}
+
+// =============================================================================
+// Round Robin Types
+// =============================================================================
+
+/** Partner format options for round robin */
+export type RoundRobinPartnerFormat = 'fixed' | 'rotating' | 'blind_draw' | 'pick_a_number_random'
+
+/** Pool assignment method */
+export type PoolAssignmentMethod = 'random' | 'serpentine_seeding' | 'manual' | 'skill_balanced'
+
+/** Time format type */
+export type TimeFormatType = 'games_based' | 'time_based' | 'hybrid'
+
+/** Standings scoring method */
+export type StandingsScoringMethod = 'win_loss_points' | 'points_for' | 'social'
+
+/** Tiebreaker rules in order of precedence */
+export type TiebreakerRule = 'head_to_head' | 'overall_point_diff' | 'h2h_point_diff' | 'vs_next_highest' | 'coin_flip'
+
+/** Playoff format after pool play */
+export type PlayoffFormat = 'none' | 'single_elimination' | 'double_elimination' | 'medal_rounds'
+
+/** Playoff seeding method */
+export type PlayoffSeedingMethod = 'cross_pool' | 'straight' | 'snake' | 'performance_based'
+
+/** Pool structure configuration */
+export interface PoolStructureConfig {
+  type: 'single' | 'multiple'
+  poolCount: number
+  teamsPerPool: number
+  poolAssignmentMethod: PoolAssignmentMethod
+}
+
+/** Time format configuration */
+export interface TimeFormatConfig {
+  type: TimeFormatType
+  pointsToWin: number
+  winByTwo: boolean
+  pointCap: number | null
+  gamesPerMatch: 1 | 3 | 5
+  estimatedMatchDuration: number
+  /** For time-based format */
+  roundDurationMinutes?: number
+  /** Buffer between rounds */
+  bufferMinutes?: number
+}
+
+/** Standings configuration */
+export interface StandingsConfig {
+  scoringMethod: StandingsScoringMethod
+  tiebreakers: TiebreakerRule[]
+  socialMode: boolean
+}
+
+/** Playoff configuration */
+export interface PlayoffConfig {
+  enabled: boolean
+  format: PlayoffFormat
+  teamsAdvancing: number
+  bracketSize: 4 | 8 | 16
+  seedingMethod: PlayoffSeedingMethod
+  breakTimeBetweenPoolAndPlayoff: number
+}
+
+/** Round Robin event configuration */
+export interface RoundRobinConfig {
+  id: string
+  eventId: string
+  partnerFormat: RoundRobinPartnerFormat
+  poolStructure: PoolStructureConfig
+  timeFormat: TimeFormatConfig
+  standingsConfig: StandingsConfig
+  playoffConfig: PlayoffConfig
+  mixedDoublesMode: boolean
+  /** Player IDs to avoid pairing together */
+  spouseAvoidance: string[][]
+}
+
+/** Pool progress tracking */
+export interface PoolProgressItem {
+  matchesPlayed: number
+  matchesTotal: number
+  percentComplete: number
+}
+
+/** Round robin event progress */
+export interface RoundRobinEventProgress {
+  totalMatches: number
+  completedMatches: number
+  inProgressMatches: number
+  remainingMatches: number
+  currentRound: number
+  totalRounds: number
+  currentRoundLabel: string
+  elapsedMinutes: number
+  estimatedRemainingMinutes: number
+  poolProgress: { [poolId: string]: PoolProgressItem }
+}
+
+/** A team in round robin */
+export interface RoundRobinTeam {
+  id: string
+  seed: number
+  displayName: string
+  players: MatchPlayer[]
+  combinedRating: number
+  poolId: string
+}
+
+/** Tiebreaker explanation */
+export interface TiebreakerExplanation {
+  reason: string
+  tiedWith: string[]
+  appliedRule: TiebreakerRule
+}
+
+/** Team standing within a pool */
+export interface RoundRobinPoolStanding {
+  rank: number
+  teamId: string
+  displayName: string
+  seed: number
+  wins: number
+  losses: number
+  pointsFor: number
+  pointsAgainst: number
+  pointDiff: number
+  advances: boolean
+  headToHead: { [teamId: string]: 'W' | 'L' }
+  matchesPlayed: number
+  matchesRemaining: number
+  tiebreaker: TiebreakerExplanation | null
+}
+
+/** Pool color for visual distinction */
+export type PoolColor = 'lime' | 'sky' | 'amber' | 'violet' | 'rose' | 'cyan'
+
+/** A pool in round robin */
+export interface RoundRobinPool {
+  id: string
+  name: string
+  color: PoolColor
+  status: 'upcoming' | 'in_progress' | 'completed'
+  teams: string[]
+  advancementLine: number
+  standings: RoundRobinPoolStanding[]
+  scheduleComplete: boolean
+}
+
+/** Round status in schedule */
+export interface RoundRobinRound {
+  roundNumber: number
+  status: 'upcoming' | 'in_progress' | 'completed'
+  scheduledTime: string
+  estimatedDuration: number
+}
+
+/** Round robin schedule */
+export interface RoundRobinSchedule {
+  id: string
+  eventId: string
+  generatedAt: string
+  algorithm: 'berger_circle' | 'custom'
+  totalRounds: number
+  rounds: RoundRobinRound[]
+}
+
+/** A match in round robin */
+export interface RoundRobinMatch {
+  id: string
+  poolId: string
+  roundNumber: number
+  team1Id: string
+  team2Id: string
+  courtId: string | null
+  status: 'upcoming' | 'calling' | 'in_progress' | 'completed' | 'cancelled' | 'forfeit'
+  score: { team1: number; team2: number } | null
+  winner: 'team1' | 'team2' | null
+  startedAt: string | null
+  completedAt: string | null
+  duration: number | null
+  /** For rotating partners format */
+  partnerId?: string
+}
+
+/** Upcoming match summary */
+export interface UpcomingRoundRobinMatch {
+  id: string
+  poolId: string
+  roundNumber: number
+  team1Id: string
+  team2Id: string
+  courtId: string | null
+  status: 'upcoming'
+  scheduledTime: string
+  estimatedWait: number
+}
+
+/** Projected playoff matchup */
+export interface ProjectedPlayoffMatchup {
+  position: string
+  team1Source: string
+  team2Source: string
+  projectedTeam1: string
+  projectedTeam2: string
+}
+
+/** Pending playoff bracket */
+export interface PendingPlayoffBracket {
+  id: string
+  status: 'pending' | 'ready' | 'in_progress' | 'completed'
+  format: PlayoffFormat
+  size: 4 | 8 | 16
+  seedingMethod: PlayoffSeedingMethod
+  estimatedStartTime: string
+  breakTimeMinutes: number
+  rounds: {
+    roundNumber: number
+    label: string
+    matchFormat: MatchFormat
+    status: 'pending' | 'upcoming' | 'in_progress' | 'completed'
+  }[]
+  projectedMatchups: ProjectedPlayoffMatchup[]
+}
+
+/** Player's schedule entry */
+export interface PlayerScheduleEntry {
+  roundNumber: number
+  opponent: string
+  opponentSeed: number
+  courtId: string | null
+  courtName: string
+  scheduledTime: string
+  status: 'upcoming' | 'in_progress' | 'completed'
+  result: 'W' | 'L' | null
+  score: string | null
+  /** For rotating partners */
+  partner?: string
+}
+
+/** Player's schedule view */
+export interface PlayerScheduleView {
+  playerId: string
+  teamId: string
+  teamName: string
+  poolId: string
+  poolName: string
+  currentRank: number
+  advances: boolean
+  schedule: PlayerScheduleEntry[]
+  advancementScenarios: string[]
+}
+
+/** Round robin notification */
+export interface RoundRobinNotification {
+  id: string
+  type: 'match_starting' | 'pool_complete' | 'advancement' | 'tiebreaker' | 'playoffs_starting'
+  message: string
+  timestamp: string
+  poolId?: string
+  matchId?: string
+  forUserId: string | null
+  read: boolean
+}
+
+/** Partner pairing in rotating format */
+export interface PartnerPairing {
+  playerId: string
+  partnerId: string
+  opponentIds: string[]
+}
+
+/** Round in partner rotation */
+export interface PartnerRotationRound {
+  roundNumber: number
+  pairings: PartnerPairing[]
+}
+
+/** Rotating partners example data */
+export interface RotatingPartnersExample {
+  eventId: string
+  format: 'rotating_partners'
+  playerCount: number
+  players: MatchPlayer[]
+  partnerRotation: PartnerRotationRound[]
+  individualStandings: {
+    rank: number
+    playerId: string
+    name: string
+    wins: number
+    losses: number
+    pointDiff: number
+  }[]
+}
+
+// =============================================================================
+// Round Robin Component Props
+// =============================================================================
+
+/** Round Robin Pool Standings Props */
+export interface RoundRobinPoolStandingsProps {
+  pool: RoundRobinPool
+  teams: RoundRobinTeam[]
+  currentUserId?: string
+  onViewTeam?: (teamId: string) => void
+  onViewMatch?: (matchId: string) => void
+}
+
+/** Round Robin Schedule Props */
+export interface RoundRobinScheduleProps {
+  schedule: RoundRobinSchedule
+  matches: RoundRobinMatch[]
+  teams: RoundRobinTeam[]
+  currentUserId?: string
+  onViewMatch?: (matchId: string) => void
+}
+
+/** Round Robin Player Schedule Props */
+export interface RoundRobinPlayerScheduleProps {
+  scheduleView: PlayerScheduleView
+  onViewMatch?: (matchId: string) => void
+  onViewOpponent?: (teamId: string) => void
+}
+
+/** Round Robin Dashboard Props (GM View) */
+export interface RoundRobinDashboardProps {
+  event: LiveEvent
+  config: RoundRobinConfig
+  progress: RoundRobinEventProgress
+  pools: RoundRobinPool[]
+  teams: RoundRobinTeam[]
+  matches: RoundRobinMatch[]
+  upcomingMatches: UpcomingRoundRobinMatch[]
+  schedule: RoundRobinSchedule
+  courts: Court[]
+  playoffBracket: PendingPlayoffBracket | null
+  notifications: RoundRobinNotification[]
+
+  // GM Actions
+  onCallMatch?: (matchId: string, courtId: string) => void
+  onStartMatch?: (matchId: string) => void
+  onEnterScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  onMarkForfeit?: (matchId: string, forfeitingTeam: 'team1' | 'team2') => void
+  onHandleWithdrawal?: (teamId: string) => void
+  onRegenerateSchedule?: () => void
+  onStartPlayoffs?: () => void
+  onPauseEvent?: (reason: string) => void
+  onResumeEvent?: () => void
+  onEndEvent?: () => void
+
+  // Navigation
+  onViewPool?: (poolId: string) => void
+  onViewTeam?: (teamId: string) => void
+  onViewMatch?: (matchId: string) => void
+  onOpenCourtBoard?: () => void
+}
+
+/** Round Robin Player View Props */
+export interface RoundRobinPlayerViewProps {
+  event: LiveEvent
+  currentUser: {
+    id: string
+    name: string
+    teamId: string
+    poolId: string
+    poolRank: number
+    nextMatchId: string | null
+    currentMatchId: string | null
+  }
+  pool: RoundRobinPool
+  teams: RoundRobinTeam[]
+  scheduleView: PlayerScheduleView
+  matches: RoundRobinMatch[]
+  playoffBracket: PendingPlayoffBracket | null
+  notifications: RoundRobinNotification[]
+
+  // Player Actions
+  onCheckIn?: (matchId: string) => void
+  onSubmitScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  onConfirmScore?: (matchId: string) => void
+  onDisputeScore?: (matchId: string) => void
+
+  // Navigation
+  onViewPool?: (poolId: string) => void
+  onViewTeam?: (teamId: string) => void
+  onViewMatch?: (matchId: string) => void
+  onViewPlayoffBracket?: () => void
+}
