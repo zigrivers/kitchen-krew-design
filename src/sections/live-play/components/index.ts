@@ -30,3 +30,8 @@ export { TournamentResults } from './TournamentResults'
 
 // Display components
 export { CourtStatusBoard } from './CourtStatusBoard'
+
+// Hybrid Tournament components
+export { HybridTournamentDashboard } from './HybridTournamentDashboard'
+export { HybridSeedingView } from './HybridSeedingView'
+export { PhaseTransitionScreen } from './PhaseTransitionScreen'
