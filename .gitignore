@@ -21,3 +21,9 @@ dist/
 # Logs
 *.log
 npm-debug.log*
+
+# VS Code local history
+.history/
+
+# Playwright MCP cache
+.playwright-mcp/
