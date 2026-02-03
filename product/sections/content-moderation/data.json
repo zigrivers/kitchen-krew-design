@@ -1,0 +1,1285 @@
+{
+  "_meta": {
+    "models": {
+      "userReports": "Reports submitted by users about other users' behavior or content. Each report has a category, priority level, and goes through a review workflow.",
+      "flaggedContent": "User-generated content (photos, bios, descriptions) that has been flagged by the automatic profanity filter or manually by users for review.",
+      "platformEscalations": "Serious cases escalated by Club Admins to the platform's Super Admins for potential platform-wide action.",
+      "moderationActions": "Disciplinary actions taken against users, including warnings, suspensions, and bans. Bans require dual-admin approval.",
+      "appeals": "User appeals of moderation actions, with the original action details, appeal statement, and decision.",
+      "moderators": "Admin users who review reports and take moderation actions. Tracks their workload and resolution stats.",
+      "metrics": "Dashboard statistics showing report volumes, resolution times, SLA compliance, and action breakdowns."
+    },
+    "relationships": [
+      "Each UserReport involves a reporter (Player) and a reported user (Player)",
+      "FlaggedContent belongs to a Player who created the content",
+      "PlatformEscalations are submitted by Club Admins about a Player",
+      "ModerationActions are taken against a Player by a Moderator",
+      "Appeals are filed by Players against ModerationActions",
+      "Moderators are assigned to UserReports and PlatformEscalations"
+    ]
+  },
+  "moderators": [
+    {
+      "id": "mod-001",
+      "name": "Sarah Chen",
+      "email": "sarah.chen@kitchenkrew.com",
+      "role": "super_admin",
+      "avatarUrl": null,
+      "stats": {
+        "reportsAssigned": 12,
+        "reportsResolved": 8,
+        "avgResolutionHours": 4.2,
+        "actionsThisWeek": 5
+      }
+    },
+    {
+      "id": "mod-002",
+      "name": "Marcus Johnson",
+      "email": "marcus.j@kitchenkrew.com",
+      "role": "super_admin",
+      "avatarUrl": null,
+      "stats": {
+        "reportsAssigned": 8,
+        "reportsResolved": 6,
+        "avgResolutionHours": 5.8,
+        "actionsThisWeek": 3
+      }
+    },
+    {
+      "id": "mod-003",
+      "name": "Emily Rodriguez",
+      "email": "emily.r@kitchenkrew.com",
+      "role": "moderator",
+      "avatarUrl": null,
+      "stats": {
+        "reportsAssigned": 15,
+        "reportsResolved": 14,
+        "avgResolutionHours": 3.1,
+        "actionsThisWeek": 7
+      }
+    },
+    {
+      "id": "mod-004",
+      "name": "David Kim",
+      "email": "david.kim@kitchenkrew.com",
+      "role": "moderator",
+      "avatarUrl": null,
+      "stats": {
+        "reportsAssigned": 10,
+        "reportsResolved": 9,
+        "avgResolutionHours": 4.5,
+        "actionsThisWeek": 4
+      }
+    }
+  ],
+  "userReports": [
+    {
+      "id": "rpt-001",
+      "status": "new",
+      "priority": "urgent",
+      "category": "harassment",
+      "createdAt": "2024-01-15T14:32:00Z",
+      "updatedAt": "2024-01-15T14:32:00Z",
+      "slaDeadline": "2024-01-15T16:32:00Z",
+      "assignedTo": null,
+      "reporter": {
+        "id": "usr-reporter-001",
+        "name": "Jessica Martinez",
+        "email": "jessica.m@email.com",
+        "reportsSubmitted": 2,
+        "falseReports": 0,
+        "reputation": "good"
+      },
+      "reportedUser": {
+        "id": "usr-reported-001",
+        "name": "Mike Thompson",
+        "email": "mike.t@email.com",
+        "memberSince": "2023-06-15",
+        "priorWarnings": 1,
+        "priorSuspensions": 0,
+        "clubs": ["Seattle Pickleball Club", "Eastside Courts"]
+      },
+      "description": "This player has been sending threatening messages after our match yesterday. He said he would 'make sure I never play at this club again' and has been posting negative comments about me on the club forum.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-001-screenshot1.png",
+          "description": "Screenshot of threatening message"
+        },
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-001-screenshot2.png",
+          "description": "Forum post with negative comments"
+        }
+      ],
+      "context": {
+        "location": "Seattle Pickleball Club",
+        "relatedEvent": "Tuesday Night Round Robin",
+        "relatedMatch": "Match #12 - Court 3"
+      },
+      "internalNotes": [],
+      "resolution": null
+    },
+    {
+      "id": "rpt-002",
+      "status": "in_review",
+      "priority": "high",
+      "category": "cheating",
+      "createdAt": "2024-01-15T10:15:00Z",
+      "updatedAt": "2024-01-15T11:30:00Z",
+      "slaDeadline": "2024-01-15T18:15:00Z",
+      "assignedTo": "mod-003",
+      "reporter": {
+        "id": "usr-reporter-002",
+        "name": "Robert Chen",
+        "email": "robert.c@email.com",
+        "reportsSubmitted": 1,
+        "falseReports": 0,
+        "reputation": "good"
+      },
+      "reportedUser": {
+        "id": "usr-reported-002",
+        "name": "Alex Rivera",
+        "email": "alex.r@email.com",
+        "memberSince": "2023-09-20",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Portland Paddle Club"]
+      },
+      "description": "During our tournament match, this player repeatedly called balls out that were clearly in. When I questioned the calls, they became defensive and continued making bad calls. Other players nearby also noticed and commented on it.",
+      "evidence": [],
+      "context": {
+        "location": "Portland Paddle Club",
+        "relatedEvent": "Winter Championship Tournament",
+        "relatedMatch": "Quarterfinal - Court 1"
+      },
+      "internalNotes": [
+        {
+          "author": "mod-003",
+          "timestamp": "2024-01-15T11:30:00Z",
+          "note": "Contacted reported user for their side of the story. Awaiting response."
+        }
+      ],
+      "resolution": null
+    },
+    {
+      "id": "rpt-003",
+      "status": "resolved",
+      "priority": "medium",
+      "category": "inappropriate_content",
+      "createdAt": "2024-01-14T09:00:00Z",
+      "updatedAt": "2024-01-14T14:22:00Z",
+      "slaDeadline": "2024-01-15T09:00:00Z",
+      "assignedTo": "mod-001",
+      "reporter": {
+        "id": "usr-reporter-003",
+        "name": "Linda Park",
+        "email": "linda.p@email.com",
+        "reportsSubmitted": 5,
+        "falseReports": 1,
+        "reputation": "fair"
+      },
+      "reportedUser": {
+        "id": "usr-reported-003",
+        "name": "Chris Walker",
+        "email": "chris.w@email.com",
+        "memberSince": "2024-01-02",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Bay Area Pickleball"]
+      },
+      "description": "This user's profile bio contains inappropriate language and references that are not suitable for a family-friendly platform.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-003-bio.png",
+          "description": "Screenshot of profile bio"
+        }
+      ],
+      "context": {
+        "location": "Bay Area Pickleball",
+        "relatedEvent": null,
+        "relatedMatch": null
+      },
+      "internalNotes": [
+        {
+          "author": "mod-001",
+          "timestamp": "2024-01-14T10:15:00Z",
+          "note": "Confirmed bio contains inappropriate language. Removing content and issuing warning."
+        }
+      ],
+      "resolution": {
+        "action": "warning",
+        "resolvedBy": "mod-001",
+        "resolvedAt": "2024-01-14T14:22:00Z",
+        "notes": "Bio content removed. User warned about content guidelines.",
+        "reporterNotified": true
+      }
+    },
+    {
+      "id": "rpt-004",
+      "status": "new",
+      "priority": "high",
+      "category": "impersonation",
+      "createdAt": "2024-01-15T13:45:00Z",
+      "updatedAt": "2024-01-15T13:45:00Z",
+      "slaDeadline": "2024-01-15T21:45:00Z",
+      "assignedTo": null,
+      "reporter": {
+        "id": "usr-reporter-004",
+        "name": "Tournament Director Tom",
+        "email": "td.tom@email.com",
+        "reportsSubmitted": 8,
+        "falseReports": 0,
+        "reputation": "trusted"
+      },
+      "reportedUser": {
+        "id": "usr-reported-004",
+        "name": "Ben Johnson (DUPR 4.5)",
+        "email": "fake.ben@email.com",
+        "memberSince": "2024-01-10",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Austin Pickleball League"]
+      },
+      "description": "This account appears to be impersonating a well-known professional player. The profile uses their photo and claims to have their DUPR rating, but the email and playing history don't match. Several players have been misled into thinking they're playing with a pro.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-004-profile.png",
+          "description": "Fake profile claiming pro status"
+        },
+        {
+          "type": "link",
+          "url": "https://dupr.com/player/real-ben-johnson",
+          "description": "Real player's DUPR profile for comparison"
+        }
+      ],
+      "context": {
+        "location": "Austin Pickleball League",
+        "relatedEvent": "Pro-Am Mixer Event",
+        "relatedMatch": null
+      },
+      "internalNotes": [],
+      "resolution": null
+    },
+    {
+      "id": "rpt-005",
+      "status": "in_review",
+      "priority": "low",
+      "category": "spam",
+      "createdAt": "2024-01-14T16:30:00Z",
+      "updatedAt": "2024-01-15T09:00:00Z",
+      "slaDeadline": "2024-01-16T16:30:00Z",
+      "assignedTo": "mod-004",
+      "reporter": {
+        "id": "usr-reporter-005",
+        "name": "Club Admin Amy",
+        "email": "amy.admin@email.com",
+        "reportsSubmitted": 12,
+        "falseReports": 0,
+        "reputation": "trusted"
+      },
+      "reportedUser": {
+        "id": "usr-reported-005",
+        "name": "Promo Pete",
+        "email": "pete.promo@email.com",
+        "memberSince": "2024-01-12",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Denver Pickleball", "Boulder Courts", "Colorado Springs PB"]
+      },
+      "description": "This user has been joining multiple clubs just to post promotional content about their paddle business in the club forums. They don't actually play, just advertise.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-005-spam1.png",
+          "description": "Promotional post in Denver club"
+        },
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-005-spam2.png",
+          "description": "Same post in Boulder club"
+        }
+      ],
+      "context": {
+        "location": "Multiple clubs",
+        "relatedEvent": null,
+        "relatedMatch": null
+      },
+      "internalNotes": [
+        {
+          "author": "mod-004",
+          "timestamp": "2024-01-15T09:00:00Z",
+          "note": "Confirmed spam pattern across 3 clubs. Preparing warning with content removal."
+        }
+      ],
+      "resolution": null
+    },
+    {
+      "id": "rpt-006",
+      "status": "resolved",
+      "priority": "medium",
+      "category": "harassment",
+      "createdAt": "2024-01-13T11:20:00Z",
+      "updatedAt": "2024-01-13T16:45:00Z",
+      "slaDeadline": "2024-01-14T11:20:00Z",
+      "assignedTo": "mod-002",
+      "reporter": {
+        "id": "usr-reporter-006",
+        "name": "Sarah Williams",
+        "email": "sarah.w@email.com",
+        "reportsSubmitted": 1,
+        "falseReports": 0,
+        "reputation": "good"
+      },
+      "reportedUser": {
+        "id": "usr-reported-006",
+        "name": "Greg Miller",
+        "email": "greg.m@email.com",
+        "memberSince": "2022-03-10",
+        "priorWarnings": 2,
+        "priorSuspensions": 1,
+        "clubs": ["Chicago Indoor Pickleball"]
+      },
+      "description": "This player made several inappropriate comments about my playing ability in a condescending way during our match. When I asked him to stop, he laughed and continued. Other players heard this.",
+      "evidence": [],
+      "context": {
+        "location": "Chicago Indoor Pickleball",
+        "relatedEvent": "Wednesday Open Play",
+        "relatedMatch": null
+      },
+      "internalNotes": [
+        {
+          "author": "mod-002",
+          "timestamp": "2024-01-13T14:00:00Z",
+          "note": "User has prior history. This is third harassment-related incident. Escalating to suspension."
+        }
+      ],
+      "resolution": {
+        "action": "suspension",
+        "resolvedBy": "mod-002",
+        "resolvedAt": "2024-01-13T16:45:00Z",
+        "notes": "7-day suspension issued due to repeated harassment. Third incident on record.",
+        "reporterNotified": true
+      }
+    },
+    {
+      "id": "rpt-007",
+      "status": "dismissed",
+      "priority": "low",
+      "category": "other",
+      "createdAt": "2024-01-12T08:00:00Z",
+      "updatedAt": "2024-01-12T10:30:00Z",
+      "slaDeadline": "2024-01-14T08:00:00Z",
+      "assignedTo": "mod-003",
+      "reporter": {
+        "id": "usr-reporter-007",
+        "name": "Complainy Carl",
+        "email": "carl.c@email.com",
+        "reportsSubmitted": 15,
+        "falseReports": 8,
+        "reputation": "poor"
+      },
+      "reportedUser": {
+        "id": "usr-reported-007",
+        "name": "Normal Nancy",
+        "email": "nancy.n@email.com",
+        "memberSince": "2023-01-15",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Phoenix Pickleball"]
+      },
+      "description": "This player celebrated too loudly when she won a point against me. It was disrespectful and unsportsmanlike.",
+      "evidence": [],
+      "context": {
+        "location": "Phoenix Pickleball",
+        "relatedEvent": "Sunday Social",
+        "relatedMatch": null
+      },
+      "internalNotes": [
+        {
+          "author": "mod-003",
+          "timestamp": "2024-01-12T10:30:00Z",
+          "note": "Reporter has history of frivolous reports. Normal celebration is not harassment. Dismissing."
+        }
+      ],
+      "resolution": {
+        "action": "dismissed",
+        "resolvedBy": "mod-003",
+        "resolvedAt": "2024-01-12T10:30:00Z",
+        "notes": "Report does not meet threshold for action. Normal gameplay celebration.",
+        "reporterNotified": true
+      }
+    },
+    {
+      "id": "rpt-008",
+      "status": "new",
+      "priority": "medium",
+      "category": "cheating",
+      "createdAt": "2024-01-15T12:00:00Z",
+      "updatedAt": "2024-01-15T12:00:00Z",
+      "slaDeadline": "2024-01-16T12:00:00Z",
+      "assignedTo": null,
+      "reporter": {
+        "id": "usr-reporter-008",
+        "name": "Tournament Ref Rachel",
+        "email": "rachel.ref@email.com",
+        "reportsSubmitted": 3,
+        "falseReports": 0,
+        "reputation": "trusted"
+      },
+      "reportedUser": {
+        "id": "usr-reported-008",
+        "name": "Score Fixer Steve",
+        "email": "steve.sf@email.com",
+        "memberSince": "2023-08-01",
+        "priorWarnings": 1,
+        "priorSuspensions": 0,
+        "clubs": ["Miami Beach Pickleball"]
+      },
+      "description": "I observed this player entering incorrect scores after matches to improve his win record. I have screenshots of the original scoreboard versus what was entered in the app.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-008-scoreboard.png",
+          "description": "Physical scoreboard showing 11-8"
+        },
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-008-app.png",
+          "description": "App entry showing 11-5"
+        }
+      ],
+      "context": {
+        "location": "Miami Beach Pickleball",
+        "relatedEvent": "Rating Challenge Tournament",
+        "relatedMatch": "Match #7"
+      },
+      "internalNotes": [],
+      "resolution": null
+    },
+    {
+      "id": "rpt-009",
+      "status": "in_review",
+      "priority": "urgent",
+      "category": "harassment",
+      "createdAt": "2024-01-15T08:30:00Z",
+      "updatedAt": "2024-01-15T09:15:00Z",
+      "slaDeadline": "2024-01-15T10:30:00Z",
+      "assignedTo": "mod-001",
+      "reporter": {
+        "id": "usr-reporter-009",
+        "name": "Club Owner Olivia",
+        "email": "olivia.owner@email.com",
+        "reportsSubmitted": 6,
+        "falseReports": 0,
+        "reputation": "trusted"
+      },
+      "reportedUser": {
+        "id": "usr-reported-009",
+        "name": "Aggressive Andy",
+        "email": "andy.a@email.com",
+        "memberSince": "2023-04-20",
+        "priorWarnings": 2,
+        "priorSuspensions": 1,
+        "clubs": ["San Diego Pickleball Association"]
+      },
+      "description": "This player physically shoved another player after a disputed call. The altercation was witnessed by multiple people and I have video. This is completely unacceptable behavior and the victim is considering filing a police report.",
+      "evidence": [
+        {
+          "type": "video",
+          "url": "/evidence/rpt-009-incident.mp4",
+          "description": "Video of physical altercation"
+        },
+        {
+          "type": "document",
+          "url": "/evidence/rpt-009-statements.pdf",
+          "description": "Witness statements"
+        }
+      ],
+      "context": {
+        "location": "San Diego Pickleball Association",
+        "relatedEvent": "Competitive Doubles League",
+        "relatedMatch": "Week 8 - Court 2"
+      },
+      "internalNotes": [
+        {
+          "author": "mod-001",
+          "timestamp": "2024-01-15T09:15:00Z",
+          "note": "URGENT: Physical violence. Reviewing video evidence. This user has prior history. Preparing for platform ban with dual approval."
+        }
+      ],
+      "resolution": null
+    },
+    {
+      "id": "rpt-010",
+      "status": "resolved",
+      "priority": "low",
+      "category": "inappropriate_content",
+      "createdAt": "2024-01-11T15:00:00Z",
+      "updatedAt": "2024-01-11T17:30:00Z",
+      "slaDeadline": "2024-01-13T15:00:00Z",
+      "assignedTo": "mod-004",
+      "reporter": {
+        "id": "usr-reporter-010",
+        "name": "Parent Paula",
+        "email": "paula.p@email.com",
+        "reportsSubmitted": 2,
+        "falseReports": 0,
+        "reputation": "good"
+      },
+      "reportedUser": {
+        "id": "usr-reported-010",
+        "name": "Edgy Eddie",
+        "email": "eddie.e@email.com",
+        "memberSince": "2023-11-01",
+        "priorWarnings": 0,
+        "priorSuspensions": 0,
+        "clubs": ["Family Fun Pickleball"]
+      },
+      "description": "This player's profile photo shows them making an inappropriate hand gesture. This is a family-friendly club with youth programs.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/rpt-010-photo.png",
+          "description": "Profile photo with inappropriate gesture"
+        }
+      ],
+      "context": {
+        "location": "Family Fun Pickleball",
+        "relatedEvent": null,
+        "relatedMatch": null
+      },
+      "internalNotes": [],
+      "resolution": {
+        "action": "warning",
+        "resolvedBy": "mod-004",
+        "resolvedAt": "2024-01-11T17:30:00Z",
+        "notes": "Photo removed and replaced with default. User warned about family-friendly content requirements.",
+        "reporterNotified": true
+      }
+    }
+  ],
+  "flaggedContent": [
+    {
+      "id": "flg-001",
+      "status": "pending",
+      "contentType": "profile_photo",
+      "flagSource": "auto",
+      "flaggedAt": "2024-01-15T11:00:00Z",
+      "user": {
+        "id": "usr-flg-001",
+        "name": "New User Nick",
+        "email": "nick.new@email.com",
+        "memberSince": "2024-01-15",
+        "priorViolations": 0
+      },
+      "content": {
+        "url": "/uploads/profile/usr-flg-001.jpg",
+        "thumbnailUrl": "/uploads/profile/usr-flg-001-thumb.jpg",
+        "originalText": null
+      },
+      "flagReason": "Nudity/partial nudity detected by image classifier",
+      "confidence": 0.87
+    },
+    {
+      "id": "flg-002",
+      "status": "pending",
+      "contentType": "bio",
+      "flagSource": "auto",
+      "flaggedAt": "2024-01-15T10:30:00Z",
+      "user": {
+        "id": "usr-flg-002",
+        "name": "Bio Bob",
+        "email": "bob.bio@email.com",
+        "memberSince": "2024-01-14",
+        "priorViolations": 0
+      },
+      "content": {
+        "url": null,
+        "thumbnailUrl": null,
+        "originalText": "I'm the best damn player you'll ever see. If you can't handle my game, get the f*** off the court. Winners only."
+      },
+      "flagReason": "Profanity filter triggered: 1 flagged word",
+      "confidence": 1.0
+    },
+    {
+      "id": "flg-003",
+      "status": "approved",
+      "contentType": "profile_photo",
+      "flagSource": "manual",
+      "flaggedAt": "2024-01-14T14:00:00Z",
+      "resolvedAt": "2024-01-14T15:30:00Z",
+      "resolvedBy": "mod-003",
+      "user": {
+        "id": "usr-flg-003",
+        "name": "Logo Larry",
+        "email": "larry.logo@email.com",
+        "memberSince": "2023-06-01",
+        "priorViolations": 0
+      },
+      "content": {
+        "url": "/uploads/profile/usr-flg-003.jpg",
+        "thumbnailUrl": "/uploads/profile/usr-flg-003-thumb.jpg",
+        "originalText": null
+      },
+      "flagReason": "User reported: Profile photo is a company logo, not a person",
+      "confidence": null,
+      "resolutionNotes": "Approved - company logos allowed for tournament directors and sponsors"
+    },
+    {
+      "id": "flg-004",
+      "status": "removed",
+      "contentType": "club_description",
+      "flagSource": "auto",
+      "flaggedAt": "2024-01-13T09:00:00Z",
+      "resolvedAt": "2024-01-13T11:00:00Z",
+      "resolvedBy": "mod-002",
+      "user": {
+        "id": "usr-flg-004",
+        "name": "Club Admin Charlie",
+        "email": "charlie.admin@email.com",
+        "memberSince": "2022-09-15",
+        "priorViolations": 1
+      },
+      "content": {
+        "url": null,
+        "thumbnailUrl": null,
+        "originalText": "Welcome to our club! We don't tolerate any BS here. If you're a sh***y player, go somewhere else. Serious competitors only, no wimps allowed."
+      },
+      "flagReason": "Profanity filter triggered: 2 flagged words",
+      "confidence": 1.0,
+      "resolutionNotes": "Content removed. User warned about professional language in public club descriptions."
+    },
+    {
+      "id": "flg-005",
+      "status": "pending",
+      "contentType": "event_description",
+      "flagSource": "manual",
+      "flaggedAt": "2024-01-15T13:00:00Z",
+      "user": {
+        "id": "usr-flg-005",
+        "name": "Event Creator Eve",
+        "email": "eve.events@email.com",
+        "memberSince": "2023-03-10",
+        "priorViolations": 0
+      },
+      "content": {
+        "url": null,
+        "thumbnailUrl": null,
+        "originalText": "DRUNK PICKLEBALL NIGHT!! 🍻🍺 Bring your own booze, we'll bring the balls! Warning: You WILL make terrible shots. No designated drivers needed, we're all sleeping here. 21+ only obviously."
+      },
+      "flagReason": "User reported: Promoting alcohol consumption at sports event",
+      "confidence": null
+    },
+    {
+      "id": "flg-006",
+      "status": "pending",
+      "contentType": "profile_photo",
+      "flagSource": "auto",
+      "flaggedAt": "2024-01-15T14:00:00Z",
+      "user": {
+        "id": "usr-flg-006",
+        "name": "Photo Phil",
+        "email": "phil.photo@email.com",
+        "memberSince": "2024-01-15",
+        "priorViolations": 0
+      },
+      "content": {
+        "url": "/uploads/profile/usr-flg-006.jpg",
+        "thumbnailUrl": "/uploads/profile/usr-flg-006-thumb.jpg",
+        "originalText": null
+      },
+      "flagReason": "Violence/weapons detected by image classifier",
+      "confidence": 0.72
+    }
+  ],
+  "platformEscalations": [
+    {
+      "id": "esc-001",
+      "status": "new",
+      "severity": "critical",
+      "category": "threats_violence",
+      "createdAt": "2024-01-15T09:30:00Z",
+      "updatedAt": "2024-01-15T09:30:00Z",
+      "assignedTo": null,
+      "escalatingClub": {
+        "id": "club-001",
+        "name": "San Diego Pickleball Association",
+        "adminName": "Olivia Martinez",
+        "adminEmail": "olivia.owner@email.com"
+      },
+      "reportedUser": {
+        "id": "usr-reported-009",
+        "name": "Aggressive Andy",
+        "email": "andy.a@email.com",
+        "memberSince": "2023-04-20",
+        "priorPlatformWarnings": 0,
+        "priorPlatformSuspensions": 0,
+        "clubs": ["San Diego Pickleball Association", "La Jolla Courts", "Oceanside PB"]
+      },
+      "description": "This player physically shoved another player during a match after a disputed call. We have video evidence and witness statements. The victim is considering filing a police report. This player has been banned from our club but continues to play at other locations. We believe platform-wide action is necessary for community safety.",
+      "evidence": [
+        {
+          "type": "video",
+          "url": "/evidence/esc-001-incident.mp4",
+          "description": "Video of physical altercation"
+        },
+        {
+          "type": "document",
+          "url": "/evidence/esc-001-statements.pdf",
+          "description": "Witness statements from 4 players"
+        },
+        {
+          "type": "document",
+          "url": "/evidence/esc-001-ban.pdf",
+          "description": "Club ban documentation"
+        }
+      ],
+      "clubActionTaken": "Permanent ban from San Diego Pickleball Association",
+      "requestedAction": "Platform ban",
+      "crossClubActivity": [
+        {
+          "club": "La Jolla Courts",
+          "status": "active_member",
+          "incidents": 1,
+          "notes": "One warning for aggressive behavior"
+        },
+        {
+          "club": "Oceanside PB",
+          "status": "active_member",
+          "incidents": 0,
+          "notes": null
+        }
+      ],
+      "internalNotes": [],
+      "resolution": null
+    },
+    {
+      "id": "esc-002",
+      "status": "in_review",
+      "severity": "high",
+      "category": "fraud_impersonation",
+      "createdAt": "2024-01-14T16:00:00Z",
+      "updatedAt": "2024-01-15T10:00:00Z",
+      "assignedTo": "mod-001",
+      "escalatingClub": {
+        "id": "club-002",
+        "name": "Austin Pickleball League",
+        "adminName": "Tournament Director Tom",
+        "adminEmail": "td.tom@email.com"
+      },
+      "reportedUser": {
+        "id": "usr-reported-004",
+        "name": "Ben Johnson (DUPR 4.5)",
+        "email": "fake.ben@email.com",
+        "memberSince": "2024-01-10",
+        "priorPlatformWarnings": 0,
+        "priorPlatformSuspensions": 0,
+        "clubs": ["Austin Pickleball League", "Houston PB Club", "Dallas Pickleball"]
+      },
+      "description": "This account is impersonating a well-known professional player. They've used the pro's photo and claimed their rating to gain entry to pro-am events. Multiple players paid extra to participate thinking they'd play with a professional. This is fraud affecting multiple clubs and players financially.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/esc-002-profile.png",
+          "description": "Fake profile using pro's photo"
+        },
+        {
+          "type": "link",
+          "url": "https://dupr.com/player/real-ben-johnson",
+          "description": "Real player's DUPR profile"
+        },
+        {
+          "type": "document",
+          "url": "/evidence/esc-002-complaints.pdf",
+          "description": "Compiled complaints from affected players"
+        }
+      ],
+      "clubActionTaken": "Banned from Austin Pickleball League",
+      "requestedAction": "Platform ban",
+      "crossClubActivity": [
+        {
+          "club": "Houston PB Club",
+          "status": "active_member",
+          "incidents": 0,
+          "notes": "Registered for upcoming pro-am event"
+        },
+        {
+          "club": "Dallas Pickleball",
+          "status": "active_member",
+          "incidents": 0,
+          "notes": "Participated in 2 events claiming pro status"
+        }
+      ],
+      "internalNotes": [
+        {
+          "author": "mod-001",
+          "timestamp": "2024-01-15T10:00:00Z",
+          "note": "Confirmed impersonation. Real Ben Johnson's management has been contacted and confirmed this is not their player. Preparing platform ban."
+        }
+      ],
+      "resolution": null
+    },
+    {
+      "id": "esc-003",
+      "status": "resolved",
+      "severity": "medium",
+      "category": "pattern_abuse",
+      "createdAt": "2024-01-10T11:00:00Z",
+      "updatedAt": "2024-01-12T14:00:00Z",
+      "assignedTo": "mod-002",
+      "escalatingClub": {
+        "id": "club-003",
+        "name": "Denver Pickleball",
+        "adminName": "Club Admin Amy",
+        "adminEmail": "amy.admin@email.com"
+      },
+      "reportedUser": {
+        "id": "usr-reported-005",
+        "name": "Promo Pete",
+        "email": "pete.promo@email.com",
+        "memberSince": "2024-01-12",
+        "priorPlatformWarnings": 1,
+        "priorPlatformSuspensions": 0,
+        "clubs": ["Denver Pickleball", "Boulder Courts", "Colorado Springs PB"]
+      },
+      "description": "This user has been systematically joining clubs across our state just to spam promotional content for their paddle business. They've never participated in any events, just post ads. We've banned them but they continue at other Colorado clubs.",
+      "evidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/esc-003-spam1.png",
+          "description": "Spam post in Denver club forum"
+        },
+        {
+          "type": "screenshot",
+          "url": "/evidence/esc-003-spam2.png",
+          "description": "Identical post in Boulder club"
+        },
+        {
+          "type": "screenshot",
+          "url": "/evidence/esc-003-spam3.png",
+          "description": "Same post in Colorado Springs"
+        }
+      ],
+      "clubActionTaken": "Banned from Denver Pickleball",
+      "requestedAction": "Platform warning or suspension",
+      "crossClubActivity": [
+        {
+          "club": "Boulder Courts",
+          "status": "active_member",
+          "incidents": 1,
+          "notes": "Warning issued for spam"
+        },
+        {
+          "club": "Colorado Springs PB",
+          "status": "active_member",
+          "incidents": 1,
+          "notes": "Warning issued for spam"
+        }
+      ],
+      "internalNotes": [
+        {
+          "author": "mod-002",
+          "timestamp": "2024-01-11T09:00:00Z",
+          "note": "Clear pattern of commercial spam across multiple clubs. User has been warned once already."
+        },
+        {
+          "author": "mod-002",
+          "timestamp": "2024-01-12T14:00:00Z",
+          "note": "Issuing 30-day platform suspension. User notified they will be permanently banned if behavior continues."
+        }
+      ],
+      "resolution": {
+        "action": "suspension",
+        "duration": "30_days",
+        "resolvedBy": "mod-002",
+        "resolvedAt": "2024-01-12T14:00:00Z",
+        "notes": "30-day suspension for repeated spam across multiple clubs. Final warning issued.",
+        "clubNotified": true
+      }
+    },
+    {
+      "id": "esc-004",
+      "status": "in_review",
+      "severity": "high",
+      "category": "severe_harassment",
+      "createdAt": "2024-01-13T08:00:00Z",
+      "updatedAt": "2024-01-14T16:00:00Z",
+      "assignedTo": "mod-003",
+      "escalatingClub": {
+        "id": "club-004",
+        "name": "Chicago Indoor Pickleball",
+        "adminName": "Midwest Mike",
+        "adminEmail": "mike.midwest@email.com"
+      },
+      "reportedUser": {
+        "id": "usr-reported-006",
+        "name": "Greg Miller",
+        "email": "greg.m@email.com",
+        "memberSince": "2022-03-10",
+        "priorPlatformWarnings": 1,
+        "priorPlatformSuspensions": 0,
+        "clubs": ["Chicago Indoor Pickleball", "Naperville PB", "Evanston Courts"]
+      },
+      "description": "This player has a documented history of harassing behavior at our club and apparently at others. He's been suspended from our club twice and we've now permanently banned him. We've learned he has similar issues at other Chicago-area clubs. His behavior includes belittling other players, making sexist comments to female players, and creating a hostile environment.",
+      "evidence": [
+        {
+          "type": "document",
+          "url": "/evidence/esc-004-history.pdf",
+          "description": "Documentation of 6 incidents at our club"
+        },
+        {
+          "type": "document",
+          "url": "/evidence/esc-004-complaints.pdf",
+          "description": "Written complaints from 8 different players"
+        }
+      ],
+      "clubActionTaken": "Permanent ban from Chicago Indoor Pickleball",
+      "requestedAction": "Platform suspension or ban",
+      "crossClubActivity": [
+        {
+          "club": "Naperville PB",
+          "status": "active_member",
+          "incidents": 2,
+          "notes": "Two warnings for inappropriate comments"
+        },
+        {
+          "club": "Evanston Courts",
+          "status": "suspended",
+          "incidents": 1,
+          "notes": "Currently serving 14-day suspension"
+        }
+      ],
+      "internalNotes": [
+        {
+          "author": "mod-003",
+          "timestamp": "2024-01-14T10:00:00Z",
+          "note": "Contacted Naperville and Evanston admins. Both confirm pattern of harassment. Total of 9 documented incidents across 3 clubs."
+        },
+        {
+          "author": "mod-003",
+          "timestamp": "2024-01-14T16:00:00Z",
+          "note": "Recommending 6-month platform suspension with mandatory behavior acknowledgment before return. Requesting second review from Sarah."
+        }
+      ],
+      "resolution": null
+    }
+  ],
+  "moderationActions": [
+    {
+      "id": "act-001",
+      "actionType": "warning",
+      "status": "completed",
+      "createdAt": "2024-01-14T14:22:00Z",
+      "executedAt": "2024-01-14T14:22:00Z",
+      "expiresAt": null,
+      "targetUser": {
+        "id": "usr-reported-003",
+        "name": "Chris Walker",
+        "email": "chris.w@email.com"
+      },
+      "issuedBy": "mod-001",
+      "approvedBy": null,
+      "reason": "inappropriate_content",
+      "reasonCategory": "tos_violation",
+      "description": "Profile bio contained inappropriate language violating community guidelines.",
+      "relatedReport": "rpt-003",
+      "userNotified": true,
+      "clubsNotified": ["Bay Area Pickleball"],
+      "appealStatus": null
+    },
+    {
+      "id": "act-002",
+      "actionType": "suspension",
+      "status": "active",
+      "createdAt": "2024-01-13T16:45:00Z",
+      "executedAt": "2024-01-13T16:45:00Z",
+      "expiresAt": "2024-01-20T16:45:00Z",
+      "targetUser": {
+        "id": "usr-reported-006",
+        "name": "Greg Miller",
+        "email": "greg.m@email.com"
+      },
+      "issuedBy": "mod-002",
+      "approvedBy": null,
+      "reason": "harassment",
+      "reasonCategory": "harassment",
+      "description": "7-day suspension for repeated harassment. Third documented incident.",
+      "relatedReport": "rpt-006",
+      "userNotified": true,
+      "clubsNotified": ["Chicago Indoor Pickleball"],
+      "appealStatus": "pending"
+    },
+    {
+      "id": "act-003",
+      "actionType": "warning",
+      "status": "completed",
+      "createdAt": "2024-01-11T17:30:00Z",
+      "executedAt": "2024-01-11T17:30:00Z",
+      "expiresAt": null,
+      "targetUser": {
+        "id": "usr-reported-010",
+        "name": "Edgy Eddie",
+        "email": "eddie.e@email.com"
+      },
+      "issuedBy": "mod-004",
+      "approvedBy": null,
+      "reason": "inappropriate_content",
+      "reasonCategory": "tos_violation",
+      "description": "Profile photo removed for inappropriate gesture. Warned about family-friendly content requirements.",
+      "relatedReport": "rpt-010",
+      "userNotified": true,
+      "clubsNotified": ["Family Fun Pickleball"],
+      "appealStatus": null
+    },
+    {
+      "id": "act-004",
+      "actionType": "suspension",
+      "status": "active",
+      "createdAt": "2024-01-12T14:00:00Z",
+      "executedAt": "2024-01-12T14:00:00Z",
+      "expiresAt": "2024-02-11T14:00:00Z",
+      "targetUser": {
+        "id": "usr-reported-005",
+        "name": "Promo Pete",
+        "email": "pete.promo@email.com"
+      },
+      "issuedBy": "mod-002",
+      "approvedBy": null,
+      "reason": "spam",
+      "reasonCategory": "tos_violation",
+      "description": "30-day platform suspension for repeated commercial spam across multiple clubs. Final warning issued - permanent ban if behavior continues.",
+      "relatedReport": null,
+      "relatedEscalation": "esc-003",
+      "userNotified": true,
+      "clubsNotified": ["Denver Pickleball", "Boulder Courts", "Colorado Springs PB"],
+      "appealStatus": null
+    },
+    {
+      "id": "act-005",
+      "actionType": "ban",
+      "status": "pending_approval",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "executedAt": null,
+      "expiresAt": null,
+      "targetUser": {
+        "id": "usr-reported-004",
+        "name": "Ben Johnson (DUPR 4.5)",
+        "email": "fake.ben@email.com"
+      },
+      "issuedBy": "mod-001",
+      "approvedBy": null,
+      "pendingApprover": "mod-002",
+      "reason": "fraud",
+      "reasonCategory": "fraud",
+      "description": "Permanent platform ban for impersonating a professional player. Multiple clubs and players financially impacted by fraud.",
+      "relatedReport": "rpt-004",
+      "relatedEscalation": "esc-002",
+      "userNotified": false,
+      "clubsNotified": [],
+      "appealStatus": null,
+      "approvalDeadline": "2024-01-16T10:30:00Z"
+    }
+  ],
+  "appeals": [
+    {
+      "id": "apl-001",
+      "status": "pending",
+      "createdAt": "2024-01-14T18:00:00Z",
+      "updatedAt": "2024-01-14T18:00:00Z",
+      "relatedAction": "act-002",
+      "appellant": {
+        "id": "usr-reported-006",
+        "name": "Greg Miller",
+        "email": "greg.m@email.com"
+      },
+      "originalAction": {
+        "type": "suspension",
+        "duration": "7_days",
+        "reason": "harassment",
+        "issuedAt": "2024-01-13T16:45:00Z"
+      },
+      "appealStatement": "I believe this suspension is unfair. The player who reported me was being equally aggressive during our match. I admit I made some comments but they were in response to her criticizing my play first. I've been a member of this club for almost 2 years with no issues until recently. I request this be reduced to a warning.",
+      "supportingEvidence": [],
+      "assignedTo": null,
+      "decision": null,
+      "decisionReason": null,
+      "decisionBy": null,
+      "decisionAt": null
+    },
+    {
+      "id": "apl-002",
+      "status": "upheld",
+      "createdAt": "2024-01-08T10:00:00Z",
+      "updatedAt": "2024-01-09T14:30:00Z",
+      "relatedAction": "act-old-001",
+      "appellant": {
+        "id": "usr-old-001",
+        "name": "Previous Offender",
+        "email": "old.offender@email.com"
+      },
+      "originalAction": {
+        "type": "suspension",
+        "duration": "14_days",
+        "reason": "cheating",
+        "issuedAt": "2024-01-07T12:00:00Z"
+      },
+      "appealStatement": "I did not cheat. The score discrepancy was an honest mistake and I corrected it as soon as it was pointed out.",
+      "supportingEvidence": [],
+      "assignedTo": "mod-001",
+      "decision": "upheld",
+      "decisionReason": "Video evidence clearly shows deliberate score manipulation on 3 separate occasions. Appeal denied.",
+      "decisionBy": "mod-001",
+      "decisionAt": "2024-01-09T14:30:00Z"
+    },
+    {
+      "id": "apl-003",
+      "status": "modified",
+      "createdAt": "2024-01-05T09:00:00Z",
+      "updatedAt": "2024-01-06T11:00:00Z",
+      "relatedAction": "act-old-002",
+      "appellant": {
+        "id": "usr-old-002",
+        "name": "First Timer Fred",
+        "email": "fred.first@email.com"
+      },
+      "originalAction": {
+        "type": "suspension",
+        "duration": "7_days",
+        "reason": "inappropriate_content",
+        "issuedAt": "2024-01-04T16:00:00Z"
+      },
+      "appealStatement": "I'm new to the platform and didn't realize my profile photo violated guidelines. It was just a casual photo from a party, not intended to be inappropriate. I've already uploaded a new appropriate photo. Please consider reducing this since it's my first offense.",
+      "supportingEvidence": [
+        {
+          "type": "screenshot",
+          "url": "/evidence/apl-003-newphoto.png",
+          "description": "New appropriate profile photo"
+        }
+      ],
+      "assignedTo": "mod-003",
+      "decision": "modified",
+      "decisionReason": "First offense and user has cooperated by uploading appropriate photo. Suspension reduced to warning only. User educated on content guidelines.",
+      "decisionBy": "mod-003",
+      "decisionAt": "2024-01-06T11:00:00Z"
+    }
+  ],
+  "metrics": {
+    "period": "last_7d",
+    "reports": {
+      "total": 47,
+      "new": 8,
+      "inReview": 12,
+      "resolved": 24,
+      "dismissed": 3,
+      "byCategory": {
+        "harassment": 18,
+        "cheating": 9,
+        "inappropriate_content": 11,
+        "spam": 5,
+        "impersonation": 2,
+        "other": 2
+      },
+      "byPriority": {
+        "urgent": 3,
+        "high": 12,
+        "medium": 22,
+        "low": 10
+      }
+    },
+    "flaggedContent": {
+      "total": 23,
+      "pending": 6,
+      "approved": 8,
+      "removed": 9,
+      "byType": {
+        "profile_photo": 12,
+        "bio": 6,
+        "club_description": 3,
+        "event_description": 2
+      },
+      "bySource": {
+        "auto": 18,
+        "manual": 5
+      }
+    },
+    "escalations": {
+      "total": 7,
+      "new": 2,
+      "inReview": 3,
+      "resolved": 2,
+      "byCategory": {
+        "severe_harassment": 2,
+        "threats_violence": 1,
+        "fraud_impersonation": 2,
+        "illegal_activity": 0,
+        "pattern_abuse": 2
+      }
+    },
+    "actions": {
+      "total": 19,
+      "warnings": 11,
+      "suspensions": 6,
+      "bans": 2,
+      "pendingApproval": 1
+    },
+    "appeals": {
+      "total": 5,
+      "pending": 1,
+      "upheld": 2,
+      "modified": 1,
+      "overturned": 1,
+      "successRate": 40
+    },
+    "sla": {
+      "complianceRate": 87,
+      "avgFirstResponseHours": 2.4,
+      "avgResolutionHours": 8.6,
+      "overdueReports": 2
+    },
+    "moderatorWorkload": [
+      { "moderatorId": "mod-001", "name": "Sarah Chen", "assigned": 12, "resolved": 8 },
+      { "moderatorId": "mod-002", "name": "Marcus Johnson", "assigned": 8, "resolved": 6 },
+      { "moderatorId": "mod-003", "name": "Emily Rodriguez", "assigned": 15, "resolved": 14 },
+      { "moderatorId": "mod-004", "name": "David Kim", "assigned": 10, "resolved": 9 }
+    ],
+    "repeatOffenders": [
+      { "userId": "usr-reported-006", "name": "Greg Miller", "incidents": 3 },
+      { "userId": "usr-reported-009", "name": "Aggressive Andy", "incidents": 3 }
+    ],
+    "trendData": {
+      "reportsPerDay": [5, 8, 6, 7, 9, 5, 7],
+      "resolutionTimePerDay": [7.2, 8.5, 9.1, 8.8, 7.5, 8.2, 8.6]
+    }
+  },
+  "reportCategories": [
+    { "value": "harassment", "label": "Harassment/Abuse" },
+    { "value": "cheating", "label": "Cheating/Score Manipulation" },
+    { "value": "inappropriate_content", "label": "Inappropriate Content" },
+    { "value": "spam", "label": "Spam" },
+    { "value": "impersonation", "label": "Impersonation" },
+    { "value": "other", "label": "Other" }
+  ],
+  "escalationCategories": [
+    { "value": "severe_harassment", "label": "Severe Harassment" },
+    { "value": "threats_violence", "label": "Threats/Violence" },
+    { "value": "fraud_impersonation", "label": "Fraud/Impersonation" },
+    { "value": "illegal_activity", "label": "Illegal Activity" },
+    { "value": "pattern_abuse", "label": "Pattern of Abuse Across Clubs" }
+  ],
+  "actionReasons": [
+    { "value": "harassment", "label": "Harassment" },
+    { "value": "fraud", "label": "Fraud" },
+    { "value": "safety_threat", "label": "Safety Threat" },
+    { "value": "tos_violation", "label": "Terms of Service Violation" },
+    { "value": "other", "label": "Other" }
+  ],
+  "priorityLevels": [
+    { "value": "urgent", "label": "Urgent", "slaHours": 2 },
+    { "value": "high", "label": "High", "slaHours": 8 },
+    { "value": "medium", "label": "Medium", "slaHours": 24 },
+    { "value": "low", "label": "Low", "slaHours": 48 }
+  ]
+}
