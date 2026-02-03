@@ -27,6 +27,23 @@ Live Play is the real-time game execution interface used during active events. P
 - Share bracket via link or to social media
 - View final results with podium display and champion's path
 
+#### Hybrid Tournament Player Flows (Seeding + Bracket)
+- View current phase indicator: "Seeding Phase (Round 3/5)" or "Bracket Phase (Quarterfinals)"
+- During seeding phase:
+  - View complete seeding schedule (all 5 rounds) with opponents and court assignments
+  - See live standings with current seed position prominently displayed: "Your Current Seed: #3"
+  - Track wins/losses and point differential affecting final seeding
+  - View "What I need for top seed" scenarios
+- During phase transition:
+  - See final seeding standings with bracket position preview
+  - View first-round bracket matchup based on seeding
+- During bracket phase:
+  - View tournament bracket with seeded positions
+  - Track bracket advancement and next opponent
+  - View match schedule and court assignments
+  - See losers bracket position (for double elimination)
+- Receive notifications: "Seeding complete - you are the #3 seed", "Your bracket match is starting"
+
 #### Round Robin Player Flows
 - View complete round robin schedule with round numbers, opponents, partners (if rotating), and court assignments
 - See current/next match highlighted with estimated start time
@@ -90,6 +107,33 @@ Live Play is the real-time game execution interface used during active events. P
 - Configure match scheduling (self-scheduled or system-scheduled)
 - Handle inactivity drops
 - Set ladder end conditions (fixed date, rolling, or season-based)
+
+#### Hybrid Tournament Management Flows (Seeding + Bracket)
+- Configure hybrid tournament with seeding rounds + elimination bracket:
+  - Set number of seeding rounds (typically 5, configurable 3-7)
+  - Set bracket type: single or double elimination
+  - Set bracket size: 8, 16, or 32 teams
+  - Configure match formats per phase (e.g., single games for seeding, Bo3 for bracket)
+- Run seeding phase:
+  - Generate round robin schedule for all seeding rounds
+  - View court status dashboard with seeding matches
+  - Enter scores and track live standings
+  - View match queue organized by round
+- Phase transition:
+  - Review final seeding standings after all rounds complete
+  - Preview bracket with seed assignments (1v8, 2v7, etc.)
+  - Optional: Override individual seed positions before generating bracket
+  - Confirm and generate elimination bracket
+  - Set break time before bracket starts
+  - Send notifications: "Seeding complete - Bracket starts in 15 minutes"
+- Run bracket phase:
+  - Full tournament bracket management (reuse existing tournament GM flows)
+  - Court assignments for bracket matches
+  - Score entry with bracket advancement
+  - Handle forfeits and manual advances
+- View unified dashboard that adapts to current phase:
+  - Seeding phase: Shows standings, court grid, seeding match queue
+  - Bracket phase: Shows bracket view, court grid, bracket match queue
 
 #### Round Robin Management Flows
 - Generate round robin schedule (single or double round robin)
@@ -157,6 +201,32 @@ Live Play is the real-time game execution interface used during active events. P
 - Multi-day tournament progress indicator ("Day 1 of 2")
 - Match format indicator by round (Bo3, Bo5, etc.)
 - Bye display and handling in bracket visualization
+
+### Hybrid Tournament UI
+- Phase indicator banner: "Seeding Phase (Round 3/5)" with phase-appropriate styling
+- Unified dashboard that adapts to current phase:
+  - Phase selector tabs (disabled, shows current phase)
+  - Quick stats adapting to phase (seeding: rounds/matches, bracket: teams remaining)
+- Seeding phase view:
+  - Live standings table with seed numbers, W-L, point differential
+  - "Your Current Seed: #3" prominent display for players
+  - Court grid with seeding matches
+  - Match queue organized by seeding round
+  - Seeding schedule with round-by-round progress
+- Phase transition screen:
+  - Final seeding standings (1st through Nth)
+  - Bracket preview showing seed matchups (1v8, 2v7, 3v6, 4v5)
+  - Drag-and-drop seed override option for GM
+  - "Generate Bracket & Start Tournament" confirmation button
+  - Break time countdown before bracket starts
+- Bracket phase view:
+  - Full bracket visualization with seed numbers on teams
+  - Court grid with bracket matches
+  - Bracket match queue with round labels
+  - Round navigator for bracket management
+- Player view adapts to phase:
+  - Seeding: Schedule + standings + current seed
+  - Bracket: Bracket position + next match + elimination status
 
 ### Round Robin UI
 - Round robin schedule view with round-by-round match list

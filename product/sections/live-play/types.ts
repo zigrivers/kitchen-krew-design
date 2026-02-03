@@ -56,7 +56,7 @@ export interface OrganizerReference {
 export interface LiveEvent {
   id: string
   name: string
-  format: 'round_robin' | 'open_play' | 'king_of_court' | 'single_elimination' | 'double_elimination' | 'pool_play' | 'ladder'
+  format: 'round_robin' | 'open_play' | 'king_of_court' | 'single_elimination' | 'double_elimination' | 'pool_play' | 'ladder' | 'hybrid_seeding_bracket'
   status: 'scheduled' | 'in_progress' | 'paused' | 'completed'
   isPaused: boolean
   pauseReason: string | null
@@ -1425,4 +1425,266 @@ export interface RoundRobinPlayerViewProps {
   onViewTeam?: (teamId: string) => void
   onViewMatch?: (matchId: string) => void
   onViewPlayoffBracket?: () => void
+}
+
+// =============================================================================
+// Hybrid Tournament Types (Round Robin Seeding + Elimination Bracket)
+// =============================================================================
+
+/** Phase states for hybrid tournaments */
+export type HybridPhase = 'registration' | 'seeding' | 'transition' | 'bracket' | 'completed'
+
+/** Configuration for the seeding phase (round robin) */
+export interface SeedingPhaseConfig {
+  /** Number of seeding rounds (default: 5) */
+  rounds: number
+  /** Time format for seeding matches */
+  timeFormat: TimeFormatConfig
+  /** Standings calculation method */
+  standingsConfig: StandingsConfig
+  /** How to handle byes for odd player counts */
+  byeHandling: 'rotate' | 'fixed'
+  /** Whether to show live standings during seeding (default: true) */
+  showLiveStandings: boolean
+}
+
+/** Configuration for the bracket phase (elimination) */
+export interface BracketPhaseConfig {
+  /** Single or double elimination */
+  type: 'single_elimination' | 'double_elimination'
+  /** Match format configuration by round name */
+  matchFormatByRound: MatchFormatByRound
+  /** Whether to play a third-place match */
+  thirdPlaceMatch: boolean
+  /** For double elimination: whether grand finals can reset */
+  grandFinalsReset?: boolean
+}
+
+/** A team's seeding result after round robin play */
+export interface HybridSeedingResult {
+  /** Final rank after seeding phase */
+  rank: number
+  /** Team identifier */
+  teamId: string
+  /** Team display name */
+  displayName: string
+  /** Original seed before seeding rounds */
+  originalSeed: number
+  /** Wins in seeding phase */
+  wins: number
+  /** Losses in seeding phase */
+  losses: number
+  /** Point differential */
+  pointDiff: number
+  /** Points scored */
+  pointsFor: number
+  /** Points against */
+  pointsAgainst: number
+  /** Bracket seed assigned (1 = top seed) */
+  bracketSeed: number
+  /** Tiebreaker explanation if applicable */
+  tiebreaker: TiebreakerExplanation | null
+}
+
+/** Progress tracking for hybrid tournament */
+export interface HybridTournamentProgress {
+  /** Overall completion percentage */
+  percentComplete: number
+  /** Current phase */
+  currentPhase: HybridPhase
+  /** Seeding phase progress */
+  seedingProgress: {
+    currentRound: number
+    totalRounds: number
+    matchesCompleted: number
+    matchesTotal: number
+    matchesInProgress: number
+  }
+  /** Bracket phase progress (null during seeding) */
+  bracketProgress: {
+    currentRound: number
+    totalRounds: number
+    matchesCompleted: number
+    matchesTotal: number
+    matchesInProgress: number
+    teamsRemaining: number
+    teamsEliminated: number
+  } | null
+  /** Time tracking */
+  elapsedMinutes: number
+  estimatedRemainingMinutes: number
+}
+
+/** The hybrid tournament configuration and state */
+export interface HybridTournament {
+  /** Unique identifier */
+  id: string
+  /** Parent event ID */
+  eventId: string
+  /** Current tournament phase */
+  currentPhase: HybridPhase
+  /** Bracket size (8, 16, or 32 teams) */
+  bracketSize: 8 | 16 | 32
+  /** Seeding phase configuration */
+  seedingPhase: SeedingPhaseConfig
+  /** Bracket phase configuration */
+  bracketPhase: BracketPhaseConfig
+
+  // Seeding phase data
+  /** Round robin schedule for seeding */
+  seedingSchedule: RoundRobinSchedule | null
+  /** All seeding matches */
+  seedingMatches: RoundRobinMatch[]
+  /** Current standings during/after seeding */
+  seedingStandings: RoundRobinPoolStanding[]
+
+  // Bracket phase data (populated after seeding)
+  /** Bracket structure */
+  bracket: Bracket | null
+  /** All bracket matches */
+  bracketMatches: BracketMatch[]
+  /** Final seeding results used to generate bracket */
+  finalSeedingResults: HybridSeedingResult[] | null
+
+  // Phase transition timestamps
+  /** When seeding was locked/finalized */
+  seedingLockedAt: string | null
+  /** When bracket was generated */
+  bracketGeneratedAt: string | null
+}
+
+/** Props for hybrid tournament components */
+export interface HybridTournamentProps {
+  /** Current event */
+  event: LiveEvent
+  /** Hybrid tournament data */
+  tournament: HybridTournament
+  /** Tournament progress */
+  progress: HybridTournamentProgress
+  /** All teams in the tournament */
+  teams: RoundRobinTeam[]
+  /** Available courts */
+  courts: Court[]
+  /** Current user context */
+  currentUser: CurrentUser
+
+  // GM Actions - Seeding Phase
+  /** Called when GM calls a seeding match to a court */
+  onCallSeedingMatch?: (matchId: string, courtId: string) => void
+  /** Called when GM starts a seeding match */
+  onStartSeedingMatch?: (matchId: string) => void
+  /** Called when GM enters score for seeding match */
+  onEnterSeedingScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  /** Called when GM marks a seeding match forfeit */
+  onMarkSeedingForfeit?: (matchId: string, forfeitingTeam: 'team1' | 'team2') => void
+
+  // GM Actions - Phase Transition
+  /** Called when GM locks seeding standings */
+  onLockSeeding?: () => void
+  /** Called when GM generates bracket from seeding */
+  onGenerateBracket?: () => void
+  /** Called when GM overrides a seed position */
+  onOverrideSeed?: (teamId: string, newSeed: number) => void
+  /** Called when GM starts the bracket phase */
+  onStartBracketPhase?: () => void
+
+  // GM Actions - Bracket Phase
+  /** Called when GM calls a bracket match to a court */
+  onCallBracketMatch?: (bracketMatchId: string, courtId: string) => void
+  /** Called when GM starts a bracket match */
+  onStartBracketMatch?: (bracketMatchId: string) => void
+  /** Called when GM enters score for bracket match */
+  onEnterBracketScore?: (bracketMatchId: string) => void
+  /** Called when GM marks a bracket match forfeit */
+  onMarkBracketForfeit?: (bracketMatchId: string, forfeitingTeam: 'team1' | 'team2') => void
+  /** Called when GM manually advances a team */
+  onManualAdvance?: (bracketMatchId: string, winner: 'team1' | 'team2', reason: string) => void
+
+  // GM Actions - Event Control
+  /** Called when GM pauses the event */
+  onPauseEvent?: (reason: string) => void
+  /** Called when GM resumes the event */
+  onResumeEvent?: () => void
+  /** Called when GM ends the event */
+  onEndEvent?: () => void
+
+  // Player Actions
+  /** Called when player checks in at court */
+  onCourtCheckIn?: (matchId: string) => void
+  /** Called when player submits score */
+  onSubmitScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  /** Called when player confirms opponent's score */
+  onConfirmScore?: (matchId: string) => void
+
+  // Navigation
+  /** Called to view full bracket */
+  onViewBracket?: () => void
+  /** Called to view team details */
+  onViewTeam?: (teamId: string) => void
+  /** Called to view match details */
+  onViewMatch?: (matchId: string) => void
+  /** Called to open court status board */
+  onOpenCourtBoard?: () => void
+  /** Called to share tournament */
+  onShareTournament?: () => void
+}
+
+/** Props for phase transition screen */
+export interface PhaseTransitionScreenProps {
+  /** Final seeding results */
+  seedingResults: HybridSeedingResult[]
+  /** Bracket preview (seeds mapped to positions) */
+  bracketPreview: {
+    matchId: string
+    position: string
+    seed1: number
+    team1Name: string
+    seed2: number
+    team2Name: string
+  }[]
+  /** Bracket configuration */
+  bracketConfig: BracketPhaseConfig
+  /** Whether GM can modify seeds before generating */
+  allowSeedOverride: boolean
+
+  // Callbacks
+  /** Called when GM confirms and generates bracket */
+  onConfirmAndGenerate?: () => void
+  /** Called when GM overrides a seed */
+  onOverrideSeed?: (teamId: string, newSeed: number) => void
+  /** Called to go back to seeding view */
+  onBack?: () => void
+}
+
+/** Props for hybrid seeding view (player view) */
+export interface HybridSeedingViewProps {
+  /** Current event */
+  event: LiveEvent
+  /** Hybrid tournament data */
+  tournament: HybridTournament
+  /** Tournament progress */
+  progress: HybridTournamentProgress
+  /** All teams */
+  teams: RoundRobinTeam[]
+  /** Current user context */
+  currentUser: {
+    id: string
+    name: string
+    teamId: string
+    currentMatchId: string | null
+    nextMatchId: string | null
+    currentSeed: number
+  }
+  /** Player's schedule view */
+  scheduleView: PlayerScheduleView
+
+  // Player Actions
+  onCheckIn?: (matchId: string) => void
+  onSubmitScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  onConfirmScore?: (matchId: string) => void
+
+  // Navigation
+  onViewMatch?: (matchId: string) => void
+  onViewTeam?: (teamId: string) => void
+  onViewStandings?: () => void
 }
