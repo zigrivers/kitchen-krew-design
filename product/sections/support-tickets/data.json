@@ -1,0 +1,736 @@
+{
+  "_meta": {
+    "models": {
+      "tickets": "A support request submitted by a user. Each ticket tracks the issue category, priority level, current status, SLA deadlines, and the full conversation history between the user and support team.",
+      "supportAgents": "Admin team members who handle support tickets. Agents have workload limits, specializations, and satisfaction scores based on user feedback.",
+      "cannedResponses": "Pre-written response templates that agents can quickly insert when replying to common issues. Organized by category for easy discovery.",
+      "dashboardMetrics": "Aggregated statistics for the support dashboard including ticket counts, response times, SLA compliance rates, and satisfaction trends."
+    },
+    "relationships": [
+      "Each Ticket belongs to one User (the person who submitted it)",
+      "Each Ticket may be assigned to one Support Agent",
+      "Each Ticket contains one or more Messages (the conversation thread)",
+      "Messages can be public replies or internal notes (visible only to agents)",
+      "Canned Responses are organized by category to match ticket categories"
+    ]
+  },
+  "tickets": [
+    {
+      "id": "tkt-001",
+      "ticketNumber": "TKT-2024-1847",
+      "subject": "Can't reset my password - email never arrives",
+      "category": "account",
+      "priority": "high",
+      "status": "open",
+      "createdAt": "2024-01-15T09:23:00Z",
+      "updatedAt": "2024-01-15T14:45:00Z",
+      "slaDeadline": "2024-01-15T13:23:00Z",
+      "slaStatus": "breached",
+      "firstResponseAt": null,
+      "resolvedAt": null,
+      "assignedTo": "agent-002",
+      "isStarred": true,
+      "user": {
+        "id": "player-892",
+        "name": "Marcus Chen",
+        "email": "marcus.chen@gmail.com",
+        "avatarUrl": null,
+        "accountStatus": "active",
+        "memberSince": "2023-06-12",
+        "totalTickets": 3,
+        "lastTicketAt": "2023-11-20"
+      },
+      "messages": [
+        {
+          "id": "msg-001",
+          "type": "user",
+          "content": "I've been trying to reset my password for the past 2 hours but I never receive the reset email. I've checked my spam folder multiple times. My email is marcus.chen@gmail.com. I have an event tomorrow morning and really need to get in!",
+          "createdAt": "2024-01-15T09:23:00Z",
+          "attachments": []
+        },
+        {
+          "id": "msg-002",
+          "type": "internal",
+          "content": "Checked email logs - reset emails are being sent but Gmail is bouncing them. Looks like a deliverability issue with our email provider. Escalating to engineering.",
+          "createdAt": "2024-01-15T14:45:00Z",
+          "authorId": "agent-002",
+          "authorName": "Sarah Kim",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": ["tkt-012", "tkt-023"]
+    },
+    {
+      "id": "tkt-002",
+      "ticketNumber": "TKT-2024-1848",
+      "subject": "Charged twice for tournament registration",
+      "category": "billing",
+      "priority": "urgent",
+      "status": "awaiting_response",
+      "createdAt": "2024-01-15T10:15:00Z",
+      "updatedAt": "2024-01-15T11:30:00Z",
+      "slaDeadline": "2024-01-15T11:15:00Z",
+      "slaStatus": "at_risk",
+      "firstResponseAt": "2024-01-15T10:45:00Z",
+      "resolvedAt": null,
+      "assignedTo": "agent-001",
+      "isStarred": false,
+      "user": {
+        "id": "player-445",
+        "name": "Jennifer Okonkwo",
+        "email": "j.okonkwo@outlook.com",
+        "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+        "accountStatus": "active",
+        "memberSince": "2022-03-08",
+        "totalTickets": 1,
+        "lastTicketAt": null
+      },
+      "messages": [
+        {
+          "id": "msg-003",
+          "type": "user",
+          "content": "I registered for the Winter Classic tournament yesterday and got charged $45 twice on my credit card. I only signed up once! Can you please refund one of the charges? I've attached screenshots of my bank statement showing both charges.",
+          "createdAt": "2024-01-15T10:15:00Z",
+          "attachments": [
+            {
+              "id": "att-001",
+              "name": "bank_statement.png",
+              "type": "image/png",
+              "size": 245000,
+              "url": "/attachments/bank_statement.png"
+            }
+          ]
+        },
+        {
+          "id": "msg-004",
+          "type": "agent",
+          "content": "Hi Jennifer,\n\nThank you for reaching out! I can see the duplicate charge in our system and I sincerely apologize for the inconvenience.\n\nI've initiated a refund of $45 to your original payment method. You should see it reflected in your account within 3-5 business days.\n\nIs there anything else I can help you with?",
+          "createdAt": "2024-01-15T10:45:00Z",
+          "authorId": "agent-001",
+          "authorName": "Alex Rivera",
+          "attachments": []
+        },
+        {
+          "id": "msg-005",
+          "type": "user",
+          "content": "Thanks for the quick response! Just to confirm - I'll still be registered for the tournament with the one valid payment, right?",
+          "createdAt": "2024-01-15T11:30:00Z",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": []
+    },
+    {
+      "id": "tkt-003",
+      "ticketNumber": "TKT-2024-1849",
+      "subject": "App crashes when viewing match history",
+      "category": "technical",
+      "priority": "normal",
+      "status": "open",
+      "createdAt": "2024-01-15T11:42:00Z",
+      "updatedAt": "2024-01-15T11:42:00Z",
+      "slaDeadline": "2024-01-16T11:42:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": null,
+      "resolvedAt": null,
+      "assignedTo": null,
+      "isStarred": false,
+      "user": {
+        "id": "player-1203",
+        "name": "David Park",
+        "email": "dpark.pickle@yahoo.com",
+        "avatarUrl": null,
+        "accountStatus": "active",
+        "memberSince": "2024-01-02",
+        "totalTickets": 1,
+        "lastTicketAt": null
+      },
+      "messages": [
+        {
+          "id": "msg-006",
+          "type": "user",
+          "content": "Every time I try to look at my match history from last week's round robin, the app just freezes and then crashes. I'm on an iPhone 13 running iOS 17.2. I've tried restarting the app and my phone but it keeps happening.\n\nSteps to reproduce:\n1. Go to Profile\n2. Tap \"Match History\"\n3. Scroll down to January 8th games\n4. App freezes and crashes",
+          "createdAt": "2024-01-15T11:42:00Z",
+          "attachments": [
+            {
+              "id": "att-002",
+              "name": "crash_log.txt",
+              "type": "text/plain",
+              "size": 12400,
+              "url": "/attachments/crash_log.txt"
+            }
+          ]
+        }
+      ],
+      "relatedTickets": []
+    },
+    {
+      "id": "tkt-004",
+      "ticketNumber": "TKT-2024-1850",
+      "subject": "Request: Add ability to export match stats to CSV",
+      "category": "feature_request",
+      "priority": "low",
+      "status": "open",
+      "createdAt": "2024-01-14T16:30:00Z",
+      "updatedAt": "2024-01-15T09:00:00Z",
+      "slaDeadline": "2024-01-16T16:30:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": "2024-01-15T09:00:00Z",
+      "resolvedAt": null,
+      "assignedTo": "agent-003",
+      "isStarred": true,
+      "user": {
+        "id": "player-567",
+        "name": "Coach Mike Thompson",
+        "email": "mike.t@pickleballpros.com",
+        "avatarUrl": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100",
+        "accountStatus": "active",
+        "memberSince": "2021-09-15",
+        "totalTickets": 8,
+        "lastTicketAt": "2023-12-01"
+      },
+      "messages": [
+        {
+          "id": "msg-007",
+          "type": "user",
+          "content": "As a coach, I'd love to be able to export my students' match statistics to a CSV file so I can analyze their performance trends in Excel. Right now I have to manually copy all the numbers which is very time consuming when tracking 20+ players.\n\nIdeal export would include:\n- Match date\n- Opponent name\n- Score\n- Win/loss\n- Partner (if doubles)\n\nThis would be a huge help for the coaching community!",
+          "createdAt": "2024-01-14T16:30:00Z",
+          "attachments": []
+        },
+        {
+          "id": "msg-008",
+          "type": "agent",
+          "content": "Hi Coach Mike!\n\nThank you for this excellent suggestion! We've heard similar requests from other coaches and club organizers.\n\nI've added your feedback to our feature request backlog and flagged it as a popular request. While I can't promise a specific timeline, our product team reviews these requests quarterly.\n\nIn the meantime, you might find our API useful for bulk data access - I've linked to the documentation below.\n\nThanks for helping us improve!",
+          "createdAt": "2024-01-15T09:00:00Z",
+          "authorId": "agent-003",
+          "authorName": "Jordan Williams",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": ["tkt-089", "tkt-156"]
+    },
+    {
+      "id": "tkt-005",
+      "ticketNumber": "TKT-2024-1851",
+      "subject": "Player harassment during open play session",
+      "category": "abuse",
+      "priority": "urgent",
+      "status": "escalated",
+      "createdAt": "2024-01-15T08:00:00Z",
+      "updatedAt": "2024-01-15T08:35:00Z",
+      "slaDeadline": "2024-01-15T09:00:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": "2024-01-15T08:20:00Z",
+      "resolvedAt": null,
+      "assignedTo": "agent-004",
+      "isStarred": true,
+      "user": {
+        "id": "player-234",
+        "name": "Lisa Yamamoto",
+        "email": "lisa.y@gmail.com",
+        "avatarUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
+        "accountStatus": "active",
+        "memberSince": "2023-02-20",
+        "totalTickets": 2,
+        "lastTicketAt": "2023-08-15"
+      },
+      "messages": [
+        {
+          "id": "msg-009",
+          "type": "user",
+          "content": "I need to report a player named \"PicklePro99\" who was verbally abusive at yesterday's open play at Riverside Courts. He yelled at me for \"playing too slow\" and used inappropriate language when I made mistakes. Several other players witnessed this. It made me really uncomfortable and I almost left early.\n\nThis isn't okay and I don't feel safe playing if he's there.",
+          "createdAt": "2024-01-15T08:00:00Z",
+          "attachments": []
+        },
+        {
+          "id": "msg-010",
+          "type": "agent",
+          "content": "Hi Lisa,\n\nI'm so sorry you experienced this - that behavior is absolutely unacceptable and violates our community guidelines.\n\nI've escalated this to our Trust & Safety team for immediate review. We take harassment reports very seriously.\n\nCould you please provide:\n1. The approximate time this occurred\n2. Names of any witnesses (if you know them)\n3. Any additional details you remember\n\nWe'll investigate and take appropriate action. You'll receive an update within 24 hours.\n\nThank you for reporting this.",
+          "createdAt": "2024-01-15T08:20:00Z",
+          "authorId": "agent-004",
+          "authorName": "Maria Santos",
+          "attachments": []
+        },
+        {
+          "id": "msg-011",
+          "type": "internal",
+          "content": "Escalated to Trust & Safety. Player ID for PicklePro99 is player-789. Checking for prior violations. Found 1 previous warning from October 2023 for similar behavior.",
+          "createdAt": "2024-01-15T08:35:00Z",
+          "authorId": "agent-004",
+          "authorName": "Maria Santos",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": []
+    },
+    {
+      "id": "tkt-006",
+      "ticketNumber": "TKT-2024-1852",
+      "subject": "Score was entered incorrectly - need correction",
+      "category": "event",
+      "priority": "normal",
+      "status": "resolved",
+      "createdAt": "2024-01-14T20:15:00Z",
+      "updatedAt": "2024-01-15T07:30:00Z",
+      "slaDeadline": "2024-01-15T20:15:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": "2024-01-15T07:15:00Z",
+      "resolvedAt": "2024-01-15T07:30:00Z",
+      "resolutionType": "solved",
+      "assignedTo": "agent-001",
+      "isStarred": false,
+      "satisfaction": {
+        "rating": 5,
+        "comment": "Super quick fix, thank you!",
+        "submittedAt": "2024-01-15T08:00:00Z"
+      },
+      "user": {
+        "id": "player-678",
+        "name": "Robert Martinez",
+        "email": "robmartinez@protonmail.com",
+        "avatarUrl": null,
+        "accountStatus": "active",
+        "memberSince": "2023-11-01",
+        "totalTickets": 1,
+        "lastTicketAt": null
+      },
+      "messages": [
+        {
+          "id": "msg-012",
+          "type": "user",
+          "content": "Hi, in tonight's round robin at Metro Sports Club (Event ID: evt-2024-0114), my match against Tom Wilson was recorded as 11-7, 11-9 but we actually played 11-7, 9-11, 11-8 (I won in 3 games). The GM must have clicked wrong. Can you please correct this? It affects my standings.",
+          "createdAt": "2024-01-14T20:15:00Z",
+          "attachments": []
+        },
+        {
+          "id": "msg-013",
+          "type": "agent",
+          "content": "Hi Robert,\n\nThanks for catching this! I've verified with the GM and corrected the score to 11-7, 9-11, 11-8 (your win). Your standings have been updated accordingly.\n\nYou're now in 2nd place in your pool. Good luck in the playoffs!\n\nLet me know if you notice any other discrepancies.",
+          "createdAt": "2024-01-15T07:15:00Z",
+          "authorId": "agent-001",
+          "authorName": "Alex Rivera",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": []
+    },
+    {
+      "id": "tkt-007",
+      "ticketNumber": "TKT-2024-1853",
+      "subject": "How do I cancel my club membership?",
+      "category": "account",
+      "priority": "normal",
+      "status": "resolved",
+      "createdAt": "2024-01-13T14:00:00Z",
+      "updatedAt": "2024-01-13T15:20:00Z",
+      "slaDeadline": "2024-01-14T14:00:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": "2024-01-13T14:45:00Z",
+      "resolvedAt": "2024-01-13T15:20:00Z",
+      "resolutionType": "solved",
+      "assignedTo": "agent-005",
+      "isStarred": false,
+      "satisfaction": {
+        "rating": 4,
+        "comment": "Helpful, wish there was a self-service option",
+        "submittedAt": "2024-01-13T16:00:00Z"
+      },
+      "user": {
+        "id": "player-901",
+        "name": "Amanda Foster",
+        "email": "afoster.tennis@gmail.com",
+        "avatarUrl": null,
+        "accountStatus": "active",
+        "memberSince": "2023-05-22",
+        "totalTickets": 2,
+        "lastTicketAt": "2023-07-10"
+      },
+      "messages": [
+        {
+          "id": "msg-014",
+          "type": "user",
+          "content": "I'm moving to a different city next month and need to cancel my membership at Sunset Pickleball Club. I can't find where to do this in the app. Can you help?",
+          "createdAt": "2024-01-13T14:00:00Z",
+          "attachments": []
+        },
+        {
+          "id": "msg-015",
+          "type": "agent",
+          "content": "Hi Amanda,\n\nI can help you with that! To cancel your club membership:\n\n1. Go to \"My Clubs\" in the app menu\n2. Tap on \"Sunset Pickleball Club\"\n3. Scroll down and tap \"Manage Membership\"\n4. Select \"Cancel Membership\"\n\nNote: If you have any upcoming events registered through the club, you'll need to cancel those separately.\n\nAlternatively, I can process the cancellation for you right now if you'd prefer. Just confirm and I'll take care of it!",
+          "createdAt": "2024-01-13T14:45:00Z",
+          "authorId": "agent-005",
+          "authorName": "Chris Taylor",
+          "attachments": []
+        },
+        {
+          "id": "msg-016",
+          "type": "user",
+          "content": "Found it, thanks! I was looking under Settings instead of My Clubs. All done now.",
+          "createdAt": "2024-01-13T15:20:00Z",
+          "attachments": []
+        }
+      ],
+      "relatedTickets": []
+    },
+    {
+      "id": "tkt-008",
+      "ticketNumber": "TKT-2024-1854",
+      "subject": "DUPR rating not syncing correctly",
+      "category": "technical",
+      "priority": "high",
+      "status": "open",
+      "createdAt": "2024-01-15T12:00:00Z",
+      "updatedAt": "2024-01-15T12:00:00Z",
+      "slaDeadline": "2024-01-15T16:00:00Z",
+      "slaStatus": "on_track",
+      "firstResponseAt": null,
+      "resolvedAt": null,
+      "assignedTo": null,
+      "isStarred": false,
+      "user": {
+        "id": "player-1456",
+        "name": "Kevin O'Brien",
+        "email": "kevinob@icloud.com",
+        "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+        "accountStatus": "active",
+        "memberSince": "2022-08-30",
+        "totalTickets": 5,
+        "lastTicketAt": "2024-01-02"
+      },
+      "messages": [
+        {
+          "id": "msg-017",
+          "type": "user",
+          "content": "My DUPR rating shows 4.25 on the DUPR app but it's showing 3.89 in your app. I connected my account over a week ago. I've tried disconnecting and reconnecting but it still shows the old rating. This is affecting which skill brackets I can join for tournaments.",
+          "createdAt": "2024-01-15T12:00:00Z",
+          "attachments": [
+            {
+              "id": "att-003",
+              "name": "dupr_screenshot.png",
+              "type": "image/png",
+              "size": 189000,
+              "url": "/attachments/dupr_screenshot.png"
+            },
+            {
+              "id": "att-004",
+              "name": "app_screenshot.png",
+              "type": "image/png",
+              "size": 156000,
+              "url": "/attachments/app_screenshot.png"
+            }
+          ]
+        }
+      ],
+      "relatedTickets": ["tkt-034", "tkt-067"]
+    }
+  ],
+  "supportAgents": [
+    {
+      "id": "agent-001",
+      "name": "Alex Rivera",
+      "email": "alex.r@support.pickleballapp.com",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+      "role": "Senior Support Agent",
+      "status": "online",
+      "specializations": ["billing", "event"],
+      "currentTickets": 12,
+      "maxTickets": 20,
+      "ticketsResolvedToday": 8,
+      "averageResponseTime": 18,
+      "satisfactionScore": 4.7,
+      "isOnVacation": false
+    },
+    {
+      "id": "agent-002",
+      "name": "Sarah Kim",
+      "email": "sarah.k@support.pickleballapp.com",
+      "avatarUrl": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=100",
+      "role": "Support Agent",
+      "status": "online",
+      "specializations": ["account", "technical"],
+      "currentTickets": 15,
+      "maxTickets": 15,
+      "ticketsResolvedToday": 5,
+      "averageResponseTime": 25,
+      "satisfactionScore": 4.5,
+      "isOnVacation": false
+    },
+    {
+      "id": "agent-003",
+      "name": "Jordan Williams",
+      "email": "jordan.w@support.pickleballapp.com",
+      "avatarUrl": "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100",
+      "role": "Support Agent",
+      "status": "away",
+      "specializations": ["feature_request", "technical"],
+      "currentTickets": 8,
+      "maxTickets": 15,
+      "ticketsResolvedToday": 3,
+      "averageResponseTime": 32,
+      "satisfactionScore": 4.3,
+      "isOnVacation": false
+    },
+    {
+      "id": "agent-004",
+      "name": "Maria Santos",
+      "email": "maria.s@support.pickleballapp.com",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100",
+      "role": "Trust & Safety Lead",
+      "status": "online",
+      "specializations": ["abuse", "account"],
+      "currentTickets": 6,
+      "maxTickets": 10,
+      "ticketsResolvedToday": 2,
+      "averageResponseTime": 15,
+      "satisfactionScore": 4.8,
+      "isOnVacation": false
+    },
+    {
+      "id": "agent-005",
+      "name": "Chris Taylor",
+      "email": "chris.t@support.pickleballapp.com",
+      "avatarUrl": null,
+      "role": "Support Agent",
+      "status": "offline",
+      "specializations": ["account", "billing"],
+      "currentTickets": 0,
+      "maxTickets": 15,
+      "ticketsResolvedToday": 0,
+      "averageResponseTime": 22,
+      "satisfactionScore": 4.4,
+      "isOnVacation": true,
+      "vacationUntil": "2024-01-20"
+    }
+  ],
+  "cannedResponses": [
+    {
+      "id": "canned-001",
+      "title": "Password Reset Instructions",
+      "category": "account",
+      "content": "Hi {{user_name}},\n\nTo reset your password:\n\n1. Go to the login screen\n2. Tap \"Forgot Password\"\n3. Enter your email address: {{user_email}}\n4. Check your inbox (and spam folder) for the reset link\n5. Click the link and create a new password\n\nThe reset link expires in 24 hours. If you don't receive the email within 5 minutes, please let me know and I'll investigate further.\n\nBest regards,\n{{agent_name}}",
+      "usageCount": 234,
+      "lastUsed": "2024-01-15T10:30:00Z",
+      "createdBy": "agent-002",
+      "tags": ["password", "login", "reset"]
+    },
+    {
+      "id": "canned-002",
+      "title": "Refund Confirmation",
+      "category": "billing",
+      "content": "Hi {{user_name}},\n\nI've processed a refund of {{amount}} to your original payment method. You should see it reflected in your account within 3-5 business days, depending on your bank.\n\nRefund details:\n- Amount: {{amount}}\n- Reference: {{refund_reference}}\n- Original transaction: {{transaction_id}}\n\nIf you don't see the refund after 5 business days, please reply to this ticket and I'll follow up with our payment processor.\n\nThank you for your patience!",
+      "usageCount": 156,
+      "lastUsed": "2024-01-15T10:45:00Z",
+      "createdBy": "agent-001",
+      "tags": ["refund", "payment", "billing"]
+    },
+    {
+      "id": "canned-003",
+      "title": "Bug Report Acknowledgment",
+      "category": "technical",
+      "content": "Hi {{user_name}},\n\nThank you for reporting this issue! I've logged it with our development team with the following details:\n\n- Issue: {{issue_summary}}\n- Device: {{device_info}}\n- Steps to reproduce: As you described\n\nOur team will investigate and work on a fix. While I can't provide an exact timeline, we typically address bugs like this within 1-2 weeks.\n\nIn the meantime, here are some things you can try:\n- Force quit and restart the app\n- Make sure you're on the latest version\n- Clear the app cache (Settings > Storage > Clear Cache)\n\nI'll update this ticket when we have more information. Thanks for helping us improve!",
+      "usageCount": 89,
+      "lastUsed": "2024-01-14T16:00:00Z",
+      "createdBy": "agent-003",
+      "tags": ["bug", "technical", "engineering"]
+    },
+    {
+      "id": "canned-004",
+      "title": "Feature Request Logged",
+      "category": "feature_request",
+      "content": "Hi {{user_name}},\n\nThank you for this suggestion! We love hearing ideas from our community.\n\nI've added your feedback to our feature request backlog. Our product team reviews these requests regularly when planning new releases.\n\nWhile I can't promise a specific timeline or guarantee implementation, popular requests like yours help us prioritize what to build next.\n\nIs there anything else I can help you with today?",
+      "usageCount": 178,
+      "lastUsed": "2024-01-15T09:00:00Z",
+      "createdBy": "agent-003",
+      "tags": ["feature", "suggestion", "feedback"]
+    },
+    {
+      "id": "canned-005",
+      "title": "Harassment Report Response",
+      "category": "abuse",
+      "content": "Hi {{user_name}},\n\nI'm very sorry you experienced this. Harassment and abusive behavior have no place in our community.\n\nI've escalated your report to our Trust & Safety team for immediate review. We take these matters seriously and will investigate thoroughly.\n\nCould you please provide any additional details that might help our investigation:\n- Approximate time of the incident\n- Names of any witnesses\n- Any screenshots or other evidence\n\nYou'll receive an update within 24 hours. In the meantime, if you feel unsafe, please don't hesitate to contact local authorities.\n\nThank you for reporting this.",
+      "usageCount": 34,
+      "lastUsed": "2024-01-15T08:20:00Z",
+      "createdBy": "agent-004",
+      "tags": ["abuse", "harassment", "safety"]
+    },
+    {
+      "id": "canned-006",
+      "title": "Event Registration Help",
+      "category": "event",
+      "content": "Hi {{user_name}},\n\nTo register for an event:\n\n1. Find the event in the Events tab or via the club page\n2. Tap \"Register\" on the event details page\n3. Select your skill bracket (if applicable)\n4. Choose your payment method\n5. Confirm your registration\n\nYou'll receive a confirmation email with event details and check-in instructions.\n\nIf the event shows \"Full\", you can join the waitlist and you'll be notified if a spot opens up.\n\nLet me know if you need help finding a specific event!",
+      "usageCount": 145,
+      "lastUsed": "2024-01-14T19:30:00Z",
+      "createdBy": "agent-001",
+      "tags": ["event", "registration", "signup"]
+    },
+    {
+      "id": "canned-007",
+      "title": "Score Correction Completed",
+      "category": "event",
+      "content": "Hi {{user_name}},\n\nI've corrected the score for your match:\n\n- Event: {{event_name}}\n- Match: {{player1}} vs {{player2}}\n- Old score: {{old_score}}\n- Corrected score: {{new_score}}\n\nYour standings and statistics have been updated accordingly.\n\nThanks for catching this! Let me know if you notice any other discrepancies.",
+      "usageCount": 67,
+      "lastUsed": "2024-01-15T07:15:00Z",
+      "createdBy": "agent-001",
+      "tags": ["score", "correction", "match"]
+    },
+    {
+      "id": "canned-008",
+      "title": "Club Membership Cancellation",
+      "category": "account",
+      "content": "Hi {{user_name}},\n\nI've processed your membership cancellation for {{club_name}}.\n\nPlease note:\n- Your membership remains active until the end of your current billing period ({{end_date}})\n- You can still attend events you're already registered for\n- Any club-specific benefits will end after {{end_date}}\n\nYou're always welcome to rejoin in the future! If you have any feedback about your experience, we'd love to hear it.\n\nIs there anything else I can help you with?",
+      "usageCount": 45,
+      "lastUsed": "2024-01-12T11:00:00Z",
+      "createdBy": "agent-005",
+      "tags": ["membership", "cancel", "club"]
+    },
+    {
+      "id": "canned-009",
+      "title": "DUPR Sync Issue",
+      "category": "technical",
+      "content": "Hi {{user_name}},\n\nI understand your DUPR rating isn't syncing correctly. Here's what I'd like you to try:\n\n1. Go to Settings > Connected Accounts\n2. Tap \"Disconnect\" next to DUPR\n3. Wait 30 seconds\n4. Tap \"Connect DUPR\" and sign in again\n5. Wait up to 24 hours for the sync to complete\n\nIf the rating still doesn't update after 24 hours, please reply to this ticket with:\n- Your DUPR Player ID\n- A screenshot of your current DUPR rating\n\nI'll escalate to our engineering team to investigate the sync issue.\n\nThanks for your patience!",
+      "usageCount": 52,
+      "lastUsed": "2024-01-14T14:00:00Z",
+      "createdBy": "agent-002",
+      "tags": ["DUPR", "rating", "sync", "integration"]
+    },
+    {
+      "id": "canned-010",
+      "title": "Closing - Issue Resolved",
+      "category": "general",
+      "content": "Hi {{user_name}},\n\nI'm glad we could get this resolved for you! I'll go ahead and close this ticket now.\n\nYou'll receive a brief satisfaction survey - your feedback helps us improve our support.\n\nIf you have any other questions in the future, don't hesitate to reach out. Have a great day and enjoy your games!\n\nBest,\n{{agent_name}}",
+      "usageCount": 423,
+      "lastUsed": "2024-01-15T07:30:00Z",
+      "createdBy": "agent-001",
+      "tags": ["closing", "resolved", "general"]
+    },
+    {
+      "id": "canned-011",
+      "title": "Request More Information",
+      "category": "general",
+      "content": "Hi {{user_name}},\n\nThanks for reaching out! To help you better, I need a bit more information:\n\n{{questions}}\n\nOnce I have these details, I'll be able to assist you right away.\n\nThanks!",
+      "usageCount": 287,
+      "lastUsed": "2024-01-15T11:45:00Z",
+      "createdBy": "agent-002",
+      "tags": ["information", "questions", "general"]
+    },
+    {
+      "id": "canned-012",
+      "title": "Escalation Notice",
+      "category": "general",
+      "content": "Hi {{user_name}},\n\nI've escalated your case to our specialized {{team_name}} team who can better assist with this type of issue.\n\nYou can expect to hear from them within {{timeline}}. Your ticket reference is {{ticket_number}} - please keep this for your records.\n\nIn the meantime, if you have any urgent concerns, please reply to this ticket.\n\nThank you for your patience.",
+      "usageCount": 78,
+      "lastUsed": "2024-01-15T08:25:00Z",
+      "createdBy": "agent-004",
+      "tags": ["escalation", "specialist", "transfer"]
+    }
+  ],
+  "dashboardMetrics": {
+    "overview": {
+      "openTickets": 47,
+      "unresolvedUrgent": 3,
+      "awaitingResponse": 12,
+      "averageFirstResponse": 22,
+      "averageResolutionTime": 4.2,
+      "slaComplianceRate": 94.5,
+      "satisfactionScore": 4.5
+    },
+    "ticketsByStatus": {
+      "open": 35,
+      "awaiting_response": 12,
+      "escalated": 5,
+      "resolved": 156,
+      "closed": 892
+    },
+    "ticketsByCategory": {
+      "account": 28,
+      "billing": 15,
+      "technical": 22,
+      "event": 31,
+      "abuse": 4,
+      "feature_request": 12
+    },
+    "ticketsByPriority": {
+      "urgent": 3,
+      "high": 11,
+      "normal": 67,
+      "low": 31
+    },
+    "slaPerformance": {
+      "urgent": { "target": 1, "actual": 0.8, "compliance": 92 },
+      "high": { "target": 4, "actual": 3.2, "compliance": 95 },
+      "normal": { "target": 24, "actual": 18.5, "compliance": 97 },
+      "low": { "target": 48, "actual": 32.1, "compliance": 98 }
+    },
+    "trends": {
+      "ticketsCreated": [
+        { "date": "2024-01-09", "count": 23 },
+        { "date": "2024-01-10", "count": 31 },
+        { "date": "2024-01-11", "count": 28 },
+        { "date": "2024-01-12", "count": 19 },
+        { "date": "2024-01-13", "count": 15 },
+        { "date": "2024-01-14", "count": 22 },
+        { "date": "2024-01-15", "count": 18 }
+      ],
+      "ticketsResolved": [
+        { "date": "2024-01-09", "count": 21 },
+        { "date": "2024-01-10", "count": 29 },
+        { "date": "2024-01-11", "count": 30 },
+        { "date": "2024-01-12", "count": 22 },
+        { "date": "2024-01-13", "count": 14 },
+        { "date": "2024-01-14", "count": 20 },
+        { "date": "2024-01-15", "count": 16 }
+      ],
+      "satisfaction": [
+        { "date": "2024-01-09", "score": 4.4 },
+        { "date": "2024-01-10", "score": 4.6 },
+        { "date": "2024-01-11", "score": 4.5 },
+        { "date": "2024-01-12", "score": 4.3 },
+        { "date": "2024-01-13", "score": 4.7 },
+        { "date": "2024-01-14", "score": 4.5 },
+        { "date": "2024-01-15", "score": 4.6 }
+      ]
+    },
+    "agentPerformance": [
+      {
+        "agentId": "agent-001",
+        "name": "Alex Rivera",
+        "ticketsResolved": 156,
+        "averageResponseTime": 18,
+        "satisfactionScore": 4.7,
+        "slaCompliance": 96
+      },
+      {
+        "agentId": "agent-002",
+        "name": "Sarah Kim",
+        "ticketsResolved": 134,
+        "averageResponseTime": 25,
+        "satisfactionScore": 4.5,
+        "slaCompliance": 93
+      },
+      {
+        "agentId": "agent-003",
+        "name": "Jordan Williams",
+        "ticketsResolved": 98,
+        "averageResponseTime": 32,
+        "satisfactionScore": 4.3,
+        "slaCompliance": 91
+      },
+      {
+        "agentId": "agent-004",
+        "name": "Maria Santos",
+        "ticketsResolved": 67,
+        "averageResponseTime": 15,
+        "satisfactionScore": 4.8,
+        "slaCompliance": 98
+      },
+      {
+        "agentId": "agent-005",
+        "name": "Chris Taylor",
+        "ticketsResolved": 112,
+        "averageResponseTime": 22,
+        "satisfactionScore": 4.4,
+        "slaCompliance": 94
+      }
+    ]
+  }
+}
