@@ -1,0 +1,583 @@
+{
+  "_meta": {
+    "models": {
+      "auditEvents": "Each audit event represents a single tracked action in the system—who did what, when, and to which resource. Events include before/after values for data changes.",
+      "actors": "Actors are the admin users who perform audited actions. Each actor snapshot captures their role and permissions at the time of the action.",
+      "filterPresets": "Saved filter combinations that admins can quickly apply for common queries like 'Failed logins this week' or 'All permission changes'.",
+      "securityMetrics": "Aggregated statistics for the security dashboard, including counts of critical events, failed logins, and suspicious patterns.",
+      "activityHeatmap": "Hour-by-day matrix showing when activity occurs across the platform, useful for detecting unusual patterns."
+    },
+    "relationships": [
+      "Each AuditEvent has one Actor who performed the action",
+      "AuditEvents reference platform entities (Player, Club, Event, etc.) via entityType and resourceId",
+      "Related events share a sessionId (e.g., all actions during an impersonation session)",
+      "FilterPresets are independent saved queries created by admins"
+    ]
+  },
+  "actors": [
+    {
+      "id": "actor-001",
+      "userId": "usr-admin-001",
+      "name": "Sarah Chen",
+      "email": "sarah.chen@pickleballapp.com",
+      "role": "super_admin",
+      "permissions": ["all"],
+      "avatarUrl": null
+    },
+    {
+      "id": "actor-002",
+      "userId": "usr-admin-002",
+      "name": "Marcus Johnson",
+      "email": "marcus.j@pickleballapp.com",
+      "role": "support_admin",
+      "permissions": ["users.view", "users.edit", "tickets.manage", "events.view"],
+      "avatarUrl": null
+    },
+    {
+      "id": "actor-003",
+      "userId": "usr-admin-003",
+      "name": "Emily Rodriguez",
+      "email": "emily.r@pickleballapp.com",
+      "role": "club_admin",
+      "permissions": ["clubs.manage", "events.manage", "members.manage"],
+      "avatarUrl": null
+    },
+    {
+      "id": "actor-004",
+      "userId": "usr-admin-004",
+      "name": "David Kim",
+      "email": "david.kim@pickleballapp.com",
+      "role": "super_admin",
+      "permissions": ["all"],
+      "avatarUrl": null
+    },
+    {
+      "id": "actor-005",
+      "userId": "usr-player-789",
+      "name": "Alex Thompson",
+      "email": "alex.t@gmail.com",
+      "role": "player",
+      "permissions": ["profile.edit"],
+      "avatarUrl": null
+    }
+  ],
+  "auditEvents": [
+    {
+      "id": "evt-001",
+      "timestamp": "2024-01-15T14:32:18Z",
+      "severity": "critical",
+      "action": "user.suspend",
+      "description": "Suspended user account for Terms of Service violation",
+      "actorId": "actor-001",
+      "entityType": "Player",
+      "resourceId": "usr-12345",
+      "resourceLabel": "john.doe@email.com",
+      "ipAddress": "192.168.1.105",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-abc123",
+      "beforeValue": {
+        "status": "active",
+        "suspendedAt": null,
+        "suspendedReason": null
+      },
+      "afterValue": {
+        "status": "suspended",
+        "suspendedAt": "2024-01-15T14:32:18Z",
+        "suspendedReason": "Repeated harassment reports from multiple users"
+      },
+      "metadata": {
+        "relatedTicketId": "TKT-2024-0892",
+        "reportCount": 5
+      }
+    },
+    {
+      "id": "evt-002",
+      "timestamp": "2024-01-15T14:28:05Z",
+      "severity": "warning",
+      "action": "score.correction",
+      "description": "Corrected match score after dispute review",
+      "actorId": "actor-002",
+      "entityType": "Match",
+      "resourceId": "match-98765",
+      "resourceLabel": "Court 3 - Round Robin Match #12",
+      "ipAddress": "10.0.0.45",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "sessionId": "sess-def456",
+      "beforeValue": {
+        "team1Score": 11,
+        "team2Score": 9,
+        "winner": "team1"
+      },
+      "afterValue": {
+        "team1Score": 9,
+        "team2Score": 11,
+        "winner": "team2"
+      },
+      "metadata": {
+        "correctionReason": "Scorekeeper entered teams in wrong order",
+        "disputeId": "disp-445"
+      }
+    },
+    {
+      "id": "evt-003",
+      "timestamp": "2024-01-15T14:15:42Z",
+      "severity": "critical",
+      "action": "permission.escalate",
+      "description": "Elevated user to Club Admin role",
+      "actorId": "actor-001",
+      "entityType": "Player",
+      "resourceId": "usr-67890",
+      "resourceLabel": "maria.garcia@email.com",
+      "ipAddress": "192.168.1.105",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-abc123",
+      "beforeValue": {
+        "role": "player",
+        "permissions": ["profile.edit"]
+      },
+      "afterValue": {
+        "role": "club_admin",
+        "permissions": ["profile.edit", "clubs.manage", "events.manage", "members.manage"]
+      },
+      "metadata": {
+        "clubId": "club-seattle-01",
+        "clubName": "Seattle Pickleball Club"
+      }
+    },
+    {
+      "id": "evt-004",
+      "timestamp": "2024-01-15T13:55:20Z",
+      "severity": "info",
+      "action": "event.create",
+      "description": "Created new Round Robin event",
+      "actorId": "actor-003",
+      "entityType": "Event",
+      "resourceId": "evt-2024-0156",
+      "resourceLabel": "Saturday Morning Round Robin",
+      "ipAddress": "172.16.0.88",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2)",
+      "sessionId": "sess-ghi789",
+      "beforeValue": null,
+      "afterValue": {
+        "name": "Saturday Morning Round Robin",
+        "date": "2024-01-20",
+        "startTime": "09:00",
+        "format": "round_robin",
+        "maxPlayers": 24,
+        "registrationFee": 15
+      },
+      "metadata": {
+        "venueId": "venue-greenwood",
+        "venueName": "Greenwood Community Center"
+      }
+    },
+    {
+      "id": "evt-005",
+      "timestamp": "2024-01-15T13:42:11Z",
+      "severity": "critical",
+      "action": "login.failed",
+      "description": "Failed login attempt - invalid password",
+      "actorId": "actor-005",
+      "entityType": "Player",
+      "resourceId": "usr-player-789",
+      "resourceLabel": "alex.t@gmail.com",
+      "ipAddress": "203.0.113.42",
+      "userAgent": "Mozilla/5.0 (Linux; Android 14)",
+      "sessionId": null,
+      "beforeValue": null,
+      "afterValue": {
+        "failedAttempts": 3,
+        "lastFailedAt": "2024-01-15T13:42:11Z"
+      },
+      "metadata": {
+        "attemptNumber": 3,
+        "lockoutWarning": true
+      }
+    },
+    {
+      "id": "evt-006",
+      "timestamp": "2024-01-15T13:30:00Z",
+      "severity": "critical",
+      "action": "impersonation.start",
+      "description": "Started user impersonation session for support",
+      "actorId": "actor-002",
+      "entityType": "Player",
+      "resourceId": "usr-54321",
+      "resourceLabel": "jennifer.w@email.com",
+      "ipAddress": "10.0.0.45",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "sessionId": "sess-impersonate-001",
+      "beforeValue": null,
+      "afterValue": {
+        "impersonating": true,
+        "originalUserId": "usr-admin-002",
+        "reason": "Investigating registration issue reported in TKT-2024-0901"
+      },
+      "metadata": {
+        "ticketId": "TKT-2024-0901",
+        "approvedBy": "actor-001"
+      }
+    },
+    {
+      "id": "evt-007",
+      "timestamp": "2024-01-15T13:45:22Z",
+      "severity": "info",
+      "action": "impersonation.end",
+      "description": "Ended user impersonation session",
+      "actorId": "actor-002",
+      "entityType": "Player",
+      "resourceId": "usr-54321",
+      "resourceLabel": "jennifer.w@email.com",
+      "ipAddress": "10.0.0.45",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "sessionId": "sess-impersonate-001",
+      "beforeValue": {
+        "impersonating": true
+      },
+      "afterValue": {
+        "impersonating": false,
+        "duration": "15m 22s"
+      },
+      "metadata": {
+        "actionsPerformed": 3,
+        "issueResolved": true
+      }
+    },
+    {
+      "id": "evt-008",
+      "timestamp": "2024-01-15T12:18:33Z",
+      "severity": "warning",
+      "action": "subscription.override",
+      "description": "Applied complimentary premium subscription",
+      "actorId": "actor-004",
+      "entityType": "Player",
+      "resourceId": "usr-vip-001",
+      "resourceLabel": "tournament.director@email.com",
+      "ipAddress": "192.168.1.200",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-jkl012",
+      "beforeValue": {
+        "subscriptionTier": "free",
+        "subscriptionEnds": null
+      },
+      "afterValue": {
+        "subscriptionTier": "premium",
+        "subscriptionEnds": "2025-01-15",
+        "overrideReason": "Tournament Director Partnership Program"
+      },
+      "metadata": {
+        "partnershipId": "partner-td-2024",
+        "valueWaived": 99.99
+      }
+    },
+    {
+      "id": "evt-009",
+      "timestamp": "2024-01-15T11:45:00Z",
+      "severity": "info",
+      "action": "bulk.import",
+      "description": "Imported player records from CSV",
+      "actorId": "actor-003",
+      "entityType": "Player",
+      "resourceId": "import-batch-2024-01-15",
+      "resourceLabel": "Seattle Club Member Import",
+      "ipAddress": "172.16.0.88",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2)",
+      "sessionId": "sess-ghi789",
+      "beforeValue": null,
+      "afterValue": {
+        "recordsProcessed": 47,
+        "recordsCreated": 42,
+        "recordsUpdated": 3,
+        "recordsFailed": 2
+      },
+      "metadata": {
+        "fileName": "seattle_club_members_jan2024.csv",
+        "failedRecords": ["row 23: invalid email", "row 41: duplicate entry"]
+      }
+    },
+    {
+      "id": "evt-010",
+      "timestamp": "2024-01-15T11:20:15Z",
+      "severity": "warning",
+      "action": "refund.process",
+      "description": "Processed refund for cancelled event registration",
+      "actorId": "actor-002",
+      "entityType": "Registration",
+      "resourceId": "reg-78901",
+      "resourceLabel": "Tournament Registration #78901",
+      "ipAddress": "10.0.0.45",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "sessionId": "sess-mno345",
+      "beforeValue": {
+        "paymentStatus": "paid",
+        "amount": 45.00
+      },
+      "afterValue": {
+        "paymentStatus": "refunded",
+        "refundAmount": 45.00,
+        "refundedAt": "2024-01-15T11:20:15Z"
+      },
+      "metadata": {
+        "reason": "Event cancelled by organizer",
+        "stripeRefundId": "re_3Oxxxx"
+      }
+    },
+    {
+      "id": "evt-011",
+      "timestamp": "2024-01-15T10:05:44Z",
+      "severity": "info",
+      "action": "config.update",
+      "description": "Updated platform feature flags",
+      "actorId": "actor-004",
+      "entityType": "System",
+      "resourceId": "feature-flags",
+      "resourceLabel": "Platform Feature Flags",
+      "ipAddress": "192.168.1.200",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-pqr678",
+      "beforeValue": {
+        "newMatchmaking": false,
+        "betaScorecard": true,
+        "socialFeatures": false
+      },
+      "afterValue": {
+        "newMatchmaking": true,
+        "betaScorecard": true,
+        "socialFeatures": false
+      },
+      "metadata": {
+        "rolloutPercentage": 25,
+        "targetAudience": "premium_users"
+      }
+    },
+    {
+      "id": "evt-012",
+      "timestamp": "2024-01-15T09:30:00Z",
+      "severity": "info",
+      "action": "login.success",
+      "description": "Successful admin login",
+      "actorId": "actor-001",
+      "entityType": "Player",
+      "resourceId": "usr-admin-001",
+      "resourceLabel": "sarah.chen@pickleballapp.com",
+      "ipAddress": "192.168.1.105",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-abc123",
+      "beforeValue": null,
+      "afterValue": {
+        "lastLoginAt": "2024-01-15T09:30:00Z",
+        "mfaUsed": true
+      },
+      "metadata": {
+        "loginMethod": "sso",
+        "mfaMethod": "authenticator"
+      }
+    },
+    {
+      "id": "evt-013",
+      "timestamp": "2024-01-14T16:22:08Z",
+      "severity": "critical",
+      "action": "backup.restore",
+      "description": "Restored database from backup point",
+      "actorId": "actor-004",
+      "entityType": "System",
+      "resourceId": "backup-2024-01-14-am",
+      "resourceLabel": "Daily Backup 2024-01-14 06:00",
+      "ipAddress": "192.168.1.200",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "sessionId": "sess-emergency-001",
+      "beforeValue": {
+        "databaseState": "corrupted_index"
+      },
+      "afterValue": {
+        "databaseState": "restored",
+        "restoredFrom": "2024-01-14T06:00:00Z",
+        "dataLoss": "10 hours of data"
+      },
+      "metadata": {
+        "incidentId": "INC-2024-0012",
+        "approvedBy": "actor-001",
+        "rollbackReason": "Database index corruption during migration"
+      }
+    },
+    {
+      "id": "evt-014",
+      "timestamp": "2024-01-14T15:45:30Z",
+      "severity": "warning",
+      "action": "event.cancel",
+      "description": "Cancelled event due to weather",
+      "actorId": "actor-003",
+      "entityType": "Event",
+      "resourceId": "evt-2024-0142",
+      "resourceLabel": "Friday Night Lights Tournament",
+      "ipAddress": "172.16.0.88",
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2)",
+      "sessionId": "sess-stu901",
+      "beforeValue": {
+        "status": "scheduled",
+        "registrations": 32
+      },
+      "afterValue": {
+        "status": "cancelled",
+        "cancelledAt": "2024-01-14T15:45:30Z",
+        "cancellationReason": "Severe weather warning"
+      },
+      "metadata": {
+        "refundsIssued": 32,
+        "totalRefunded": 1440.00,
+        "notificationsSent": true
+      }
+    },
+    {
+      "id": "evt-015",
+      "timestamp": "2024-01-14T14:10:55Z",
+      "severity": "info",
+      "action": "user.update",
+      "description": "Updated user profile information",
+      "actorId": "actor-002",
+      "entityType": "Player",
+      "resourceId": "usr-33445",
+      "resourceLabel": "mike.wilson@email.com",
+      "ipAddress": "10.0.0.45",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "sessionId": "sess-vwx234",
+      "beforeValue": {
+        "skillLevel": 3.0,
+        "playingStyle": null
+      },
+      "afterValue": {
+        "skillLevel": 3.5,
+        "playingStyle": "aggressive"
+      },
+      "metadata": {
+        "updateSource": "admin_correction",
+        "requestedBy": "user"
+      }
+    }
+  ],
+  "filterPresets": [
+    {
+      "id": "preset-001",
+      "name": "Failed Logins (24h)",
+      "description": "All failed login attempts in the last 24 hours",
+      "filters": {
+        "action": ["login.failed"],
+        "dateRange": "last_24h",
+        "severity": ["critical", "warning"]
+      },
+      "createdBy": "actor-001",
+      "createdAt": "2024-01-10T09:00:00Z",
+      "isDefault": true
+    },
+    {
+      "id": "preset-002",
+      "name": "Permission Changes",
+      "description": "All role and permission modifications",
+      "filters": {
+        "action": ["permission.escalate", "permission.revoke", "role.assign", "role.remove"],
+        "dateRange": "last_7d",
+        "severity": null
+      },
+      "createdBy": "actor-001",
+      "createdAt": "2024-01-08T14:30:00Z",
+      "isDefault": true
+    },
+    {
+      "id": "preset-003",
+      "name": "Critical Events",
+      "description": "All critical severity events requiring attention",
+      "filters": {
+        "action": null,
+        "dateRange": "last_7d",
+        "severity": ["critical"]
+      },
+      "createdBy": "actor-004",
+      "createdAt": "2024-01-05T11:15:00Z",
+      "isDefault": false
+    }
+  ],
+  "securityMetrics": {
+    "period": "last_7d",
+    "totalEvents": 1247,
+    "criticalEvents": 23,
+    "warningEvents": 156,
+    "infoEvents": 1068,
+    "failedLogins": 47,
+    "successfulLogins": 892,
+    "permissionEscalations": 8,
+    "impersonationSessions": 3,
+    "suspendedAccounts": 2,
+    "bulkOperations": 12,
+    "configChanges": 5,
+    "topActors": [
+      { "actorId": "actor-002", "name": "Marcus Johnson", "actionCount": 342 },
+      { "actorId": "actor-001", "name": "Sarah Chen", "actionCount": 287 },
+      { "actorId": "actor-003", "name": "Emily Rodriguez", "actionCount": 198 },
+      { "actorId": "actor-004", "name": "David Kim", "actionCount": 156 }
+    ],
+    "topEntityTypes": [
+      { "entityType": "Player", "count": 534 },
+      { "entityType": "Event", "count": 312 },
+      { "entityType": "Registration", "count": 201 },
+      { "entityType": "Match", "count": 145 },
+      { "entityType": "System", "count": 55 }
+    ],
+    "suspiciousPatterns": [
+      {
+        "id": "pattern-001",
+        "type": "multiple_failed_logins",
+        "description": "5+ failed login attempts from single IP",
+        "ipAddress": "203.0.113.42",
+        "occurrences": 7,
+        "firstSeen": "2024-01-15T13:30:00Z",
+        "lastSeen": "2024-01-15T13:55:00Z"
+      }
+    ]
+  },
+  "activityHeatmap": {
+    "period": "last_7d",
+    "timezone": "America/Los_Angeles",
+    "data": [
+      { "day": "Mon", "hours": [2, 1, 0, 0, 0, 1, 8, 24, 45, 52, 48, 42, 38, 55, 62, 58, 45, 32, 18, 12, 8, 5, 3, 2] },
+      { "day": "Tue", "hours": [1, 1, 0, 0, 0, 2, 10, 28, 48, 55, 52, 45, 40, 58, 65, 60, 48, 35, 20, 14, 9, 6, 4, 2] },
+      { "day": "Wed", "hours": [2, 0, 0, 0, 0, 1, 9, 26, 42, 50, 47, 43, 38, 52, 58, 55, 44, 30, 17, 11, 7, 4, 3, 1] },
+      { "day": "Thu", "hours": [1, 1, 0, 0, 0, 2, 8, 25, 44, 51, 49, 44, 39, 54, 60, 57, 46, 33, 19, 13, 8, 5, 3, 2] },
+      { "day": "Fri", "hours": [2, 1, 0, 0, 0, 1, 7, 22, 40, 48, 45, 41, 36, 50, 55, 52, 42, 28, 15, 10, 6, 4, 2, 1] },
+      { "day": "Sat", "hours": [1, 0, 0, 0, 0, 0, 3, 8, 15, 22, 25, 28, 30, 32, 28, 24, 20, 15, 10, 7, 5, 3, 2, 1] },
+      { "day": "Sun", "hours": [1, 0, 0, 0, 0, 0, 2, 6, 12, 18, 22, 25, 27, 28, 25, 20, 16, 12, 8, 5, 4, 2, 1, 1] }
+    ],
+    "maxValue": 65,
+    "totalActions": 2847
+  },
+  "actionTypes": [
+    { "value": "login.success", "label": "Login Success", "category": "security" },
+    { "value": "login.failed", "label": "Login Failed", "category": "security" },
+    { "value": "user.create", "label": "User Create", "category": "user" },
+    { "value": "user.update", "label": "User Update", "category": "user" },
+    { "value": "user.delete", "label": "User Delete", "category": "user" },
+    { "value": "user.suspend", "label": "User Suspend", "category": "user" },
+    { "value": "permission.escalate", "label": "Permission Escalate", "category": "security" },
+    { "value": "permission.revoke", "label": "Permission Revoke", "category": "security" },
+    { "value": "impersonation.start", "label": "Impersonation Start", "category": "security" },
+    { "value": "impersonation.end", "label": "Impersonation End", "category": "security" },
+    { "value": "event.create", "label": "Event Create", "category": "event" },
+    { "value": "event.update", "label": "Event Update", "category": "event" },
+    { "value": "event.cancel", "label": "Event Cancel", "category": "event" },
+    { "value": "score.entry", "label": "Score Entry", "category": "match" },
+    { "value": "score.correction", "label": "Score Correction", "category": "match" },
+    { "value": "subscription.override", "label": "Subscription Override", "category": "financial" },
+    { "value": "refund.process", "label": "Refund Process", "category": "financial" },
+    { "value": "bulk.import", "label": "Bulk Import", "category": "system" },
+    { "value": "config.update", "label": "Config Update", "category": "system" },
+    { "value": "backup.restore", "label": "Backup Restore", "category": "system" }
+  ],
+  "entityTypes": [
+    { "value": "Player", "label": "Player" },
+    { "value": "Club", "label": "Club" },
+    { "value": "Venue", "label": "Venue" },
+    { "value": "Event", "label": "Event" },
+    { "value": "Match", "label": "Match" },
+    { "value": "Registration", "label": "Registration" },
+    { "value": "System", "label": "System" }
+  ]
+}
