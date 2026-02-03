@@ -1,0 +1,713 @@
+{
+  "_meta": {
+    "models": {
+      "generalSettings": "Platform-wide default configurations for events, notifications, onboarding, and privacy settings.",
+      "featureFlags": "Feature toggles that control which features are enabled across the platform, with options for percentage rollout and user targeting.",
+      "rateLimits": "API and user action limits that prevent abuse and ensure fair usage across the platform.",
+      "integrations": "Third-party service configurations for DUPR, payment processing, email delivery, and maps.",
+      "maintenanceConfig": "Settings for maintenance mode, scheduled windows, and admin access during maintenance.",
+      "roles": "System roles that define what users can access and do within the platform.",
+      "permissions": "Individual permissions that can be assigned to roles.",
+      "settingsHistory": "Audit trail of all configuration changes with timestamps and the ability to rollback."
+    },
+    "relationships": [
+      "Each Role contains multiple Permissions defining what actions that role can perform",
+      "SettingsHistory tracks all changes to GeneralSettings, FeatureFlags, RateLimits, and other configurations",
+      "Integrations are independent services but may have dependencies (e.g., SMS notifications require SendGrid)"
+    ]
+  },
+  "generalSettings": {
+    "events": {
+      "defaultScoringFormat": "rally",
+      "defaultGameFormat": "singles",
+      "defaultRegistrationDeadline": 24,
+      "defaultMinPlayers": 4,
+      "defaultMaxPlayers": 32,
+      "allowWaitlist": true,
+      "requireSkillLevel": true
+    },
+    "notifications": {
+      "eventReminderHours": [24, 2],
+      "registrationConfirmation": true,
+      "matchResultNotification": true,
+      "weeklyDigest": true,
+      "defaultEmailEnabled": true,
+      "defaultPushEnabled": true,
+      "defaultSmsEnabled": false
+    },
+    "onboarding": {
+      "requireProfilePhoto": false,
+      "requireSkillLevel": true,
+      "requireLocation": true,
+      "welcomeMessageEnabled": true,
+      "welcomeMessageTemplate": "Welcome to KitchenKrew! Start by completing your profile and finding events near you.",
+      "suggestNearbyClubs": true
+    },
+    "privacy": {
+      "defaultProfileVisibility": "members",
+      "defaultShowRating": true,
+      "defaultShowMatchHistory": true,
+      "allowAnonymousViewing": false
+    }
+  },
+  "featureFlags": [
+    {
+      "id": "ff-001",
+      "key": "sms_notifications",
+      "name": "SMS Notifications",
+      "description": "Allow users to receive notifications via SMS text messages",
+      "category": "core",
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "targetGroups": [],
+      "dependencies": ["sendgrid_integration"],
+      "lastModified": "2024-12-15T10:30:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-002",
+      "key": "payment_processing",
+      "name": "Payment Processing",
+      "description": "Enable paid event registrations and club memberships",
+      "category": "core",
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "targetGroups": [],
+      "dependencies": ["stripe_integration"],
+      "lastModified": "2024-11-20T14:00:00Z",
+      "modifiedBy": "Marcus Thompson"
+    },
+    {
+      "id": "ff-003",
+      "key": "dupr_sync",
+      "name": "DUPR Rating Sync",
+      "description": "Automatically sync player ratings with DUPR system",
+      "category": "core",
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "targetGroups": [],
+      "dependencies": ["dupr_integration"],
+      "lastModified": "2024-12-01T09:15:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-004",
+      "key": "offline_mode",
+      "name": "Offline Mode",
+      "description": "Allow score entry and basic features without internet connection",
+      "category": "beta",
+      "enabled": true,
+      "rolloutPercentage": 25,
+      "targetGroups": ["beta_testers", "club_admins"],
+      "dependencies": [],
+      "lastModified": "2024-12-28T16:45:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-005",
+      "key": "achievements_system",
+      "name": "Achievements & Badges",
+      "description": "Gamification system with unlockable achievements and profile badges",
+      "category": "beta",
+      "enabled": true,
+      "rolloutPercentage": 50,
+      "targetGroups": ["beta_testers"],
+      "dependencies": [],
+      "lastModified": "2024-12-20T11:30:00Z",
+      "modifiedBy": "Marcus Thompson"
+    },
+    {
+      "id": "ff-006",
+      "key": "ai_matchmaking",
+      "name": "AI-Powered Matchmaking",
+      "description": "Use machine learning to suggest optimal player pairings for events",
+      "category": "beta",
+      "enabled": false,
+      "rolloutPercentage": 0,
+      "targetGroups": [],
+      "dependencies": [],
+      "lastModified": "2024-12-10T08:00:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-007",
+      "key": "video_highlights",
+      "name": "Video Highlights",
+      "description": "Allow users to upload and share match video highlights",
+      "category": "beta",
+      "enabled": true,
+      "rolloutPercentage": 10,
+      "targetGroups": ["premium_users"],
+      "dependencies": [],
+      "lastModified": "2024-12-22T13:20:00Z",
+      "modifiedBy": "Marcus Thompson"
+    },
+    {
+      "id": "ff-008",
+      "key": "legacy_scoring",
+      "name": "Legacy Scoring Format",
+      "description": "Support for traditional 15-point scoring format (being phased out)",
+      "category": "deprecated",
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "targetGroups": [],
+      "dependencies": [],
+      "lastModified": "2024-10-01T12:00:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-009",
+      "key": "calendar_sync",
+      "name": "Calendar Integration",
+      "description": "Sync events with Google Calendar and Apple Calendar",
+      "category": "core",
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "targetGroups": [],
+      "dependencies": [],
+      "lastModified": "2024-11-15T10:00:00Z",
+      "modifiedBy": "Sarah Chen"
+    },
+    {
+      "id": "ff-010",
+      "key": "social_features",
+      "name": "Social Features",
+      "description": "Player follows, activity feeds, and social sharing",
+      "category": "beta",
+      "enabled": true,
+      "rolloutPercentage": 75,
+      "targetGroups": [],
+      "dependencies": [],
+      "lastModified": "2024-12-18T15:30:00Z",
+      "modifiedBy": "Marcus Thompson"
+    }
+  ],
+  "rateLimits": [
+    {
+      "id": "rl-001",
+      "category": "api",
+      "name": "General API Requests",
+      "description": "Overall API rate limit per user",
+      "limit": 1000,
+      "period": "hour",
+      "currentUsage": 342,
+      "peakUsage": 856,
+      "breachCount24h": 0,
+      "alertThreshold": 800
+    },
+    {
+      "id": "rl-002",
+      "category": "api",
+      "name": "Search API Requests",
+      "description": "Rate limit for search endpoints",
+      "limit": 100,
+      "period": "minute",
+      "currentUsage": 23,
+      "peakUsage": 89,
+      "breachCount24h": 2,
+      "alertThreshold": 80
+    },
+    {
+      "id": "rl-003",
+      "category": "user_action",
+      "name": "Club Creation",
+      "description": "Maximum clubs a user can create",
+      "limit": 3,
+      "period": "lifetime",
+      "currentUsage": 1,
+      "peakUsage": 3,
+      "breachCount24h": 0,
+      "alertThreshold": 3
+    },
+    {
+      "id": "rl-004",
+      "category": "user_action",
+      "name": "Event Creation",
+      "description": "Maximum events created per day",
+      "limit": 10,
+      "period": "day",
+      "currentUsage": 2,
+      "peakUsage": 8,
+      "breachCount24h": 0,
+      "alertThreshold": 8
+    },
+    {
+      "id": "rl-005",
+      "category": "communication",
+      "name": "Email Sending",
+      "description": "Maximum emails sent per user per day",
+      "limit": 50,
+      "period": "day",
+      "currentUsage": 12,
+      "peakUsage": 45,
+      "breachCount24h": 1,
+      "alertThreshold": 40
+    },
+    {
+      "id": "rl-006",
+      "category": "communication",
+      "name": "SMS Sending",
+      "description": "Maximum SMS messages per user per day",
+      "limit": 20,
+      "period": "day",
+      "currentUsage": 3,
+      "peakUsage": 18,
+      "breachCount24h": 0,
+      "alertThreshold": 15
+    },
+    {
+      "id": "rl-007",
+      "category": "registration",
+      "name": "Event Registrations",
+      "description": "Maximum event registrations per user per day",
+      "limit": 20,
+      "period": "day",
+      "currentUsage": 4,
+      "peakUsage": 15,
+      "breachCount24h": 0,
+      "alertThreshold": 15
+    },
+    {
+      "id": "rl-008",
+      "category": "abuse_prevention",
+      "name": "Failed Login Attempts",
+      "description": "Maximum failed logins before temporary lockout",
+      "limit": 5,
+      "period": "hour",
+      "currentUsage": 0,
+      "peakUsage": 4,
+      "breachCount24h": 12,
+      "alertThreshold": 3
+    }
+  ],
+  "integrations": [
+    {
+      "id": "int-001",
+      "key": "dupr",
+      "name": "DUPR",
+      "description": "Dynamic Universal Pickleball Rating system integration",
+      "status": "healthy",
+      "lastSync": "2024-12-30T08:00:00Z",
+      "syncFrequency": "daily",
+      "errorsLast24h": 0,
+      "credentials": {
+        "apiKey": "••••••••••••dk_live",
+        "configured": true
+      },
+      "settings": {
+        "autoSyncEnabled": true,
+        "syncDirection": "bidirectional",
+        "conflictResolution": "dupr_priority"
+      },
+      "recentLogs": [
+        { "timestamp": "2024-12-30T08:00:00Z", "message": "Sync completed: 1,247 ratings updated", "level": "info" },
+        { "timestamp": "2024-12-29T08:00:00Z", "message": "Sync completed: 1,189 ratings updated", "level": "info" },
+        { "timestamp": "2024-12-28T08:00:00Z", "message": "Sync completed: 1,312 ratings updated", "level": "info" }
+      ]
+    },
+    {
+      "id": "int-002",
+      "key": "stripe",
+      "name": "Stripe",
+      "description": "Payment processing for registrations and memberships",
+      "status": "healthy",
+      "lastSync": "2024-12-30T14:32:00Z",
+      "syncFrequency": "realtime",
+      "errorsLast24h": 0,
+      "credentials": {
+        "apiKey": "••••••••••••sk_live",
+        "webhookSecret": "••••••••••••whsec",
+        "configured": true
+      },
+      "settings": {
+        "platformFeePercent": 2.5,
+        "payoutSchedule": "weekly",
+        "currency": "USD"
+      },
+      "recentLogs": [
+        { "timestamp": "2024-12-30T14:32:00Z", "message": "Webhook received: payment_intent.succeeded", "level": "info" },
+        { "timestamp": "2024-12-30T14:15:00Z", "message": "Webhook received: checkout.session.completed", "level": "info" },
+        { "timestamp": "2024-12-30T13:45:00Z", "message": "Webhook received: payment_intent.succeeded", "level": "info" }
+      ]
+    },
+    {
+      "id": "int-003",
+      "key": "sendgrid",
+      "name": "SendGrid",
+      "description": "Email and SMS delivery service",
+      "status": "degraded",
+      "lastSync": "2024-12-30T14:00:00Z",
+      "syncFrequency": "realtime",
+      "errorsLast24h": 23,
+      "credentials": {
+        "apiKey": "••••••••••••SG.live",
+        "configured": true
+      },
+      "settings": {
+        "fromEmail": "notifications@kitchenkrew.com",
+        "fromName": "KitchenKrew",
+        "replyTo": "support@kitchenkrew.com",
+        "templateIds": {
+          "welcome": "d-abc123",
+          "eventReminder": "d-def456",
+          "matchResult": "d-ghi789"
+        }
+      },
+      "recentLogs": [
+        { "timestamp": "2024-12-30T14:00:00Z", "message": "Delivery delayed: High volume detected", "level": "warning" },
+        { "timestamp": "2024-12-30T13:45:00Z", "message": "23 emails bounced: Invalid addresses", "level": "error" },
+        { "timestamp": "2024-12-30T12:00:00Z", "message": "Daily stats: 4,521 delivered, 98.2% success rate", "level": "info" }
+      ]
+    },
+    {
+      "id": "int-004",
+      "key": "google_maps",
+      "name": "Google Maps",
+      "description": "Location services and venue mapping",
+      "status": "healthy",
+      "lastSync": "2024-12-30T14:35:00Z",
+      "syncFrequency": "on_demand",
+      "errorsLast24h": 0,
+      "credentials": {
+        "apiKey": "••••••••••••AIza",
+        "configured": true
+      },
+      "settings": {
+        "enableGeocoding": true,
+        "enablePlacesAutocomplete": true,
+        "enableDirections": true,
+        "monthlyBudget": 500
+      },
+      "recentLogs": [
+        { "timestamp": "2024-12-30T14:35:00Z", "message": "API usage: 2,341 requests today ($12.45)", "level": "info" },
+        { "timestamp": "2024-12-29T23:59:00Z", "message": "Daily summary: 8,923 requests ($45.67)", "level": "info" }
+      ]
+    },
+    {
+      "id": "int-005",
+      "key": "google_calendar",
+      "name": "Google Calendar",
+      "description": "Calendar sync for events",
+      "status": "error",
+      "lastSync": "2024-12-28T10:00:00Z",
+      "syncFrequency": "hourly",
+      "errorsLast24h": 48,
+      "credentials": {
+        "clientId": "••••••••••••.apps.googleusercontent.com",
+        "clientSecret": "••••••••••••secret",
+        "configured": true
+      },
+      "settings": {
+        "defaultReminders": [60, 1440],
+        "syncPastEvents": false
+      },
+      "recentLogs": [
+        { "timestamp": "2024-12-30T14:00:00Z", "message": "Sync failed: OAuth token expired", "level": "error" },
+        { "timestamp": "2024-12-30T13:00:00Z", "message": "Sync failed: OAuth token expired", "level": "error" },
+        { "timestamp": "2024-12-30T12:00:00Z", "message": "Sync failed: OAuth token expired", "level": "error" }
+      ]
+    }
+  ],
+  "maintenanceConfig": {
+    "isMaintenanceMode": false,
+    "scheduledMaintenance": {
+      "enabled": true,
+      "startTime": "2025-01-05T02:00:00Z",
+      "endTime": "2025-01-05T04:00:00Z",
+      "noticeHours": 48,
+      "notificationSent": true
+    },
+    "bannerMessage": "Scheduled maintenance on January 5th from 2-4 AM EST. The platform will be temporarily unavailable.",
+    "allowedIPs": [
+      "192.168.1.100",
+      "10.0.0.50",
+      "203.0.113.25"
+    ],
+    "emergencyContacts": [
+      { "name": "Sarah Chen", "email": "sarah@kitchenkrew.com", "phone": "+1-555-0101" },
+      { "name": "Marcus Thompson", "email": "marcus@kitchenkrew.com", "phone": "+1-555-0102" }
+    ]
+  },
+  "roles": [
+    {
+      "id": "role-001",
+      "key": "super_admin",
+      "name": "Super Admin",
+      "description": "Full platform access with all permissions",
+      "isSystem": true,
+      "hierarchy": 1,
+      "userCount": 3,
+      "permissions": ["*"],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "modifiedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "role-002",
+      "key": "platform_moderator",
+      "name": "Platform Moderator",
+      "description": "Content moderation and user management across the platform",
+      "isSystem": true,
+      "hierarchy": 2,
+      "userCount": 8,
+      "permissions": [
+        "users.view", "users.suspend", "users.warn",
+        "content.view", "content.moderate", "content.delete",
+        "reports.view", "reports.action",
+        "appeals.view", "appeals.decide"
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "modifiedAt": "2024-06-15T10:00:00Z"
+    },
+    {
+      "id": "role-003",
+      "key": "support_staff",
+      "name": "Support Staff",
+      "description": "Handle support tickets and basic user assistance",
+      "isSystem": true,
+      "hierarchy": 3,
+      "userCount": 12,
+      "permissions": [
+        "users.view",
+        "tickets.view", "tickets.respond", "tickets.assign",
+        "events.view",
+        "clubs.view"
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "modifiedAt": "2024-09-20T14:30:00Z"
+    },
+    {
+      "id": "role-004",
+      "key": "club_admin",
+      "name": "Club Admin",
+      "description": "Manage a specific club's settings, members, and events",
+      "isSystem": true,
+      "hierarchy": 4,
+      "userCount": 245,
+      "permissions": [
+        "club.manage", "club.members.manage", "club.events.manage",
+        "club.finances.view", "club.reports.view"
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "modifiedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "role-005",
+      "key": "event_organizer",
+      "name": "Event Organizer",
+      "description": "Create and manage events within a club",
+      "isSystem": true,
+      "hierarchy": 5,
+      "userCount": 892,
+      "permissions": [
+        "events.create", "events.manage", "events.participants.manage",
+        "scoring.manage"
+      ],
+      "createdAt": "2024-01-01T00:00:00Z",
+      "modifiedAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "role-006",
+      "key": "regional_manager",
+      "name": "Regional Manager",
+      "description": "Oversee clubs and events within a geographic region",
+      "isSystem": false,
+      "hierarchy": 3,
+      "userCount": 5,
+      "permissions": [
+        "users.view",
+        "clubs.view", "clubs.verify",
+        "events.view", "events.feature",
+        "reports.view.regional"
+      ],
+      "createdAt": "2024-08-10T09:00:00Z",
+      "modifiedAt": "2024-11-05T16:20:00Z"
+    }
+  ],
+  "permissions": [
+    { "key": "users.view", "name": "View Users", "category": "Users", "description": "View user profiles and account information" },
+    { "key": "users.edit", "name": "Edit Users", "category": "Users", "description": "Modify user profile information" },
+    { "key": "users.suspend", "name": "Suspend Users", "category": "Users", "description": "Temporarily suspend user accounts" },
+    { "key": "users.ban", "name": "Ban Users", "category": "Users", "description": "Permanently ban user accounts" },
+    { "key": "users.warn", "name": "Warn Users", "category": "Users", "description": "Issue warnings to users" },
+    { "key": "content.view", "name": "View Content", "category": "Content", "description": "View all user-generated content" },
+    { "key": "content.moderate", "name": "Moderate Content", "category": "Content", "description": "Take moderation actions on content" },
+    { "key": "content.delete", "name": "Delete Content", "category": "Content", "description": "Permanently delete content" },
+    { "key": "reports.view", "name": "View Reports", "category": "Reports", "description": "View content and user reports" },
+    { "key": "reports.action", "name": "Action Reports", "category": "Reports", "description": "Take action on reports" },
+    { "key": "appeals.view", "name": "View Appeals", "category": "Appeals", "description": "View moderation appeals" },
+    { "key": "appeals.decide", "name": "Decide Appeals", "category": "Appeals", "description": "Make decisions on appeals" },
+    { "key": "tickets.view", "name": "View Tickets", "category": "Support", "description": "View support tickets" },
+    { "key": "tickets.respond", "name": "Respond to Tickets", "category": "Support", "description": "Reply to support tickets" },
+    { "key": "tickets.assign", "name": "Assign Tickets", "category": "Support", "description": "Assign tickets to team members" },
+    { "key": "clubs.view", "name": "View Clubs", "category": "Clubs", "description": "View club information" },
+    { "key": "clubs.verify", "name": "Verify Clubs", "category": "Clubs", "description": "Verify and approve clubs" },
+    { "key": "events.view", "name": "View Events", "category": "Events", "description": "View event information" },
+    { "key": "events.create", "name": "Create Events", "category": "Events", "description": "Create new events" },
+    { "key": "events.manage", "name": "Manage Events", "category": "Events", "description": "Edit and manage events" },
+    { "key": "events.feature", "name": "Feature Events", "category": "Events", "description": "Mark events as featured" },
+    { "key": "settings.view", "name": "View Settings", "category": "Settings", "description": "View system settings" },
+    { "key": "settings.edit", "name": "Edit Settings", "category": "Settings", "description": "Modify system settings" },
+    { "key": "settings.integrations", "name": "Manage Integrations", "category": "Settings", "description": "Configure third-party integrations" }
+  ],
+  "settingsHistory": [
+    {
+      "id": "sh-001",
+      "timestamp": "2024-12-30T10:30:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "feature_flags",
+      "setting": "offline_mode",
+      "action": "updated",
+      "previousValue": { "rolloutPercentage": 10 },
+      "newValue": { "rolloutPercentage": 25 },
+      "reason": "Expanding beta test after positive feedback"
+    },
+    {
+      "id": "sh-002",
+      "timestamp": "2024-12-28T16:45:00Z",
+      "actor": "Marcus Thompson",
+      "actorId": "user-002",
+      "category": "rate_limits",
+      "setting": "email_sending",
+      "action": "updated",
+      "previousValue": { "limit": 30 },
+      "newValue": { "limit": 50 },
+      "reason": "Increased limit for event organizers"
+    },
+    {
+      "id": "sh-003",
+      "timestamp": "2024-12-27T09:15:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "integrations",
+      "setting": "sendgrid",
+      "action": "updated",
+      "previousValue": { "fromEmail": "noreply@kitchenkrew.com" },
+      "newValue": { "fromEmail": "notifications@kitchenkrew.com" },
+      "reason": "Brand update for email sender"
+    },
+    {
+      "id": "sh-004",
+      "timestamp": "2024-12-25T14:00:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "maintenance",
+      "setting": "scheduled_maintenance",
+      "action": "created",
+      "previousValue": null,
+      "newValue": { "startTime": "2025-01-05T02:00:00Z", "endTime": "2025-01-05T04:00:00Z" },
+      "reason": "Database migration for Q1 updates"
+    },
+    {
+      "id": "sh-005",
+      "timestamp": "2024-12-22T13:20:00Z",
+      "actor": "Marcus Thompson",
+      "actorId": "user-002",
+      "category": "feature_flags",
+      "setting": "video_highlights",
+      "action": "updated",
+      "previousValue": { "enabled": false },
+      "newValue": { "enabled": true, "rolloutPercentage": 10, "targetGroups": ["premium_users"] },
+      "reason": "Starting limited beta for premium users"
+    },
+    {
+      "id": "sh-006",
+      "timestamp": "2024-12-20T11:30:00Z",
+      "actor": "Marcus Thompson",
+      "actorId": "user-002",
+      "category": "feature_flags",
+      "setting": "achievements_system",
+      "action": "updated",
+      "previousValue": { "rolloutPercentage": 25 },
+      "newValue": { "rolloutPercentage": 50 },
+      "reason": "Expanding after successful initial rollout"
+    },
+    {
+      "id": "sh-007",
+      "timestamp": "2024-12-18T15:30:00Z",
+      "actor": "Marcus Thompson",
+      "actorId": "user-002",
+      "category": "feature_flags",
+      "setting": "social_features",
+      "action": "updated",
+      "previousValue": { "rolloutPercentage": 50 },
+      "newValue": { "rolloutPercentage": 75 },
+      "reason": "High engagement metrics, expanding rollout"
+    },
+    {
+      "id": "sh-008",
+      "timestamp": "2024-12-15T10:30:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "feature_flags",
+      "setting": "sms_notifications",
+      "action": "updated",
+      "previousValue": { "rolloutPercentage": 50 },
+      "newValue": { "rolloutPercentage": 100 },
+      "reason": "Full launch after beta period"
+    },
+    {
+      "id": "sh-009",
+      "timestamp": "2024-12-10T08:00:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "feature_flags",
+      "setting": "ai_matchmaking",
+      "action": "updated",
+      "previousValue": { "enabled": true, "rolloutPercentage": 5 },
+      "newValue": { "enabled": false, "rolloutPercentage": 0 },
+      "reason": "Paused for algorithm improvements"
+    },
+    {
+      "id": "sh-010",
+      "timestamp": "2024-11-05T16:20:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "roles",
+      "setting": "regional_manager",
+      "action": "updated",
+      "previousValue": { "permissions": ["clubs.view", "events.view"] },
+      "newValue": { "permissions": ["users.view", "clubs.view", "clubs.verify", "events.view", "events.feature", "reports.view.regional"] },
+      "reason": "Expanded permissions for regional oversight"
+    },
+    {
+      "id": "sh-011",
+      "timestamp": "2024-08-10T09:00:00Z",
+      "actor": "Sarah Chen",
+      "actorId": "user-001",
+      "category": "roles",
+      "setting": "regional_manager",
+      "action": "created",
+      "previousValue": null,
+      "newValue": { "name": "Regional Manager", "hierarchy": 3, "permissions": ["clubs.view", "events.view"] },
+      "reason": "New role for regional expansion"
+    }
+  ],
+  "environment": "production",
+  "admins": [
+    {
+      "id": "user-001",
+      "name": "Sarah Chen",
+      "email": "sarah@kitchenkrew.com",
+      "role": "Super Admin",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah",
+      "lastActive": "2024-12-30T14:35:00Z"
+    },
+    {
+      "id": "user-002",
+      "name": "Marcus Thompson",
+      "email": "marcus@kitchenkrew.com",
+      "role": "Super Admin",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=marcus",
+      "lastActive": "2024-12-30T12:20:00Z"
+    },
+    {
+      "id": "user-003",
+      "name": "Elena Rodriguez",
+      "email": "elena@kitchenkrew.com",
+      "role": "Super Admin",
+      "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=elena",
+      "lastActive": "2024-12-29T18:45:00Z"
+    }
+  ]
+}
