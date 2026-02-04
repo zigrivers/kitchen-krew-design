@@ -1,7 +1,7 @@
 {
   "_meta": {
     "models": {
-      "event": "The active event being played, containing format settings, scoring rules, and overall status. For tournaments, includes tournament-specific configuration.",
+      "event": "The active event being played, containing format settings, scoring rules, and overall status. Now includes formatCategory field matching Events section's 6 categories.",
       "courts": "Physical playing surfaces at the venue, each with a real-time status showing whether a game is in progress, players are being called, or the court is available.",
       "matches": "Individual games between teams within the event. Tracks court assignment, players, scores, timing, and whether the match needs score confirmation.",
       "players": "Participants checked into the event, with their skill ratings, check-in status, and current match assignment.",
@@ -20,7 +20,16 @@
       "roundRobinStandings": "Standings table with USA Pickleball official tiebreaker hierarchy: head-to-head, overall point differential, H2H point differential, vs next-highest, coin flip.",
       "roundRobinPools": "Pools for larger round robin events, each containing teams, internal standings, round robin matches, and advancement status.",
       "partnerRotation": "Preview of partner assignments across all rounds for rotating partner formats, showing who plays with whom in each round.",
-      "roundRobinMatches": "Matches in the round robin with partner info (for rotating formats), opponent info, court assignment, round number, and scores."
+      "roundRobinMatches": "Matches in the round robin with partner info (for rotating formats), opponent info, court assignment, round number, and scores.",
+      "openPlaySession": "Open Play/Drop-In session state with paddle queue, court status, and rotation management. Players join queue and get called to courts.",
+      "openPlayEvent": "Open Play event configuration with rotation rules (paddle stack, winners stay, time-based) and skill balancing options.",
+      "clinicSession": "Clinic/Class session with drill sequences, attendance tracking, and instructor notes. Progresses through defined drills on assigned courts.",
+      "clinicEvent": "Clinic event configuration with instructor info, focus areas, skill level, and participant capacity.",
+      "teamMatch": "MiLP-style team match containing multiple games (Men's Doubles, Women's Doubles, Mixed Doubles 1 & 2, optional Dreambreaker).",
+      "teamCompetitionConfig": "Team competition configuration with game sequence, tiebreaker format, and team composition requirements.",
+      "teamStandings": "Team standings showing match wins/losses, games won/lost, and point differential across the competition.",
+      "kingOfCourtSession": "King of the Court session with ranked courts (Court 1 = King), current games, standings by wins and king court time.",
+      "abcdSession": "ABCD Play session with four skill groups running parallel round robins, each tracking group standings and progress."
     },
     "relationships": [
       "Each Event has many Courts available for play",
@@ -38,7 +47,16 @@
       "RoundRobinSchedule contains all RoundRobinMatches organized by round",
       "RoundRobinPools each contain a subset of teams and their internal round robin",
       "RoundRobinStandings tracks player/team performance with tiebreaker details",
-      "PartnerRotation previews partner assignments for rotating partner format"
+      "PartnerRotation previews partner assignments for rotating partner format",
+      "OpenPlaySession belongs to Event and manages the paddle queue and court rotation",
+      "QueuePlayers wait in OpenPlaySession queue until called to an available court",
+      "ClinicSession belongs to Event and tracks drill progression and attendance",
+      "ClinicDrills are completed in sequence during a ClinicSession",
+      "TeamMatch contains multiple TeamGames (MD, WD, MX1, MX2, and optional Dreambreaker)",
+      "TeamStandings aggregate results across all TeamMatches in the competition",
+      "KingOfCourtSession ranks players by wins and time spent on King Court",
+      "KingCourts have a rank (1-4) and players move between them based on game results",
+      "ABCDSession runs parallel round robins in four skill groups (A, B, C, D)"
     ]
   },
   "currentUser": {
@@ -2445,5 +2463,406 @@
       "Win 2 of 3: Likely #3-4 seed",
       "Win 1 of 3: #5-6 seed expected"
     ]
+  },
+
+  "openPlaySession": {
+    "id": "ops-001",
+    "eventId": "evt-open-001",
+    "config": {
+      "id": "opc-001",
+      "eventId": "evt-open-001",
+      "rotationRule": "paddle_stack",
+      "playersPerCourt": 4,
+      "skillBalancing": true,
+      "sessionEndTime": "2026-02-01T13:00:00"
+    },
+    "status": "active",
+    "queue": [
+      { "id": "plr-op-001", "name": "Alex Rivera", "skillRating": 3.75, "joinedQueueAt": "2026-02-01T09:45:00", "estimatedWaitMinutes": 0, "position": 1, "playPreference": "doubles" },
+      { "id": "plr-op-002", "name": "Jordan Lee", "skillRating": 3.5, "joinedQueueAt": "2026-02-01T09:46:00", "estimatedWaitMinutes": 0, "position": 2, "playPreference": "doubles" },
+      { "id": "plr-op-003", "name": "Casey Morgan", "skillRating": 4.0, "joinedQueueAt": "2026-02-01T09:47:00", "estimatedWaitMinutes": 0, "position": 3, "playPreference": "either" },
+      { "id": "plr-op-004", "name": "Taylor Swift", "skillRating": 3.25, "joinedQueueAt": "2026-02-01T09:48:00", "estimatedWaitMinutes": 0, "position": 4, "playPreference": "doubles" },
+      { "id": "plr-op-005", "name": "Jamie Chen", "skillRating": 4.25, "joinedQueueAt": "2026-02-01T09:50:00", "estimatedWaitMinutes": 12, "position": 5, "playPreference": "doubles" },
+      { "id": "plr-op-006", "name": "Drew Wilson", "skillRating": 3.5, "joinedQueueAt": "2026-02-01T09:52:00", "estimatedWaitMinutes": 12, "position": 6, "playPreference": "either" },
+      { "id": "plr-op-007", "name": "Morgan Bailey", "skillRating": 3.75, "joinedQueueAt": "2026-02-01T09:55:00", "estimatedWaitMinutes": 24, "position": 7, "playPreference": "doubles" },
+      { "id": "plr-op-008", "name": "Sam Parker", "skillRating": 3.0, "joinedQueueAt": "2026-02-01T09:58:00", "estimatedWaitMinutes": 24, "position": 8, "playPreference": "doubles" }
+    ],
+    "courts": [
+      {
+        "id": "op-court-001",
+        "name": "Court 1",
+        "status": "in_progress",
+        "currentPlayers": [
+          { "id": "plr-op-009", "name": "Chris Garcia", "skillRating": 4.0 },
+          { "id": "plr-op-010", "name": "Pat Johnson", "skillRating": 3.75 },
+          { "id": "plr-op-011", "name": "Robin Kim", "skillRating": 4.0 },
+          { "id": "plr-op-012", "name": "Terry Nguyen", "skillRating": 3.5 }
+        ],
+        "gameStartedAt": "2026-02-01T09:42:00",
+        "elapsedMinutes": 8
+      },
+      {
+        "id": "op-court-002",
+        "name": "Court 2",
+        "status": "in_progress",
+        "currentPlayers": [
+          { "id": "plr-op-013", "name": "Kelly Brown", "skillRating": 3.5 },
+          { "id": "plr-op-014", "name": "Jesse Martinez", "skillRating": 3.75 },
+          { "id": "plr-op-015", "name": "Quinn Davis", "skillRating": 3.25 },
+          { "id": "plr-op-016", "name": "Riley Thompson", "skillRating": 3.5 }
+        ],
+        "gameStartedAt": "2026-02-01T09:40:00",
+        "elapsedMinutes": 10
+      },
+      {
+        "id": "op-court-003",
+        "name": "Court 3",
+        "status": "available",
+        "currentPlayers": [],
+        "gameStartedAt": null,
+        "elapsedMinutes": 0
+      }
+    ],
+    "totalCheckIns": 24,
+    "activePlayerCount": 16,
+    "gamesCompleted": 8,
+    "startedAt": "2026-02-01T09:00:00"
+  },
+
+  "openPlayEvent": {
+    "id": "evt-open-001",
+    "name": "Sunday Morning Drop-In",
+    "format": "open_play",
+    "formatCategory": "recreational",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": { "id": "ven-001", "name": "Riverside Recreation Center", "address": "1250 Riverside Dr, Austin, TX" },
+    "organizer": { "id": "plr-gm-001", "name": "Marcus Chen" },
+    "startedAt": "2026-02-01T09:00:00",
+    "scheduledEndTime": "2026-02-01T13:00:00",
+    "scoringRules": { "pointsToWin": 11, "winByTwo": true, "pointCap": 15, "gamesPerMatch": 1, "rallyScoring": false },
+    "settings": { "allowPlayerScoreEntry": false, "requireScoreConfirmation": false, "gracePeriodMinutes": 5 }
+  },
+
+  "clinicSession": {
+    "id": "clinic-001",
+    "eventId": "evt-clinic-001",
+    "config": {
+      "id": "clinic-config-001",
+      "eventId": "evt-clinic-001",
+      "instructor": { "id": "inst-001", "name": "Coach Maria Rodriguez", "certification": "PPR Certified" },
+      "focusAreas": ["Third Shot Drops", "Dinking Strategy", "Court Positioning"],
+      "skillLevel": "intermediate",
+      "maxParticipants": 12
+    },
+    "status": "in_progress",
+    "drills": [
+      { "id": "drill-001", "name": "Warm-up Rally", "description": "Cross-court dinking to warm up", "durationMinutes": 10, "courtAssignment": null, "status": "completed", "instructions": "Partner up and rally cross-court, focusing on soft hands." },
+      { "id": "drill-002", "name": "Third Shot Drop Progression", "description": "Practice third shot drops from baseline", "durationMinutes": 15, "courtAssignment": "clinic-court-001", "status": "in_progress", "instructions": "Start at the baseline. Feed ball to partner at NVZ. Practice soft drops that land in the kitchen.", "videoUrl": "https://example.com/third-shot-demo" },
+      { "id": "drill-003", "name": "Dink Patterns", "description": "Four-person dinking patterns", "durationMinutes": 15, "courtAssignment": null, "status": "upcoming", "instructions": "Practice diagonal and straight-ahead dink patterns." },
+      { "id": "drill-004", "name": "Live Point Play", "description": "Apply skills in game situations", "durationMinutes": 20, "courtAssignment": null, "status": "upcoming", "instructions": "Play points starting from third shot situation." }
+    ],
+    "currentDrillIndex": 1,
+    "attendees": [
+      { "id": "att-001", "name": "Jennifer Walsh", "skillRating": 3.5, "checkedIn": true, "checkedInAt": "2026-02-01T08:55:00" },
+      { "id": "att-002", "name": "David Kim", "skillRating": 3.25, "checkedIn": true, "checkedInAt": "2026-02-01T08:50:00" },
+      { "id": "att-003", "name": "Lisa Patel", "skillRating": 3.5, "checkedIn": true, "checkedInAt": "2026-02-01T08:58:00" },
+      { "id": "att-004", "name": "Brian Thompson", "skillRating": 3.75, "checkedIn": true, "checkedInAt": "2026-02-01T08:52:00" },
+      { "id": "att-005", "name": "Emily Chen", "skillRating": 3.5, "checkedIn": true, "checkedInAt": "2026-02-01T08:45:00" },
+      { "id": "att-006", "name": "Robert Lee", "skillRating": 3.25, "checkedIn": true, "checkedInAt": "2026-02-01T08:57:00" },
+      { "id": "att-007", "name": "Amanda Johnson", "skillRating": 3.5, "checkedIn": true, "checkedInAt": "2026-02-01T08:48:00" },
+      { "id": "att-008", "name": "Chris Garcia", "skillRating": 3.75, "checkedIn": true, "checkedInAt": "2026-02-01T08:53:00" },
+      { "id": "att-009", "name": "Nicole Garcia", "skillRating": 3.25, "checkedIn": false, "checkedInAt": null },
+      { "id": "att-010", "name": "Michael Torres", "skillRating": 3.5, "checkedIn": false, "checkedInAt": null }
+    ],
+    "sessionNotes": "",
+    "startedAt": "2026-02-01T09:00:00",
+    "completedAt": null
+  },
+
+  "clinicEvent": {
+    "id": "evt-clinic-001",
+    "name": "Intermediate Skills Clinic: Third Shot Mastery",
+    "format": "clinic",
+    "formatCategory": "recreational",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": { "id": "ven-001", "name": "Riverside Recreation Center", "address": "1250 Riverside Dr, Austin, TX" },
+    "organizer": { "id": "inst-001", "name": "Coach Maria Rodriguez" },
+    "startedAt": "2026-02-01T09:00:00",
+    "scheduledEndTime": "2026-02-01T10:30:00",
+    "scoringRules": { "pointsToWin": 11, "winByTwo": true, "pointCap": null, "gamesPerMatch": 1, "rallyScoring": false },
+    "settings": { "allowPlayerScoreEntry": false, "requireScoreConfirmation": false, "gracePeriodMinutes": 5 }
+  },
+
+  "teamMatch": {
+    "id": "tm-001",
+    "team1": {
+      "id": "team-a",
+      "name": "Austin Aces",
+      "players": [
+        { "id": "tp-001", "name": "Marcus Chen", "gender": "male", "skillRating": 5.0 },
+        { "id": "tp-002", "name": "David Kim", "gender": "male", "skillRating": 4.75 },
+        { "id": "tp-003", "name": "Jennifer Walsh", "gender": "female", "skillRating": 4.5 },
+        { "id": "tp-004", "name": "Lisa Patel", "gender": "female", "skillRating": 4.25 }
+      ],
+      "wins": 2,
+      "losses": 1,
+      "ties": 0,
+      "gamesWon": 8,
+      "gamesLost": 5
+    },
+    "team2": {
+      "id": "team-b",
+      "name": "Dallas Dinkers",
+      "players": [
+        { "id": "tp-005", "name": "Brian Thompson", "gender": "male", "skillRating": 4.75 },
+        { "id": "tp-006", "name": "Chris Garcia", "gender": "male", "skillRating": 4.5 },
+        { "id": "tp-007", "name": "Emily Chen", "gender": "female", "skillRating": 4.5 },
+        { "id": "tp-008", "name": "Amanda Johnson", "gender": "female", "skillRating": 4.25 }
+      ],
+      "wins": 2,
+      "losses": 1,
+      "ties": 0,
+      "gamesWon": 7,
+      "gamesLost": 6
+    },
+    "status": "in_progress",
+    "games": [
+      {
+        "id": "tg-001", "gameType": "mens_doubles", "gameNumber": 1, "status": "completed",
+        "team1Players": [{ "id": "tp-001", "name": "Marcus Chen", "gender": "male", "skillRating": 5.0 }, { "id": "tp-002", "name": "David Kim", "gender": "male", "skillRating": 4.75 }],
+        "team2Players": [{ "id": "tp-005", "name": "Brian Thompson", "gender": "male", "skillRating": 4.75 }, { "id": "tp-006", "name": "Chris Garcia", "gender": "male", "skillRating": 4.5 }],
+        "courtId": "court-001", "score": { "team1": 21, "team2": 18 }, "winner": "team1",
+        "startedAt": "2026-02-01T10:00:00", "completedAt": "2026-02-01T10:25:00"
+      },
+      {
+        "id": "tg-002", "gameType": "womens_doubles", "gameNumber": 2, "status": "completed",
+        "team1Players": [{ "id": "tp-003", "name": "Jennifer Walsh", "gender": "female", "skillRating": 4.5 }, { "id": "tp-004", "name": "Lisa Patel", "gender": "female", "skillRating": 4.25 }],
+        "team2Players": [{ "id": "tp-007", "name": "Emily Chen", "gender": "female", "skillRating": 4.5 }, { "id": "tp-008", "name": "Amanda Johnson", "gender": "female", "skillRating": 4.25 }],
+        "courtId": "court-002", "score": { "team1": 19, "team2": 21 }, "winner": "team2",
+        "startedAt": "2026-02-01T10:30:00", "completedAt": "2026-02-01T10:55:00"
+      },
+      {
+        "id": "tg-003", "gameType": "mixed_doubles_1", "gameNumber": 3, "status": "in_progress",
+        "team1Players": [{ "id": "tp-001", "name": "Marcus Chen", "gender": "male", "skillRating": 5.0 }, { "id": "tp-003", "name": "Jennifer Walsh", "gender": "female", "skillRating": 4.5 }],
+        "team2Players": [{ "id": "tp-005", "name": "Brian Thompson", "gender": "male", "skillRating": 4.75 }, { "id": "tp-007", "name": "Emily Chen", "gender": "female", "skillRating": 4.5 }],
+        "courtId": "court-001", "score": { "team1": 15, "team2": 12 }, "winner": null,
+        "startedAt": "2026-02-01T11:00:00", "completedAt": null
+      },
+      {
+        "id": "tg-004", "gameType": "mixed_doubles_2", "gameNumber": 4, "status": "upcoming",
+        "team1Players": [{ "id": "tp-002", "name": "David Kim", "gender": "male", "skillRating": 4.75 }, { "id": "tp-004", "name": "Lisa Patel", "gender": "female", "skillRating": 4.25 }],
+        "team2Players": [{ "id": "tp-006", "name": "Chris Garcia", "gender": "male", "skillRating": 4.5 }, { "id": "tp-008", "name": "Amanda Johnson", "gender": "female", "skillRating": 4.25 }],
+        "courtId": null, "score": null, "winner": null,
+        "startedAt": null, "completedAt": null
+      }
+    ],
+    "team1Score": 1,
+    "team2Score": 1,
+    "needsDreambreaker": false,
+    "winner": null,
+    "scheduledTime": "2026-02-01T10:00:00",
+    "startedAt": "2026-02-01T10:00:00",
+    "completedAt": null
+  },
+
+  "teamCompetitionConfig": {
+    "id": "tc-config-001",
+    "eventId": "evt-team-001",
+    "gamesPerMatch": 4,
+    "gameSequence": ["mens_doubles", "womens_doubles", "mixed_doubles_1", "mixed_doubles_2"],
+    "tiebreakerFormat": "dreambreaker",
+    "teamComposition": { "men": 2, "women": 2 }
+  },
+
+  "teamStandings": [
+    { "rank": 1, "team": { "id": "team-c", "name": "Houston Hustlers", "players": [], "wins": 3, "losses": 0, "ties": 0, "gamesWon": 11, "gamesLost": 3 }, "matchesPlayed": 3, "matchWins": 3, "matchLosses": 0, "matchTies": 0, "gamesWon": 11, "gamesLost": 3, "pointDiff": 45 },
+    { "rank": 2, "team": { "id": "team-a", "name": "Austin Aces", "players": [], "wins": 2, "losses": 1, "ties": 0, "gamesWon": 8, "gamesLost": 5 }, "matchesPlayed": 3, "matchWins": 2, "matchLosses": 1, "matchTies": 0, "gamesWon": 8, "gamesLost": 5, "pointDiff": 18 },
+    { "rank": 3, "team": { "id": "team-b", "name": "Dallas Dinkers", "players": [], "wins": 2, "losses": 1, "ties": 0, "gamesWon": 7, "gamesLost": 6 }, "matchesPlayed": 3, "matchWins": 2, "matchLosses": 1, "matchTies": 0, "gamesWon": 7, "gamesLost": 6, "pointDiff": 5 },
+    { "rank": 4, "team": { "id": "team-d", "name": "San Antonio Smashers", "players": [], "wins": 0, "losses": 3, "ties": 0, "gamesWon": 2, "gamesLost": 10 }, "matchesPlayed": 3, "matchWins": 0, "matchLosses": 3, "matchTies": 0, "gamesWon": 2, "gamesLost": 10, "pointDiff": -68 }
+  ],
+
+  "teamCompetitionEvent": {
+    "id": "evt-team-001",
+    "name": "Texas MiLP Regional Championship",
+    "format": "milp_teams",
+    "formatCategory": "team",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": { "id": "ven-002", "name": "Texas Pickleball Arena", "address": "500 Championship Dr, Austin, TX" },
+    "organizer": { "id": "org-001", "name": "Texas Pickleball Association" },
+    "startedAt": "2026-02-01T09:00:00",
+    "scheduledEndTime": "2026-02-01T18:00:00",
+    "scoringRules": { "pointsToWin": 21, "winByTwo": true, "pointCap": null, "gamesPerMatch": 1, "rallyScoring": true },
+    "settings": { "allowPlayerScoreEntry": false, "requireScoreConfirmation": false, "gracePeriodMinutes": 5 }
+  },
+
+  "kingOfCourtSession": {
+    "id": "kotc-001",
+    "eventId": "evt-kotc-001",
+    "config": {
+      "id": "kotc-config-001",
+      "eventId": "evt-kotc-001",
+      "courtCount": 4,
+      "pointsToWin": 11,
+      "partnerRule": "split",
+      "movementRule": "winners_up_losers_down"
+    },
+    "status": "active",
+    "courts": [
+      {
+        "id": "kotc-court-001", "name": "King Court", "rank": 1, "status": "in_progress",
+        "team1": [{ "id": "kp-001", "name": "Marcus Chen", "skillRating": 5.0 }, { "id": "kp-002", "name": "Jennifer Walsh", "skillRating": 4.5 }],
+        "team2": [{ "id": "kp-003", "name": "David Kim", "skillRating": 4.75 }, { "id": "kp-004", "name": "Lisa Patel", "skillRating": 4.25 }],
+        "currentScore": { "team1": 8, "team2": 6 },
+        "gameStartedAt": "2026-02-01T10:05:00"
+      },
+      {
+        "id": "kotc-court-002", "name": "Court 2", "rank": 2, "status": "in_progress",
+        "team1": [{ "id": "kp-005", "name": "Brian Thompson", "skillRating": 4.5 }, { "id": "kp-006", "name": "Emily Chen", "skillRating": 4.25 }],
+        "team2": [{ "id": "kp-007", "name": "Chris Garcia", "skillRating": 4.25 }, { "id": "kp-008", "name": "Amanda Johnson", "skillRating": 4.0 }],
+        "currentScore": { "team1": 5, "team2": 7 },
+        "gameStartedAt": "2026-02-01T10:04:00"
+      },
+      {
+        "id": "kotc-court-003", "name": "Court 3", "rank": 3, "status": "in_progress",
+        "team1": [{ "id": "kp-009", "name": "Robert Lee", "skillRating": 4.0 }, { "id": "kp-010", "name": "Nicole Garcia", "skillRating": 3.75 }],
+        "team2": [{ "id": "kp-011", "name": "Michael Torres", "skillRating": 4.0 }, { "id": "kp-012", "name": "Sarah Martinez", "skillRating": 4.0 }],
+        "currentScore": { "team1": 9, "team2": 9 },
+        "gameStartedAt": "2026-02-01T10:03:00"
+      },
+      {
+        "id": "kotc-court-004", "name": "Court 4", "rank": 4, "status": "in_progress",
+        "team1": [{ "id": "kp-013", "name": "Kevin Wilson", "skillRating": 3.75 }, { "id": "kp-014", "name": "Jessica Brown", "skillRating": 3.5 }],
+        "team2": [{ "id": "kp-015", "name": "Tom Davis", "skillRating": 3.5 }, { "id": "kp-016", "name": "Kate Moore", "skillRating": 3.5 }],
+        "currentScore": { "team1": 3, "team2": 6 },
+        "gameStartedAt": "2026-02-01T10:02:00"
+      }
+    ],
+    "standings": [
+      { "rank": 1, "player": { "id": "kp-001", "name": "Marcus Chen", "skillRating": 5.0 }, "totalWins": 5, "totalLosses": 1, "kingCourtMinutes": 18, "currentCourt": 1, "gamesPlayed": 6 },
+      { "rank": 2, "player": { "id": "kp-003", "name": "David Kim", "skillRating": 4.75 }, "totalWins": 4, "totalLosses": 2, "kingCourtMinutes": 12, "currentCourt": 1, "gamesPlayed": 6 },
+      { "rank": 3, "player": { "id": "kp-002", "name": "Jennifer Walsh", "skillRating": 4.5 }, "totalWins": 4, "totalLosses": 2, "kingCourtMinutes": 10, "currentCourt": 1, "gamesPlayed": 6 },
+      { "rank": 4, "player": { "id": "kp-005", "name": "Brian Thompson", "skillRating": 4.5 }, "totalWins": 3, "totalLosses": 3, "kingCourtMinutes": 6, "currentCourt": 2, "gamesPlayed": 6 },
+      { "rank": 5, "player": { "id": "kp-004", "name": "Lisa Patel", "skillRating": 4.25 }, "totalWins": 3, "totalLosses": 3, "kingCourtMinutes": 5, "currentCourt": 1, "gamesPlayed": 6 },
+      { "rank": 6, "player": { "id": "kp-007", "name": "Chris Garcia", "skillRating": 4.25 }, "totalWins": 3, "totalLosses": 3, "kingCourtMinutes": 4, "currentCourt": 2, "gamesPlayed": 6 }
+    ],
+    "rotationNumber": 6,
+    "totalRotations": 12,
+    "elapsedMinutes": 35,
+    "sessionEndTime": "2026-02-01T11:00:00"
+  },
+
+  "kingOfCourtEvent": {
+    "id": "evt-kotc-001",
+    "name": "Saturday King of the Court Challenge",
+    "format": "king_of_court",
+    "formatCategory": "specialty",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": { "id": "ven-001", "name": "Riverside Recreation Center", "address": "1250 Riverside Dr, Austin, TX" },
+    "organizer": { "id": "plr-gm-001", "name": "Marcus Chen" },
+    "startedAt": "2026-02-01T10:00:00",
+    "scheduledEndTime": "2026-02-01T11:00:00",
+    "scoringRules": { "pointsToWin": 11, "winByTwo": true, "pointCap": 15, "gamesPerMatch": 1, "rallyScoring": false },
+    "settings": { "allowPlayerScoreEntry": true, "requireScoreConfirmation": false, "gracePeriodMinutes": 2 }
+  },
+
+  "abcdSession": {
+    "id": "abcd-001",
+    "eventId": "evt-abcd-001",
+    "config": {
+      "id": "abcd-config-001",
+      "eventId": "evt-abcd-001",
+      "groupThresholds": {
+        "A": { "min": 4.5, "max": 5.5 },
+        "B": { "min": 4.0, "max": 4.49 },
+        "C": { "min": 3.5, "max": 3.99 },
+        "D": { "min": 2.5, "max": 3.49 }
+      },
+      "roundsPerGroup": 5
+    },
+    "status": "active",
+    "currentRound": 3,
+    "totalRounds": 5,
+    "groupStandings": [
+      {
+        "group": "A", "color": "amber",
+        "players": [
+          { "id": "abcd-001", "name": "Marcus Chen", "skillRating": 5.0, "group": "A", "wins": 2, "losses": 0, "pointDiff": 15, "rank": 1 },
+          { "id": "abcd-002", "name": "David Kim", "skillRating": 4.75, "group": "A", "wins": 1, "losses": 1, "pointDiff": 3, "rank": 2 },
+          { "id": "abcd-003", "name": "Jennifer Walsh", "skillRating": 4.5, "group": "A", "wins": 1, "losses": 1, "pointDiff": -2, "rank": 3 },
+          { "id": "abcd-004", "name": "Brian Thompson", "skillRating": 4.5, "group": "A", "wins": 0, "losses": 2, "pointDiff": -16, "rank": 4 }
+        ],
+        "matchesCompleted": 4,
+        "matchesTotal": 6
+      },
+      {
+        "group": "B", "color": "slate",
+        "players": [
+          { "id": "abcd-005", "name": "Chris Garcia", "skillRating": 4.25, "group": "B", "wins": 2, "losses": 0, "pointDiff": 12, "rank": 1 },
+          { "id": "abcd-006", "name": "Emily Chen", "skillRating": 4.25, "group": "B", "wins": 1, "losses": 1, "pointDiff": 2, "rank": 2 },
+          { "id": "abcd-007", "name": "Lisa Patel", "skillRating": 4.0, "group": "B", "wins": 1, "losses": 1, "pointDiff": -4, "rank": 3 },
+          { "id": "abcd-008", "name": "Robert Lee", "skillRating": 4.0, "group": "B", "wins": 0, "losses": 2, "pointDiff": -10, "rank": 4 }
+        ],
+        "matchesCompleted": 4,
+        "matchesTotal": 6
+      },
+      {
+        "group": "C", "color": "orange",
+        "players": [
+          { "id": "abcd-009", "name": "Amanda Johnson", "skillRating": 3.75, "group": "C", "wins": 2, "losses": 0, "pointDiff": 8, "rank": 1 },
+          { "id": "abcd-010", "name": "Michael Torres", "skillRating": 3.75, "group": "C", "wins": 1, "losses": 1, "pointDiff": 1, "rank": 2 },
+          { "id": "abcd-011", "name": "Sarah Martinez", "skillRating": 3.5, "group": "C", "wins": 1, "losses": 1, "pointDiff": 0, "rank": 3 },
+          { "id": "abcd-012", "name": "Nicole Garcia", "skillRating": 3.5, "group": "C", "wins": 0, "losses": 2, "pointDiff": -9, "rank": 4 }
+        ],
+        "matchesCompleted": 4,
+        "matchesTotal": 6
+      },
+      {
+        "group": "D", "color": "lime",
+        "players": [
+          { "id": "abcd-013", "name": "Kevin Wilson", "skillRating": 3.25, "group": "D", "wins": 2, "losses": 0, "pointDiff": 11, "rank": 1 },
+          { "id": "abcd-014", "name": "Tom Davis", "skillRating": 3.25, "group": "D", "wins": 1, "losses": 1, "pointDiff": 4, "rank": 2 },
+          { "id": "abcd-015", "name": "Jessica Brown", "skillRating": 3.0, "group": "D", "wins": 1, "losses": 1, "pointDiff": -3, "rank": 3 },
+          { "id": "abcd-016", "name": "Kate Moore", "skillRating": 3.0, "group": "D", "wins": 0, "losses": 2, "pointDiff": -12, "rank": 4 }
+        ],
+        "matchesCompleted": 4,
+        "matchesTotal": 6
+      }
+    ],
+    "matches": [
+      { "id": "abcd-m-001", "group": "A", "roundNumber": 3, "team1": [{ "id": "abcd-001", "name": "Marcus Chen" }], "team2": [{ "id": "abcd-003", "name": "Jennifer Walsh" }], "courtId": "abcd-court-001", "status": "in_progress", "score": { "team1": 7, "team2": 5 }, "winner": null },
+      { "id": "abcd-m-002", "group": "B", "roundNumber": 3, "team1": [{ "id": "abcd-005", "name": "Chris Garcia" }], "team2": [{ "id": "abcd-007", "name": "Lisa Patel" }], "courtId": "abcd-court-002", "status": "in_progress", "score": { "team1": 6, "team2": 8 }, "winner": null },
+      { "id": "abcd-m-003", "group": "C", "roundNumber": 3, "team1": [{ "id": "abcd-009", "name": "Amanda Johnson" }], "team2": [{ "id": "abcd-011", "name": "Sarah Martinez" }], "courtId": "abcd-court-003", "status": "in_progress", "score": { "team1": 9, "team2": 7 }, "winner": null },
+      { "id": "abcd-m-004", "group": "D", "roundNumber": 3, "team1": [{ "id": "abcd-013", "name": "Kevin Wilson" }], "team2": [{ "id": "abcd-015", "name": "Jessica Brown" }], "courtId": "abcd-court-004", "status": "in_progress", "score": { "team1": 4, "team2": 6 }, "winner": null }
+    ],
+    "groupProgress": {
+      "A": { "matchesPlayed": 4, "matchesTotal": 6, "percentComplete": 67 },
+      "B": { "matchesPlayed": 4, "matchesTotal": 6, "percentComplete": 67 },
+      "C": { "matchesPlayed": 4, "matchesTotal": 6, "percentComplete": 67 },
+      "D": { "matchesPlayed": 4, "matchesTotal": 6, "percentComplete": 67 }
+    }
+  },
+
+  "abcdEvent": {
+    "id": "evt-abcd-001",
+    "name": "Wednesday ABCD Social Play",
+    "format": "abcd_play",
+    "formatCategory": "specialty",
+    "status": "in_progress",
+    "isPaused": false,
+    "pauseReason": null,
+    "venue": { "id": "ven-001", "name": "Riverside Recreation Center", "address": "1250 Riverside Dr, Austin, TX" },
+    "organizer": { "id": "plr-gm-001", "name": "Marcus Chen" },
+    "startedAt": "2026-02-01T18:00:00",
+    "scheduledEndTime": "2026-02-01T20:00:00",
+    "scoringRules": { "pointsToWin": 11, "winByTwo": true, "pointCap": 15, "gamesPerMatch": 1, "rallyScoring": false },
+    "settings": { "allowPlayerScoreEntry": true, "requireScoreConfirmation": true, "gracePeriodMinutes": 3 }
   }
 }
