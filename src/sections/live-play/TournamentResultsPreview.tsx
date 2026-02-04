@@ -1,4 +1,3 @@
-import data from '@/../product/sections/live-play/data.json'
 import { TournamentResults } from './components/TournamentResults'
 import type {
   TournamentResults as TournamentResultsType,
@@ -49,18 +48,18 @@ export default function TournamentResultsPreview() {
     closestMatch: {
       matchId: 'bm-sf-1',
       margin: 2,
-      teams: 'Walsh/Kim vs Chen/Foster',
+      teams: 'Jennifer Walsh / David Kim vs Marcus Chen / Amanda Foster',
     },
     biggestUpset: {
       matchId: 'bm-sf-2',
       seedDiff: 1,
-      winner: 'Martinez/Patel (#3)',
-      loser: 'Torres/Thompson (#2)',
+      winner: 'Sarah Martinez / Lisa Patel (#3)',
+      loser: 'Michael Torres / Brian Thompson (#2)',
     },
     highestScoringMatch: {
       matchId: 'bm-f',
       totalPoints: 67,
-      teams: 'Walsh/Kim vs Martinez/Patel',
+      teams: 'Jennifer Walsh / David Kim vs Sarah Martinez / Lisa Patel',
     },
   }
 
@@ -86,7 +85,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-003', name: 'Jennifer Walsh' },
           { id: 'plr-004', name: 'David Kim' },
         ],
-        displayName: '(1) Walsh/Kim',
+        displayName: 'Walsh/Kim',
       },
       team2: {
         teamId: 'team-008',
@@ -95,7 +94,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-015', name: 'Daniel Lee' },
           { id: 'plr-016', name: 'Sophia Martinez' },
         ],
-        displayName: '(8) Lee/Martinez',
+        displayName: 'Lee/Martinez',
       },
       scores: [{ team1: 11, team2: 5 }],
       winner: 'team1',
@@ -124,7 +123,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-003', name: 'Jennifer Walsh' },
           { id: 'plr-004', name: 'David Kim' },
         ],
-        displayName: '(1) Walsh/Kim',
+        displayName: 'Walsh/Kim',
       },
       team2: {
         teamId: 'team-004',
@@ -133,7 +132,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-002', name: 'Marcus Chen' },
           { id: 'plr-008', name: 'Amanda Foster' },
         ],
-        displayName: '(4) Chen/Foster',
+        displayName: 'Chen/Foster',
       },
       scores: [
         { team1: 11, team2: 9 },
@@ -166,7 +165,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-003', name: 'Jennifer Walsh' },
           { id: 'plr-004', name: 'David Kim' },
         ],
-        displayName: '(1) Walsh/Kim',
+        displayName: 'Walsh/Kim',
       },
       team2: {
         teamId: 'team-003',
@@ -175,7 +174,7 @@ export default function TournamentResultsPreview() {
           { id: 'plr-001', name: 'Sarah Martinez' },
           { id: 'plr-007', name: 'Lisa Patel' },
         ],
-        displayName: '(3) Martinez/Patel',
+        displayName: 'Martinez/Patel',
       },
       scores: [
         { team1: 11, team2: 8 },
@@ -193,9 +192,21 @@ export default function TournamentResultsPreview() {
     },
   ]
 
+  // Sample bracket structure
+  const sampleBracket: Bracket = {
+    id: 'bracket-001',
+    tournamentId: 'tournament-001',
+    type: 'winners',
+    rounds: [
+      { roundNumber: 1, label: 'Quarterfinals', matchFormat: { type: 'single', pointsToWin: 11, winByTwo: true, pointCap: 15 }, scheduledTime: '2026-02-01T10:00:00', status: 'completed' },
+      { roundNumber: 2, label: 'Semifinals', matchFormat: { type: 'best_of', games: 3, pointsToWin: 11, winByTwo: true, pointCap: 15 }, scheduledTime: '2026-02-01T11:30:00', status: 'completed' },
+      { roundNumber: 3, label: 'Finals', matchFormat: { type: 'best_of', games: 3, pointsToWin: 11, winByTwo: true, pointCap: 15 }, scheduledTime: '2026-02-01T14:00:00', status: 'completed' },
+    ],
+  }
+
   const sampleResults: TournamentResultsType = {
     podium: samplePodium,
-    bracket: data.bracket as Bracket,
+    bracket: sampleBracket,
     bracketMatches: completedBracketMatches,
     stats: sampleStats,
     championPath: championPath,

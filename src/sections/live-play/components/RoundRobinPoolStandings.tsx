@@ -44,9 +44,11 @@ function PoolProgressBar({ progress, color }: PoolProgressBarProps) {
 
 interface TiebreakerBadgeProps {
   tiebreaker: TiebreakerExplanation
+  /** If true, tooltip appears above instead of below (for rows near bottom of container) */
+  tooltipAbove?: boolean
 }
 
-function TiebreakerBadge({ tiebreaker }: TiebreakerBadgeProps) {
+function TiebreakerBadge({ tiebreaker, tooltipAbove = false }: TiebreakerBadgeProps) {
   const ruleLabels: Record<string, string> = {
     head_to_head: 'H2H',
     overall_point_diff: 'PD',
@@ -56,17 +58,28 @@ function TiebreakerBadge({ tiebreaker }: TiebreakerBadgeProps) {
   }
 
   return (
-    <div className="group relative">
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded">
+    <div className="group/tiebreaker relative">
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded cursor-help">
         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         {ruleLabels[tiebreaker.appliedRule]}
       </span>
-      {/* Tooltip */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10 shadow-lg">
+      {/* Tooltip - positioned above or below based on row position */}
+      <div className={`
+        absolute right-0 px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs rounded-lg
+        opacity-0 invisible group-hover/tiebreaker:opacity-100 group-hover/tiebreaker:visible
+        transition-all duration-150 pointer-events-none z-50 shadow-xl max-w-[280px]
+        ${tooltipAbove ? 'bottom-full mb-1' : 'top-full mt-1'}
+      `}>
         {tiebreaker.reason}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900 dark:border-t-slate-100" />
+        {/* Arrow pointer */}
+        <div className={`
+          absolute right-3 border-4 border-transparent
+          ${tooltipAbove
+            ? 'top-full -mt-1 border-t-slate-900 dark:border-t-slate-100'
+            : 'bottom-full border-b-slate-900 dark:border-b-slate-100'}
+        `} />
       </div>
     </div>
   )
@@ -77,10 +90,12 @@ interface StandingRowProps {
   team: RoundRobinTeam | undefined
   advancementLine: number
   isCurrentUser: boolean
+  /** If true, tooltips should appear above (for rows near bottom of container) */
+  isNearBottom?: boolean
   onViewTeam?: () => void
 }
 
-function StandingRow({ standing, team, advancementLine, isCurrentUser, onViewTeam }: StandingRowProps) {
+function StandingRow({ standing, team, advancementLine, isCurrentUser, isNearBottom, onViewTeam }: StandingRowProps) {
   const isAdvancing = standing.rank <= advancementLine
   const isOnBubble = standing.rank === advancementLine || standing.rank === advancementLine + 1
 
@@ -162,10 +177,10 @@ function StandingRow({ standing, team, advancementLine, isCurrentUser, onViewTea
       </td>
 
       {/* Status / Tiebreaker */}
-      <td className="py-3 px-4 text-right">
-        <div className="flex items-center justify-end gap-2">
+      <td className="py-3 px-4 text-right overflow-visible">
+        <div className="flex items-center justify-end gap-2 relative">
           {standing.tiebreaker && (
-            <TiebreakerBadge tiebreaker={standing.tiebreaker} />
+            <TiebreakerBadge tiebreaker={standing.tiebreaker} tooltipAbove={isNearBottom} />
           )}
           {isAdvancing ? (
             <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-400 rounded-full">
@@ -215,7 +230,6 @@ function PoolCard({ pool, teams, progress, currentUserId, onViewTeam }: PoolCard
       bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800
       border-l-4 ${colors.border}
       ${userInPool ? 'ring-2 ring-lime-500/50' : ''}
-      overflow-hidden
     `}>
       {/* Pool Header */}
       <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-800">
@@ -249,8 +263,8 @@ function PoolCard({ pool, teams, progress, currentUserId, onViewTeam }: PoolCard
       </div>
 
       {/* Standings Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div>
+        <table className="w-full table-fixed">
           <thead>
             <tr className="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
               <th className="py-2 px-4 text-center font-semibold">#</th>
@@ -264,6 +278,8 @@ function PoolCard({ pool, teams, progress, currentUserId, onViewTeam }: PoolCard
             {pool.standings.map((standing, idx) => {
               const team = teamMap.get(standing.teamId)
               const isCurrentUser = team?.players.some(p => p.id === currentUserId) ?? false
+              // Last 2 rows should show tooltips above to avoid clipping
+              const isNearBottom = idx >= pool.standings.length - 2
 
               return (
                 <StandingRow
@@ -272,6 +288,7 @@ function PoolCard({ pool, teams, progress, currentUserId, onViewTeam }: PoolCard
                   team={team}
                   advancementLine={pool.advancementLine}
                   isCurrentUser={isCurrentUser}
+                  isNearBottom={isNearBottom}
                   onViewTeam={() => onViewTeam?.(standing.teamId)}
                 />
               )
@@ -280,7 +297,7 @@ function PoolCard({ pool, teams, progress, currentUserId, onViewTeam }: PoolCard
         </table>
 
         {/* Advancement Line Indicator */}
-        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800">
+        <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 rounded-b-xl">
           <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
             <div className="w-3 h-3 rounded-full bg-lime-500" />
             <span>Top {pool.advancementLine} advance to playoffs</span>
