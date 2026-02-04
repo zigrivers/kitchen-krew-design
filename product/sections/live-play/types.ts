@@ -52,11 +52,47 @@ export interface OrganizerReference {
   name: string
 }
 
+/** Format category matching Events section */
+export type FormatCategoryId = 'tournament' | 'round-robin' | 'ladder-league' | 'recreational' | 'team' | 'specialty'
+
+/** Specific format types within categories */
+export type LiveEventFormat =
+  // Tournament formats
+  | 'single_elimination'
+  | 'double_elimination'
+  | 'pool_play'
+  // Round Robin formats
+  | 'round_robin'
+  | 'rotating_partners'
+  | 'set_partners'
+  | 'mixed_gender_round_robin'
+  // Ladder & League formats
+  | 'ladder'
+  | 'flex_league'
+  | 'partner_league'
+  // Recreational formats
+  | 'open_play'
+  | 'clinic'
+  | 'social'
+  | 'lesson'
+  // Team Competition formats
+  | 'milp_teams'
+  | 'custom_team'
+  | 'inter_club_league'
+  // Specialty formats
+  | 'king_of_court'
+  | 'gauntlet'
+  | 'abcd_play'
+  | 'skill_limited'
+  // Hybrid
+  | 'hybrid_seeding_bracket'
+
 /** The active event being played */
 export interface LiveEvent {
   id: string
   name: string
-  format: 'round_robin' | 'open_play' | 'king_of_court' | 'single_elimination' | 'double_elimination' | 'pool_play' | 'ladder' | 'hybrid_seeding_bracket'
+  format: LiveEventFormat
+  formatCategory: FormatCategoryId
   status: 'scheduled' | 'in_progress' | 'paused' | 'completed'
   isPaused: boolean
   pauseReason: string | null
@@ -1687,4 +1723,715 @@ export interface HybridSeedingViewProps {
   onViewMatch?: (matchId: string) => void
   onViewTeam?: (teamId: string) => void
   onViewStandings?: () => void
+}
+
+// =============================================================================
+// Recreational Format Types - Open Play / Drop-In
+// =============================================================================
+
+/** Rotation rule types for open play */
+export type RotationRule = 'paddle_stack' | 'winners_stay' | 'time_based'
+
+/** A player in the paddle queue */
+export interface QueuePlayer {
+  id: string
+  name: string
+  skillRating: number
+  avatarUrl?: string
+  joinedQueueAt: string
+  estimatedWaitMinutes: number
+  /** Position in queue (1 = next up) */
+  position: number
+  /** Whether player prefers doubles or singles */
+  playPreference: 'doubles' | 'singles' | 'either'
+}
+
+/** Open play session configuration */
+export interface OpenPlayConfig {
+  id: string
+  eventId: string
+  rotationRule: RotationRule
+  /** Players per court (4 for doubles, 2 for singles) */
+  playersPerCourt: number
+  /** Minutes per court slot for time-based rotation */
+  timePerSlot?: number
+  /** Whether to balance skill levels when forming groups */
+  skillBalancing: boolean
+  /** Session end time */
+  sessionEndTime: string
+}
+
+/** Court with open play status */
+export interface OpenPlayCourt {
+  id: string
+  name: string
+  status: 'available' | 'in_progress' | 'calling'
+  /** Current players on court */
+  currentPlayers: MatchPlayer[]
+  /** Time game started */
+  gameStartedAt: string | null
+  /** Time elapsed in minutes */
+  elapsedMinutes: number
+  /** For time-based: remaining minutes */
+  remainingMinutes?: number
+}
+
+/** Open play session state */
+export interface OpenPlaySession {
+  id: string
+  eventId: string
+  config: OpenPlayConfig
+  status: 'active' | 'ending' | 'ended'
+  /** All players in the queue */
+  queue: QueuePlayer[]
+  /** All courts */
+  courts: OpenPlayCourt[]
+  /** Total check-ins for session */
+  totalCheckIns: number
+  /** Current active players */
+  activePlayerCount: number
+  /** Games completed this session */
+  gamesCompleted: number
+  /** Session start time */
+  startedAt: string
+}
+
+/** Open Play Dashboard Props (GM View) */
+export interface OpenPlayDashboardProps {
+  event: LiveEvent
+  session: OpenPlaySession
+
+  // GM Actions
+  onAddPlayerToQueue?: (playerId: string) => void
+  onRemoveFromQueue?: (playerId: string) => void
+  onReorderQueue?: (playerId: string, newPosition: number) => void
+  onCallNextGroup?: (courtId: string) => void
+  onEndGame?: (courtId: string) => void
+  onEndSession?: () => void
+
+  // Navigation
+  onViewPlayer?: (playerId: string) => void
+}
+
+/** Open Play Player View Props */
+export interface OpenPlayPlayerViewProps {
+  event: LiveEvent
+  session: OpenPlaySession
+  currentUser: {
+    id: string
+    name: string
+    queuePosition: number | null
+    isOnCourt: boolean
+    courtId: string | null
+  }
+
+  // Player Actions
+  onJoinQueue?: () => void
+  onLeaveQueue?: () => void
+  onCheckOut?: () => void
+}
+
+// =============================================================================
+// Recreational Format Types - Clinics & Classes
+// =============================================================================
+
+/** Drill/activity in a clinic */
+export interface ClinicDrill {
+  id: string
+  name: string
+  description: string
+  durationMinutes: number
+  courtAssignment: string | null
+  status: 'upcoming' | 'in_progress' | 'completed'
+  /** Optional instruction content */
+  instructions?: string
+  /** Optional video URL */
+  videoUrl?: string
+}
+
+/** Clinic session configuration */
+export interface ClinicConfig {
+  id: string
+  eventId: string
+  instructor: {
+    id: string
+    name: string
+    certification?: string
+  }
+  focusAreas: string[]
+  skillLevel: 'beginner' | 'intermediate' | 'advanced' | 'all'
+  maxParticipants: number
+}
+
+/** Attendee in a clinic */
+export interface ClinicAttendee {
+  id: string
+  name: string
+  skillRating: number
+  checkedIn: boolean
+  checkedInAt: string | null
+}
+
+/** Clinic session state */
+export interface ClinicSession {
+  id: string
+  eventId: string
+  config: ClinicConfig
+  status: 'not_started' | 'in_progress' | 'completed'
+  drills: ClinicDrill[]
+  currentDrillIndex: number
+  attendees: ClinicAttendee[]
+  sessionNotes: string
+  startedAt: string | null
+  completedAt: string | null
+}
+
+/** Clinic Dashboard Props (Instructor View) */
+export interface ClinicDashboardProps {
+  event: LiveEvent
+  session: ClinicSession
+  courts: Court[]
+
+  // Instructor Actions
+  onStartSession?: () => void
+  onCheckInAttendee?: (attendeeId: string) => void
+  onStartDrill?: (drillId: string) => void
+  onCompleteDrill?: (drillId: string) => void
+  onAssignCourts?: (drillId: string, courtIds: string[]) => void
+  onUpdateNotes?: (notes: string) => void
+  onEndSession?: () => void
+
+  // Navigation
+  onViewAttendee?: (attendeeId: string) => void
+}
+
+/** Clinic Player View Props */
+export interface ClinicPlayerViewProps {
+  event: LiveEvent
+  session: ClinicSession
+  currentUser: {
+    id: string
+    name: string
+    checkedIn: boolean
+    courtAssignment: string | null
+  }
+
+  // Player Actions
+  onCheckIn?: () => void
+}
+
+// =============================================================================
+// Recreational Format Types - Socials & Mixers
+// =============================================================================
+
+/** Activity in a social event */
+export interface SocialActivity {
+  id: string
+  name: string
+  description: string
+  startTime: string
+  endTime: string
+  status: 'upcoming' | 'in_progress' | 'completed'
+  type: 'casual_games' | 'food' | 'announcement' | 'networking' | 'other'
+}
+
+/** Social event configuration */
+export interface SocialConfig {
+  id: string
+  eventId: string
+  allowCasualGames: boolean
+  hasFood: boolean
+  hasAnnouncements: boolean
+}
+
+/** Social event session state */
+export interface SocialSession {
+  id: string
+  eventId: string
+  config: SocialConfig
+  status: 'not_started' | 'in_progress' | 'completed'
+  activities: SocialActivity[]
+  attendees: ClinicAttendee[]
+  /** Optional casual game queue if enabled */
+  gameQueue?: QueuePlayer[]
+  startedAt: string | null
+}
+
+/** Social Event Dashboard Props (GM View) */
+export interface SocialDashboardProps {
+  event: LiveEvent
+  session: SocialSession
+  courts?: Court[]
+
+  // GM Actions
+  onStartEvent?: () => void
+  onCheckInAttendee?: (attendeeId: string) => void
+  onStartActivity?: (activityId: string) => void
+  onCompleteActivity?: (activityId: string) => void
+  onBroadcastAnnouncement?: (message: string) => void
+  onEndEvent?: () => void
+
+  // Navigation
+  onViewAttendee?: (attendeeId: string) => void
+}
+
+// =============================================================================
+// Team Competition Format Types - MiLP-Style
+// =============================================================================
+
+/** Gender for team composition */
+export type Gender = 'male' | 'female'
+
+/** A player on a team */
+export interface TeamPlayer {
+  id: string
+  name: string
+  gender: Gender
+  skillRating: number
+  avatarUrl?: string
+}
+
+/** A competition team */
+export interface CompetitionTeam {
+  id: string
+  name: string
+  players: TeamPlayer[]
+  /** Team record */
+  wins: number
+  losses: number
+  ties: number
+  /** Games won/lost aggregate */
+  gamesWon: number
+  gamesLost: number
+}
+
+/** Game type in a team match */
+export type TeamGameType = 'mens_doubles' | 'womens_doubles' | 'mixed_doubles_1' | 'mixed_doubles_2' | 'dreambreaker'
+
+/** A single game within a team match */
+export interface TeamGame {
+  id: string
+  gameType: TeamGameType
+  gameNumber: number
+  status: 'upcoming' | 'in_progress' | 'completed'
+  team1Players: TeamPlayer[]
+  team2Players: TeamPlayer[]
+  courtId: string | null
+  score: GameScore | null
+  winner: 'team1' | 'team2' | null
+  startedAt: string | null
+  completedAt: string | null
+  /** For Dreambreaker: uses rally scoring */
+  isRallyScoring?: boolean
+}
+
+/** A team match containing multiple games */
+export interface TeamMatch {
+  id: string
+  team1: CompetitionTeam
+  team2: CompetitionTeam
+  status: 'upcoming' | 'in_progress' | 'completed'
+  games: TeamGame[]
+  /** Aggregate team score (games won) */
+  team1Score: number
+  team2Score: number
+  /** Whether Dreambreaker is needed (teams tied after 4 games) */
+  needsDreambreaker: boolean
+  winner: 'team1' | 'team2' | null
+  scheduledTime: string
+  startedAt: string | null
+  completedAt: string | null
+}
+
+/** Team competition configuration */
+export interface TeamCompetitionConfig {
+  id: string
+  eventId: string
+  /** Number of games per match (4 for MiLP, configurable for custom) */
+  gamesPerMatch: number
+  /** Game types in order */
+  gameSequence: TeamGameType[]
+  /** Tiebreaker format */
+  tiebreakerFormat: 'dreambreaker' | 'point_differential' | 'none'
+  /** Team composition requirements */
+  teamComposition: {
+    men: number
+    women: number
+  }
+}
+
+/** Team competition standings */
+export interface TeamStanding {
+  rank: number
+  team: CompetitionTeam
+  matchesPlayed: number
+  matchWins: number
+  matchLosses: number
+  matchTies: number
+  gamesWon: number
+  gamesLost: number
+  pointDiff: number
+}
+
+/** Team Competition Dashboard Props (GM View) */
+export interface TeamCompetitionDashboardProps {
+  event: LiveEvent
+  config: TeamCompetitionConfig
+  currentMatch: TeamMatch | null
+  upcomingMatches: TeamMatch[]
+  completedMatches: TeamMatch[]
+  standings: TeamStanding[]
+  courts: Court[]
+
+  // GM Actions
+  onStartMatch?: (matchId: string) => void
+  onSetLineup?: (matchId: string, gameId: string, team: 'team1' | 'team2', players: string[]) => void
+  onStartGame?: (matchId: string, gameId: string, courtId: string) => void
+  onEnterGameScore?: (matchId: string, gameId: string, team1Score: number, team2Score: number) => void
+  onTriggerDreambreaker?: (matchId: string) => void
+  onCompleteMatch?: (matchId: string) => void
+  onSubstitutePlayer?: (matchId: string, gameId: string, oldPlayerId: string, newPlayerId: string) => void
+
+  // Navigation
+  onViewTeam?: (teamId: string) => void
+  onViewMatch?: (matchId: string) => void
+}
+
+/** Team Competition Player View Props */
+export interface TeamCompetitionPlayerViewProps {
+  event: LiveEvent
+  config: TeamCompetitionConfig
+  currentMatch: TeamMatch | null
+  myTeam: CompetitionTeam
+  standings: TeamStanding[]
+
+  currentUser: {
+    id: string
+    name: string
+    teamId: string
+    currentGameId: string | null
+    upcomingGames: string[]
+  }
+
+  // Player Actions
+  onCheckInForGame?: (gameId: string) => void
+
+  // Navigation
+  onViewMatch?: (matchId: string) => void
+  onViewTeam?: (teamId: string) => void
+}
+
+// =============================================================================
+// Specialty Format Types - King of the Court
+// =============================================================================
+
+/** Court designation in King of the Court */
+export interface KingCourt {
+  id: string
+  name: string
+  /** Court rank (1 = King Court) */
+  rank: number
+  status: 'available' | 'in_progress'
+  team1: MatchPlayer[] | null
+  team2: MatchPlayer[] | null
+  currentScore: GameScore | null
+  gameStartedAt: string | null
+}
+
+/** King of the Court configuration */
+export interface KingOfCourtConfig {
+  id: string
+  eventId: string
+  courtCount: number
+  /** Points to win each game */
+  pointsToWin: number
+  /** Time limit per game (optional) */
+  timeLimitMinutes?: number
+  /** Partner rules */
+  partnerRule: 'split' | 'stay'
+  /** Movement rules */
+  movementRule: 'winners_up_losers_down' | 'winners_up_losers_stay'
+}
+
+/** Player standing in King of the Court */
+export interface KingStanding {
+  rank: number
+  player: MatchPlayer
+  totalWins: number
+  totalLosses: number
+  /** Time spent on King Court */
+  kingCourtMinutes: number
+  /** Current court position */
+  currentCourt: number
+  /** Games played */
+  gamesPlayed: number
+}
+
+/** King of the Court session state */
+export interface KingOfCourtSession {
+  id: string
+  eventId: string
+  config: KingOfCourtConfig
+  status: 'active' | 'completed'
+  courts: KingCourt[]
+  standings: KingStanding[]
+  /** Current rotation/round number */
+  rotationNumber: number
+  /** Total rotations completed */
+  totalRotations: number
+  /** Session timer */
+  elapsedMinutes: number
+  sessionEndTime: string | null
+}
+
+/** King of the Court Dashboard Props (GM View) */
+export interface KingOfCourtDashboardProps {
+  event: LiveEvent
+  session: KingOfCourtSession
+
+  // GM Actions
+  onStartSession?: () => void
+  onEnterScore?: (courtId: string, team1Score: number, team2Score: number) => void
+  onProcessMovement?: () => void
+  onEndSession?: () => void
+  onAdjustPosition?: (playerId: string, newCourt: number) => void
+
+  // Navigation
+  onViewPlayer?: (playerId: string) => void
+}
+
+/** King of the Court Player View Props */
+export interface KingOfCourtPlayerViewProps {
+  event: LiveEvent
+  session: KingOfCourtSession
+  currentUser: {
+    id: string
+    name: string
+    currentCourt: number
+    partner: MatchPlayer | null
+    opponents: MatchPlayer[]
+    standing: KingStanding
+  }
+}
+
+// =============================================================================
+// Specialty Format Types - Gauntlet
+// =============================================================================
+
+/** Skill tier in Gauntlet */
+export type GauntletTier = 'A' | 'B' | 'C' | 'D'
+
+/** Player in Gauntlet with tier info */
+export interface GauntletPlayer {
+  id: string
+  name: string
+  skillRating: number
+  currentTier: GauntletTier
+  previousTier: GauntletTier | null
+  /** Movement direction after last round */
+  movement: 'up' | 'down' | 'stable' | null
+  wins: number
+  losses: number
+  pointDiff: number
+}
+
+/** A match in Gauntlet */
+export interface GauntletMatch {
+  id: string
+  roundNumber: number
+  tier: GauntletTier
+  team1: MatchPlayer[]
+  team2: MatchPlayer[]
+  courtId: string | null
+  status: 'upcoming' | 'in_progress' | 'completed'
+  score: GameScore | null
+  winner: 'team1' | 'team2' | null
+}
+
+/** Gauntlet configuration */
+export interface GauntletConfig {
+  id: string
+  eventId: string
+  /** Number of rounds */
+  totalRounds: number
+  /** Tier thresholds (skill rating boundaries) */
+  tierThresholds: {
+    A: { min: number; max: number }
+    B: { min: number; max: number }
+    C: { min: number; max: number }
+    D: { min: number; max: number }
+  }
+  /** Performance threshold to move up a tier */
+  promotionThreshold: number
+  /** Performance threshold to move down a tier */
+  relegationThreshold: number
+}
+
+/** Gauntlet session state */
+export interface GauntletSession {
+  id: string
+  eventId: string
+  config: GauntletConfig
+  status: 'active' | 'completed'
+  currentRound: number
+  players: GauntletPlayer[]
+  matches: GauntletMatch[]
+  /** Tier standings */
+  tierStandings: {
+    [tier in GauntletTier]: GauntletPlayer[]
+  }
+}
+
+/** Gauntlet Dashboard Props (GM View) */
+export interface GauntletDashboardProps {
+  event: LiveEvent
+  session: GauntletSession
+  courts: Court[]
+
+  // GM Actions
+  onStartRound?: () => void
+  onEnterScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  onCompleteRound?: () => void
+  onProcessTierMovement?: () => void
+  onEndSession?: () => void
+  onOverrideTier?: (playerId: string, newTier: GauntletTier) => void
+
+  // Navigation
+  onViewPlayer?: (playerId: string) => void
+  onViewMatch?: (matchId: string) => void
+}
+
+/** Gauntlet Player View Props */
+export interface GauntletPlayerViewProps {
+  event: LiveEvent
+  session: GauntletSession
+  currentUser: {
+    id: string
+    name: string
+    currentTier: GauntletTier
+    tierRank: number
+    currentMatchId: string | null
+    nextMatchId: string | null
+    movement: 'up' | 'down' | 'stable' | null
+  }
+
+  // Player Actions
+  onCheckIn?: (matchId: string) => void
+  onSubmitScore?: (matchId: string, team1Score: number, team2Score: number) => void
+}
+
+// =============================================================================
+// Specialty Format Types - ABCD Play
+// =============================================================================
+
+/** Skill group in ABCD Play */
+export type ABCDGroup = 'A' | 'B' | 'C' | 'D'
+
+/** Player in ABCD Play */
+export interface ABCDPlayer {
+  id: string
+  name: string
+  skillRating: number
+  group: ABCDGroup
+  wins: number
+  losses: number
+  pointDiff: number
+  rank: number
+}
+
+/** A match in ABCD Play (within a skill group) */
+export interface ABCDMatch {
+  id: string
+  group: ABCDGroup
+  roundNumber: number
+  team1: MatchPlayer[]
+  team2: MatchPlayer[]
+  courtId: string | null
+  status: 'upcoming' | 'in_progress' | 'completed'
+  score: GameScore | null
+  winner: 'team1' | 'team2' | null
+}
+
+/** Group standings in ABCD Play */
+export interface ABCDGroupStandings {
+  group: ABCDGroup
+  color: 'amber' | 'slate' | 'orange' | 'lime'
+  players: ABCDPlayer[]
+  matchesCompleted: number
+  matchesTotal: number
+}
+
+/** ABCD Play configuration */
+export interface ABCDConfig {
+  id: string
+  eventId: string
+  /** Skill rating boundaries for each group */
+  groupThresholds: {
+    A: { min: number; max: number }
+    B: { min: number; max: number }
+    C: { min: number; max: number }
+    D: { min: number; max: number }
+  }
+  /** Number of round robin rounds per group */
+  roundsPerGroup: number
+}
+
+/** ABCD Play session state */
+export interface ABCDSession {
+  id: string
+  eventId: string
+  config: ABCDConfig
+  status: 'active' | 'completed'
+  currentRound: number
+  totalRounds: number
+  groupStandings: ABCDGroupStandings[]
+  matches: ABCDMatch[]
+  /** Progress by group */
+  groupProgress: {
+    [group in ABCDGroup]: {
+      matchesPlayed: number
+      matchesTotal: number
+      percentComplete: number
+    }
+  }
+}
+
+/** ABCD Play Dashboard Props (GM View) */
+export interface ABCDDashboardProps {
+  event: LiveEvent
+  session: ABCDSession
+  courts: Court[]
+
+  // GM Actions
+  onStartSession?: () => void
+  onAssignPlayerToGroup?: (playerId: string, group: ABCDGroup) => void
+  onStartMatch?: (matchId: string, courtId: string) => void
+  onEnterScore?: (matchId: string, team1Score: number, team2Score: number) => void
+  onEndSession?: () => void
+
+  // Navigation
+  onViewPlayer?: (playerId: string) => void
+  onViewMatch?: (matchId: string) => void
+  onViewGroup?: (group: ABCDGroup) => void
+}
+
+/** ABCD Play Player View Props */
+export interface ABCDPlayerViewProps {
+  event: LiveEvent
+  session: ABCDSession
+  currentUser: {
+    id: string
+    name: string
+    group: ABCDGroup
+    groupRank: number
+    currentMatchId: string | null
+    nextMatchId: string | null
+  }
+
+  // Player Actions
+  onCheckIn?: (matchId: string) => void
+  onSubmitScore?: (matchId: string, team1Score: number, team2Score: number) => void
+
+  // Navigation
+  onViewMatch?: (matchId: string) => void
 }
