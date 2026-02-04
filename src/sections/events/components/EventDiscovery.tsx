@@ -8,7 +8,7 @@ type Tab = 'discover' | 'my-events'
 
 export function EventDiscovery({
   events,
-  gameFormats,
+  formatCategories,
   currentUser,
   onViewEvent,
   onFilterChange,
@@ -46,31 +46,62 @@ export function EventDiscovery({
 
   // Apply search/filter to discover events
   const filteredDiscoverEvents = discoverEvents.filter((event) => {
+    // Search filter
     if (filters.search) {
       const search = filters.search.toLowerCase()
       if (
         !event.name.toLowerCase().includes(search) &&
         !event.venue.name.toLowerCase().includes(search) &&
-        !event.format.toLowerCase().includes(search)
+        !event.format.subtypeName.toLowerCase().includes(search) &&
+        !event.format.categoryName.toLowerCase().includes(search)
       ) {
         return false
       }
     }
-    if (filters.format && event.format !== filters.format) {
+
+    // Format category filter (multi-select)
+    if (filters.formatCategoryIds && filters.formatCategoryIds.length > 0) {
+      if (!filters.formatCategoryIds.includes(event.format.categoryId)) {
+        return false
+      }
+    }
+
+    // Skill level filters
+    const skillRange = event.formatConfig.skillRange
+    if (filters.skillLevelMin && skillRange.max < filters.skillLevelMin) {
       return false
     }
-    if (filters.skillLevelMin && event.skillLevelMax < filters.skillLevelMin) {
+    if (filters.skillLevelMax && skillRange.min > filters.skillLevelMax) {
       return false
     }
-    if (filters.skillLevelMax && event.skillLevelMin > filters.skillLevelMax) {
+
+    // Fee filter
+    if (filters.feeType === 'free' && event.fee !== null) {
       return false
     }
-    if (filters.freeOnly && event.fee !== null) {
+    if (filters.feeType === 'paid' && event.fee === null) {
       return false
     }
-    if (filters.hasSpots && event.spotsAvailable === 0) {
-      return false
+
+    // Availability filter
+    if (filters.availability && filters.availability.length > 0) {
+      const hasOpenSpots = event.spotsAvailable > 0
+      const hasWaitlist = event.waitlistEnabled && event.spotsAvailable === 0
+
+      if (filters.availability.includes('open') && !hasOpenSpots) {
+        // If "open" is selected but no open spots, check if other filters pass
+        if (!filters.availability.includes('waitlist') || !hasWaitlist) {
+          return false
+        }
+      }
+      if (filters.availability.includes('waitlist') && !hasWaitlist) {
+        // If "waitlist" is selected but no waitlist, check if other filters pass
+        if (!filters.availability.includes('open') || !hasOpenSpots) {
+          return false
+        }
+      }
     }
+
     return true
   })
 
@@ -145,7 +176,7 @@ export function EventDiscovery({
             <div className="lg:col-span-1">
               <EventFilters
                 filters={filters}
-                gameFormats={gameFormats}
+                formatCategories={formatCategories}
                 onFilterChange={handleFilterChange}
               />
             </div>
@@ -154,7 +185,7 @@ export function EventDiscovery({
           {/* Event Grid */}
           <div className={activeTab === 'discover' ? 'lg:col-span-3' : 'lg:col-span-4'}>
             {displayedEvents.length === 0 ? (
-              <EmptyState tab={activeTab} />
+              <EmptyState tab={activeTab} hasFilters={Object.keys(filters).length > 0} />
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {displayedEvents.map((event) => (
@@ -178,7 +209,7 @@ export function EventDiscovery({
   )
 }
 
-function EmptyState({ tab }: { tab: Tab }) {
+function EmptyState({ tab, hasFilters }: { tab: Tab; hasFilters?: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
@@ -193,7 +224,9 @@ function EmptyState({ tab }: { tab: Tab }) {
       </h3>
       <p className="text-sm text-slate-500 dark:text-slate-400 max-w-sm">
         {tab === 'discover'
-          ? 'Try adjusting your filters or check back later for new events.'
+          ? hasFilters
+            ? 'Try adjusting your filters or check back later for new events.'
+            : 'There are no events available right now. Check back later!'
           : "You haven't registered for any events yet. Browse available events to find your next game!"}
       </p>
     </div>

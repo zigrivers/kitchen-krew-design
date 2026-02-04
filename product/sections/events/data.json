@@ -2,41 +2,300 @@
   "_meta": {
     "models": {
       "events": "A scheduled pickleball session with a specific game format, venue, and registration settings. Events are created by Game Managers and joined by Players.",
-      "registrations": "A player's signup for an event, tracking their status from registration through check-in. Includes optional partner for doubles formats.",
+      "registrations": "A player's signup for an event, tracking their status from registration through check-in. Includes optional partner for doubles formats and payment status for paid events.",
       "players": "Simplified player info for display in event cards and registration lists. Full player data lives in the Players section.",
       "venues": "Simplified venue info showing where events take place. Full venue data lives in the Clubs & Venues section.",
+      "formatCategories": "The six major event format categories (Tournament, Round Robin, Ladder/League, Recreational, Team, Specialty). Each category contains multiple specific format subtypes.",
+      "formatSubtypes": "Specific game formats within each category. For example, 'Single Elimination' and 'Double Elimination' are subtypes under the Tournament category.",
       "eventQRCodes": "QR codes generated for events, either for registration (players scan to sign up) or check-in (players scan on arrival).",
       "shareEventData": "Pre-formatted data for sharing event links via SMS, email, or copy link."
     },
     "relationships": [
+      "Each Event belongs to one Format Category and one Format Subtype",
       "Each Event takes place at one Venue",
       "Each Event has one Organizer (a Player who created it)",
       "Each Event has many Registrations (players who signed up)",
       "Each Registration belongs to one Player and one Event",
       "Registrations may include a Partner (another Player) for doubles formats",
       "Each Event can have multiple QR codes (one for registration, one for check-in)",
-      "Each QR code belongs to exactly one Event"
+      "Format Categories contain multiple Format Subtypes"
     ]
   },
+  "formatCategories": [
+    {
+      "id": "tournament",
+      "name": "Tournament",
+      "icon": "trophy",
+      "description": "Structured competitive brackets with elimination rounds",
+      "bestFor": "Competitive events, championships, skill-level competitions",
+      "subtypes": [
+        {
+          "id": "single-elimination",
+          "name": "Single Elimination",
+          "description": "Win and advance; lose once and you're eliminated",
+          "minPlayers": 4,
+          "maxPlayers": 64,
+          "estimatedDuration": "3-6 hours",
+          "partnershipType": "fixed_partner"
+        },
+        {
+          "id": "double-elimination",
+          "name": "Double Elimination",
+          "description": "Losers bracket gives a second chance; must lose twice to be eliminated",
+          "minPlayers": 4,
+          "maxPlayers": 32,
+          "estimatedDuration": "4-8 hours",
+          "partnershipType": "fixed_partner"
+        },
+        {
+          "id": "pool-play-playoffs",
+          "name": "Pool Play + Playoffs",
+          "description": "Round-robin pools followed by elimination bracket for top finishers",
+          "minPlayers": 8,
+          "maxPlayers": 48,
+          "estimatedDuration": "5-8 hours",
+          "partnershipType": "fixed_partner"
+        }
+      ]
+    },
+    {
+      "id": "round-robin",
+      "name": "Round Robin",
+      "icon": "refresh-cw",
+      "description": "All participants play each other with rotating or fixed partners",
+      "bestFor": "Guaranteed playtime, skill assessment, social competition",
+      "subtypes": [
+        {
+          "id": "standard-round-robin",
+          "name": "Standard Round Robin",
+          "description": "All players/teams play each other at least once",
+          "minPlayers": 4,
+          "maxPlayers": 20,
+          "estimatedDuration": "2-4 hours",
+          "partnershipType": "fixed_partner"
+        },
+        {
+          "id": "rotating-partners",
+          "name": "Rotating Partners (Scramble)",
+          "description": "Individual signups with partners changing each round",
+          "minPlayers": 4,
+          "maxPlayers": 20,
+          "estimatedDuration": "2 hours",
+          "partnershipType": "rotating"
+        },
+        {
+          "id": "set-partners",
+          "name": "Set Partners",
+          "description": "Fixed doubles teams compete against all other teams",
+          "minPlayers": 8,
+          "maxPlayers": 32,
+          "estimatedDuration": "2-4 hours",
+          "partnershipType": "fixed_partner"
+        },
+        {
+          "id": "mixed-gender-round-robin",
+          "name": "Mixed Gender Round Robin",
+          "description": "Rotating partners with gender balancing rules",
+          "minPlayers": 8,
+          "maxPlayers": 24,
+          "estimatedDuration": "2-3 hours",
+          "partnershipType": "rotating"
+        }
+      ]
+    },
+    {
+      "id": "ladder-league",
+      "name": "Ladder & League",
+      "icon": "trending-up",
+      "description": "Ongoing ranked competition over multiple sessions",
+      "bestFor": "Weekly/seasonal competitive play, skill tracking over time",
+      "subtypes": [
+        {
+          "id": "ladder-league",
+          "name": "Ladder League",
+          "description": "Ongoing competition with court-based movement (winners up, losers down)",
+          "minPlayers": 8,
+          "maxPlayers": 40,
+          "estimatedDuration": "8 weeks",
+          "partnershipType": "rotating"
+        },
+        {
+          "id": "flex-league",
+          "name": "Flex League",
+          "description": "Flexible scheduling with opt-in game days",
+          "minPlayers": 8,
+          "maxPlayers": 32,
+          "estimatedDuration": "6 weeks",
+          "partnershipType": "individual"
+        },
+        {
+          "id": "partner-league",
+          "name": "Partner League",
+          "description": "Fixed 2-player teams competing over multiple weeks",
+          "minPlayers": 8,
+          "maxPlayers": 40,
+          "estimatedDuration": "8 weeks",
+          "partnershipType": "fixed_partner"
+        }
+      ]
+    },
+    {
+      "id": "recreational",
+      "name": "Recreational",
+      "icon": "smile",
+      "description": "Casual, social-oriented play sessions",
+      "bestFor": "Open play, meetups, learning, community building",
+      "subtypes": [
+        {
+          "id": "open-play",
+          "name": "Open Play / Drop-In",
+          "description": "Casual pickup play with paddle-in rotation",
+          "minPlayers": 4,
+          "maxPlayers": 32,
+          "estimatedDuration": "2-3 hours",
+          "partnershipType": "none"
+        },
+        {
+          "id": "clinic",
+          "name": "Clinics & Classes",
+          "description": "Instructional sessions led by coaches",
+          "minPlayers": 4,
+          "maxPlayers": 12,
+          "estimatedDuration": "1-2 hours",
+          "partnershipType": "none"
+        },
+        {
+          "id": "social-mixer",
+          "name": "Socials & Mixers",
+          "description": "Non-competitive gatherings with optional casual play",
+          "minPlayers": 8,
+          "maxPlayers": 40,
+          "estimatedDuration": "2-4 hours",
+          "partnershipType": "none"
+        },
+        {
+          "id": "lesson",
+          "name": "Lessons",
+          "description": "Private or group sessions with professional instructors",
+          "minPlayers": 1,
+          "maxPlayers": 4,
+          "estimatedDuration": "1 hour",
+          "partnershipType": "none"
+        }
+      ]
+    },
+    {
+      "id": "team",
+      "name": "Team Competition",
+      "icon": "users",
+      "description": "Multi-player team formats for club and league play",
+      "bestFor": "Club leagues, MiLP-style events, inter-club competition",
+      "subtypes": [
+        {
+          "id": "milp-style",
+          "name": "MiLP-Style Teams",
+          "description": "4-person teams (2M/2F) in professional-style match format",
+          "minPlayers": 8,
+          "maxPlayers": 32,
+          "estimatedDuration": "4-6 hours",
+          "partnershipType": "team"
+        },
+        {
+          "id": "custom-team",
+          "name": "Custom Team Format",
+          "description": "Configurable team sizes for inter-club competitions",
+          "minPlayers": 6,
+          "maxPlayers": 48,
+          "estimatedDuration": "4-8 hours",
+          "partnershipType": "team"
+        },
+        {
+          "id": "inter-club-league",
+          "name": "Inter-Club League",
+          "description": "Multi-week competition across multiple venues",
+          "minPlayers": 12,
+          "maxPlayers": 60,
+          "estimatedDuration": "8-12 weeks",
+          "partnershipType": "team"
+        }
+      ]
+    },
+    {
+      "id": "specialty",
+      "name": "Specialty",
+      "icon": "star",
+      "description": "Unique formats for specific scenarios and skill matching",
+      "bestFor": "Dynamic matchmaking, skill-based play, prize events",
+      "subtypes": [
+        {
+          "id": "king-of-court",
+          "name": "King of the Court",
+          "description": "Winners move up courts; losers move down; continuous rotation",
+          "minPlayers": 8,
+          "maxPlayers": 24,
+          "estimatedDuration": "2-3 hours",
+          "partnershipType": "rotating"
+        },
+        {
+          "id": "gauntlet",
+          "name": "Gauntlet",
+          "description": "Dynamic seeding with skill-based matchmaking each round",
+          "minPlayers": 8,
+          "maxPlayers": 32,
+          "estimatedDuration": "2-3 hours",
+          "partnershipType": "rotating"
+        },
+        {
+          "id": "abcd-play",
+          "name": "ABCD Play",
+          "description": "Skill-grouped round robin with club-defined A/B/C/D levels",
+          "minPlayers": 16,
+          "maxPlayers": 40,
+          "estimatedDuration": "2-3 hours",
+          "partnershipType": "rotating"
+        },
+        {
+          "id": "skill-limited",
+          "name": "Skill-Limited Event",
+          "description": "Events restricted to specific rating ranges",
+          "minPlayers": 4,
+          "maxPlayers": 32,
+          "estimatedDuration": "2-4 hours",
+          "partnershipType": "varies"
+        }
+      ]
+    }
+  ],
   "events": [
     {
       "id": "evt-001",
       "name": "Tuesday Night Open Play",
       "description": "Casual open play session for all skill levels. Paddle stacking rotation with winners stay. Great way to meet other players and get some games in after work!",
-      "startDateTime": "2026-02-03T18:00:00",
-      "endDateTime": "2026-02-03T21:00:00",
+      "startDateTime": "2026-02-10T18:00:00",
+      "endDateTime": "2026-02-10T21:00:00",
       "venue": {
         "id": "ven-001",
         "name": "Riverside Recreation Center",
         "address": "450 River Road",
         "city": "Austin, TX"
       },
-      "format": "Open Play",
+      "format": {
+        "categoryId": "recreational",
+        "categoryName": "Recreational",
+        "categoryIcon": "smile",
+        "subtypeId": "open-play",
+        "subtypeName": "Open Play / Drop-In"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 2.5, "max": 4.0 },
+        "courtRotation": "paddle_stack",
+        "gamesPerSession": null
+      },
       "maxPlayers": 24,
       "registeredCount": 18,
       "spotsAvailable": 6,
-      "skillLevelMin": 2.5,
-      "skillLevelMax": 4.0,
+      "waitlistEnabled": true,
+      "waitlistMax": 8,
       "fee": null,
       "organizer": {
         "id": "plr-001",
@@ -50,21 +309,24 @@
           "id": "reg-001",
           "player": { "id": "plr-002", "name": "Sarah Martinez", "avatarUrl": null, "skillRating": 3.5 },
           "status": "registered",
-          "registeredAt": "2026-01-28T14:22:00",
+          "registeredAt": "2026-02-01T14:22:00",
+          "paymentStatus": null,
           "partner": null
         },
         {
           "id": "reg-002",
           "player": { "id": "plr-003", "name": "David Kim", "avatarUrl": null, "skillRating": 3.25 },
           "status": "registered",
-          "registeredAt": "2026-01-28T15:45:00",
+          "registeredAt": "2026-02-01T15:45:00",
+          "paymentStatus": null,
           "partner": null
         },
         {
           "id": "reg-003",
           "player": { "id": "plr-004", "name": "Emily Rodriguez", "avatarUrl": null, "skillRating": 3.0 },
           "status": "registered",
-          "registeredAt": "2026-01-29T09:10:00",
+          "registeredAt": "2026-02-02T09:10:00",
+          "paymentStatus": null,
           "partner": null
         }
       ],
@@ -72,22 +334,42 @@
     },
     {
       "id": "evt-002",
-      "name": "Weekend Round Robin Tournament",
-      "description": "Competitive round robin format where you'll play with different partners against different opponents each round. Points accumulate across all games. Top 4 players advance to a mini bracket playoff. Skill level 3.5+ recommended.",
-      "startDateTime": "2026-02-08T09:00:00",
-      "endDateTime": "2026-02-08T14:00:00",
+      "name": "Weekend Scramble Round Robin",
+      "description": "Competitive round robin format where you'll play with different partners against different opponents each round. Points accumulate across all games. Top 4 players advance to a mini bracket playoff. DUPR ratings submitted after event.",
+      "startDateTime": "2026-02-15T09:00:00",
+      "endDateTime": "2026-02-15T14:00:00",
       "venue": {
         "id": "ven-002",
         "name": "Lakewood Pickleball Club",
         "address": "1200 Lakewood Drive",
         "city": "Austin, TX"
       },
-      "format": "Round Robin",
+      "format": {
+        "categoryId": "round-robin",
+        "categoryName": "Round Robin",
+        "categoryIcon": "refresh-cw",
+        "subtypeId": "rotating-partners",
+        "subtypeName": "Rotating Partners (Scramble)"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 3.5, "max": 4.5 },
+        "partnershipType": "rotating",
+        "playoffEnabled": true,
+        "playoffFormat": "single-elimination",
+        "playoffAdvancement": 4,
+        "scoring": {
+          "pointsToWin": 11,
+          "winBy": 2,
+          "capPoints": null
+        },
+        "tiebreakers": ["head_to_head", "point_differential", "total_points"],
+        "duprUpload": true
+      },
       "maxPlayers": 16,
       "registeredCount": 16,
       "spotsAvailable": 0,
-      "skillLevelMin": 3.5,
-      "skillLevelMax": 4.5,
+      "waitlistEnabled": true,
+      "waitlistMax": 6,
       "fee": 25,
       "organizer": {
         "id": "plr-005",
@@ -101,21 +383,24 @@
           "id": "reg-010",
           "player": { "id": "plr-006", "name": "Michael Torres", "avatarUrl": null, "skillRating": 4.0 },
           "status": "registered",
-          "registeredAt": "2026-01-25T10:00:00",
+          "registeredAt": "2026-02-01T10:00:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
           "id": "reg-011",
           "player": { "id": "plr-007", "name": "Lisa Patel", "avatarUrl": null, "skillRating": 3.75 },
           "status": "registered",
-          "registeredAt": "2026-01-25T10:15:00",
+          "registeredAt": "2026-02-01T10:15:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
           "id": "reg-012",
           "player": { "id": "plr-008", "name": "Robert Johnson", "avatarUrl": null, "skillRating": 4.0 },
           "status": "registered",
-          "registeredAt": "2026-01-25T11:30:00",
+          "registeredAt": "2026-02-01T11:30:00",
+          "paymentStatus": "paid",
           "partner": null
         }
       ],
@@ -124,14 +409,16 @@
           "id": "reg-020",
           "player": { "id": "plr-015", "name": "Amanda Foster", "avatarUrl": null, "skillRating": 3.5 },
           "status": "waitlisted",
-          "registeredAt": "2026-01-30T08:45:00",
+          "registeredAt": "2026-02-05T08:45:00",
+          "paymentStatus": null,
           "partner": null
         },
         {
           "id": "reg-021",
           "player": { "id": "plr-016", "name": "Chris Nguyen", "avatarUrl": null, "skillRating": 3.75 },
           "status": "waitlisted",
-          "registeredAt": "2026-01-30T12:20:00",
+          "registeredAt": "2026-02-05T12:20:00",
+          "paymentStatus": null,
           "partner": null
         }
       ]
@@ -139,21 +426,43 @@
     {
       "id": "evt-003",
       "name": "King of the Court Challenge",
-      "description": "Fast-paced ladder format! Winners move up, losers move down. Can you climb to Court 1 and hold your crown? Games to 11, win by 2. Bring your competitive spirit!",
-      "startDateTime": "2026-02-05T19:00:00",
-      "endDateTime": "2026-02-05T21:30:00",
+      "description": "Fast-paced ladder format! Winners move up, losers move down. Can you climb to Court 1 and hold your crown? Games to 11, win by 2. Partners split each round. Bring your competitive spirit!",
+      "startDateTime": "2026-02-12T19:00:00",
+      "endDateTime": "2026-02-12T21:30:00",
       "venue": {
         "id": "ven-003",
         "name": "Cedar Park Sports Complex",
         "address": "2800 Cedar Park Blvd",
         "city": "Cedar Park, TX"
       },
-      "format": "King of the Court",
+      "format": {
+        "categoryId": "specialty",
+        "categoryName": "Specialty",
+        "categoryIcon": "star",
+        "subtypeId": "king-of-court",
+        "subtypeName": "King of the Court"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 3.0, "max": 4.5 },
+        "courtMovement": {
+          "enabled": true,
+          "type": "winners_up_losers_down",
+          "partnerSplit": true,
+          "movementCount": 1
+        },
+        "scoring": {
+          "pointsToWin": 11,
+          "winBy": 2,
+          "capPoints": null
+        },
+        "seeding": "rating_based",
+        "prizeEvent": false
+      },
       "maxPlayers": 20,
       "registeredCount": 14,
       "spotsAvailable": 6,
-      "skillLevelMin": 3.0,
-      "skillLevelMax": 4.5,
+      "waitlistEnabled": false,
+      "waitlistMax": 0,
       "fee": 10,
       "organizer": {
         "id": "plr-009",
@@ -167,14 +476,16 @@
           "id": "reg-030",
           "player": { "id": "plr-010", "name": "Nicole Garcia", "avatarUrl": null, "skillRating": 3.5 },
           "status": "registered",
-          "registeredAt": "2026-01-31T16:00:00",
+          "registeredAt": "2026-02-03T16:00:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
           "id": "reg-031",
           "player": { "id": "plr-011", "name": "James Wilson", "avatarUrl": null, "skillRating": 3.75 },
           "status": "registered",
-          "registeredAt": "2026-01-31T16:30:00",
+          "registeredAt": "2026-02-03T16:30:00",
+          "paymentStatus": "paid",
           "partner": null
         }
       ],
@@ -182,67 +493,47 @@
     },
     {
       "id": "evt-004",
-      "name": "Mixed Doubles Social",
-      "description": "Friendly mixed doubles event! Register with a partner or sign up solo and we'll pair you up. Focus is on fun and meeting new players. Refreshments provided.",
-      "startDateTime": "2026-02-09T14:00:00",
-      "endDateTime": "2026-02-09T17:00:00",
-      "venue": {
-        "id": "ven-001",
-        "name": "Riverside Recreation Center",
-        "address": "450 River Road",
-        "city": "Austin, TX"
-      },
-      "format": "Mixed Doubles",
-      "maxPlayers": 16,
-      "registeredCount": 10,
-      "spotsAvailable": 6,
-      "skillLevelMin": 2.5,
-      "skillLevelMax": 3.5,
-      "fee": null,
-      "organizer": {
-        "id": "plr-001",
-        "name": "Marcus Chen",
-        "avatarUrl": null,
-        "skillRating": 3.75
-      },
-      "status": "upcoming",
-      "registrations": [
-        {
-          "id": "reg-040",
-          "player": { "id": "plr-012", "name": "Kevin Lee", "avatarUrl": null, "skillRating": 3.0 },
-          "status": "registered",
-          "registeredAt": "2026-02-01T09:00:00",
-          "partner": { "id": "plr-013", "name": "Rachel Lee", "avatarUrl": null, "skillRating": 2.75 }
-        },
-        {
-          "id": "reg-041",
-          "player": { "id": "plr-014", "name": "Tom Bradley", "avatarUrl": null, "skillRating": 3.25 },
-          "status": "registered",
-          "registeredAt": "2026-02-01T10:30:00",
-          "partner": null
-        }
-      ],
-      "waitlist": []
-    },
-    {
-      "id": "evt-005",
-      "name": "Spring Singles Tournament",
-      "description": "Single elimination singles tournament. Best of 3 games to 11 in early rounds, best of 5 in semifinals and finals. Medals for top 3 finishers. DUPR ratings will be submitted.",
-      "startDateTime": "2026-02-15T08:00:00",
-      "endDateTime": "2026-02-15T16:00:00",
+      "name": "Spring Singles Championship",
+      "description": "Single elimination singles tournament with consolation bracket. Best of 3 games to 11 in early rounds, best of 5 in semifinals and finals. Medals for top 3 finishers. DUPR ratings will be submitted. Seeding based on DUPR rating.",
+      "startDateTime": "2026-02-22T08:00:00",
+      "endDateTime": "2026-02-22T17:00:00",
       "venue": {
         "id": "ven-002",
         "name": "Lakewood Pickleball Club",
         "address": "1200 Lakewood Drive",
         "city": "Austin, TX"
       },
-      "format": "Single Elimination",
+      "format": {
+        "categoryId": "tournament",
+        "categoryName": "Tournament",
+        "categoryIcon": "trophy",
+        "subtypeId": "single-elimination",
+        "subtypeName": "Single Elimination"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 3.5, "max": 5.0 },
+        "bracketType": "single_elimination",
+        "consolationBracket": true,
+        "bronzeMatch": true,
+        "seeding": "dupr_rating",
+        "matchFormat": {
+          "earlyRounds": "best_of_3",
+          "semifinals": "best_of_5",
+          "finals": "best_of_5"
+        },
+        "scoring": {
+          "pointsToWin": 11,
+          "winBy": 2,
+          "capPoints": null
+        },
+        "duprUpload": true
+      },
       "maxPlayers": 32,
       "registeredCount": 28,
       "spotsAvailable": 4,
-      "skillLevelMin": 3.5,
-      "skillLevelMax": 5.0,
-      "fee": 40,
+      "waitlistEnabled": true,
+      "waitlistMax": 8,
+      "fee": 45,
       "organizer": {
         "id": "plr-005",
         "name": "Jennifer Walsh",
@@ -255,21 +546,106 @@
           "id": "reg-050",
           "player": { "id": "plr-017", "name": "Alex Morgan", "avatarUrl": null, "skillRating": 4.5 },
           "status": "registered",
-          "registeredAt": "2026-01-20T08:00:00",
+          "registeredAt": "2026-02-01T08:00:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
           "id": "reg-051",
           "player": { "id": "plr-018", "name": "Diana Cruz", "avatarUrl": null, "skillRating": 4.25 },
           "status": "registered",
-          "registeredAt": "2026-01-20T08:15:00",
+          "registeredAt": "2026-02-01T08:15:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
           "id": "reg-052",
           "player": { "id": "plr-019", "name": "Ryan Mitchell", "avatarUrl": null, "skillRating": 4.0 },
           "status": "registered",
-          "registeredAt": "2026-01-20T09:00:00",
+          "registeredAt": "2026-02-01T09:00:00",
+          "paymentStatus": "paid",
+          "partner": null
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-005",
+      "name": "Spring Ladder League - Session 1",
+      "description": "8-week ladder league with weekly sessions every Thursday. Players grouped by skill into courts of 4-5. Play 3 games per session with rotating partners. Winners move up a court, losers move down. Track your progress and climb the ladder!",
+      "startDateTime": "2026-02-13T18:30:00",
+      "endDateTime": "2026-04-09T21:00:00",
+      "venue": {
+        "id": "ven-001",
+        "name": "Riverside Recreation Center",
+        "address": "450 River Road",
+        "city": "Austin, TX"
+      },
+      "format": {
+        "categoryId": "ladder-league",
+        "categoryName": "Ladder & League",
+        "categoryIcon": "trending-up",
+        "subtypeId": "ladder-league",
+        "subtypeName": "Ladder League"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 3.0, "max": 4.5 },
+        "duration": {
+          "weeks": 8,
+          "sessionsPerWeek": 1,
+          "dayOfWeek": "Thursday"
+        },
+        "playersPerCourt": 4,
+        "gamesPerSession": 3,
+        "courtMovement": {
+          "enabled": true,
+          "type": "performance_based",
+          "movementCount": 1
+        },
+        "scoring": {
+          "pointsToWin": 11,
+          "winBy": 2,
+          "capPoints": 15
+        },
+        "rankingAlgorithm": "point_percentage",
+        "absentPlayerRule": "maintain_ranking"
+      },
+      "maxPlayers": 32,
+      "registeredCount": 24,
+      "spotsAvailable": 8,
+      "waitlistEnabled": true,
+      "waitlistMax": 10,
+      "fee": 80,
+      "organizer": {
+        "id": "plr-001",
+        "name": "Marcus Chen",
+        "avatarUrl": null,
+        "skillRating": 3.75
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-060",
+          "player": { "id": "plr-020", "name": "Steven Park", "avatarUrl": null, "skillRating": 3.75 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T12:00:00",
+          "paymentStatus": "paid",
+          "partner": null
+        },
+        {
+          "id": "reg-061",
+          "player": { "id": "plr-021", "name": "Michelle Lee", "avatarUrl": null, "skillRating": 3.5 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T12:30:00",
+          "paymentStatus": "paid",
+          "partner": null
+        },
+        {
+          "id": "reg-062",
+          "player": { "id": "plr-022", "name": "Derek Adams", "avatarUrl": null, "skillRating": 4.0 },
+          "status": "registered",
+          "registeredAt": "2026-02-01T14:00:00",
+          "paymentStatus": "paid",
           "partner": null
         }
       ],
@@ -277,68 +653,192 @@
     },
     {
       "id": "evt-006",
-      "name": "Beginner Welcome Night",
-      "description": "New to pickleball? This is your event! Patient coaches will help you learn the basics, then you'll play relaxed games with other beginners. Paddles available to borrow. No experience necessary!",
-      "startDateTime": "2026-02-06T18:30:00",
-      "endDateTime": "2026-02-06T20:30:00",
+      "name": "MiLP-Style Team Tournament",
+      "description": "Professional-style team competition! 4-person teams (2 men, 2 women) compete in the MiLP format: 1 Women's Doubles, 1 Men's Doubles, 2 Mixed Doubles games per round. Rally scoring to 21. Dreambreaker tiebreaker if tied 2-2!",
+      "startDateTime": "2026-02-29T09:00:00",
+      "endDateTime": "2026-02-29T17:00:00",
+      "venue": {
+        "id": "ven-002",
+        "name": "Lakewood Pickleball Club",
+        "address": "1200 Lakewood Drive",
+        "city": "Austin, TX"
+      },
+      "format": {
+        "categoryId": "team",
+        "categoryName": "Team Competition",
+        "categoryIcon": "users",
+        "subtypeId": "milp-style",
+        "subtypeName": "MiLP-Style Teams"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 3.5, "max": 5.0 },
+        "teamSize": 4,
+        "teamComposition": { "men": 2, "women": 2 },
+        "matchStructure": {
+          "gamesPerRound": 4,
+          "gameTypes": ["womens_doubles", "mens_doubles", "mixed_doubles", "mixed_doubles"]
+        },
+        "scoring": {
+          "type": "rally",
+          "pointsToWin": 21,
+          "winBy": 1
+        },
+        "tiebreaker": "dreambreaker",
+        "bracketType": "single_elimination"
+      },
+      "maxPlayers": 32,
+      "registeredCount": 16,
+      "spotsAvailable": 16,
+      "waitlistEnabled": false,
+      "waitlistMax": 0,
+      "fee": 50,
+      "organizer": {
+        "id": "plr-009",
+        "name": "Brian Thompson",
+        "avatarUrl": null,
+        "skillRating": 4.0
+      },
+      "status": "upcoming",
+      "registrations": [
+        {
+          "id": "reg-070",
+          "player": { "id": "plr-023", "name": "Team Thunder", "avatarUrl": null, "skillRating": 4.0 },
+          "status": "registered",
+          "registeredAt": "2026-02-05T10:00:00",
+          "paymentStatus": "paid",
+          "partner": null,
+          "teamMembers": [
+            { "id": "plr-024", "name": "Jake Martinez", "gender": "male", "skillRating": 4.0 },
+            { "id": "plr-025", "name": "Tyler Brooks", "gender": "male", "skillRating": 4.25 },
+            { "id": "plr-026", "name": "Sophia Chen", "gender": "female", "skillRating": 3.75 },
+            { "id": "plr-027", "name": "Emma Davis", "gender": "female", "skillRating": 4.0 }
+          ]
+        }
+      ],
+      "waitlist": []
+    },
+    {
+      "id": "evt-007",
+      "name": "Beginner Dinking Clinic",
+      "description": "Master the most important shot in pickleball! This 90-minute clinic focuses on soft game fundamentals: dinking mechanics, cross-court patterns, and reset shots. Led by IPTPA-certified coach Patricia Simmons. Paddles available to borrow.",
+      "startDateTime": "2026-02-11T10:00:00",
+      "endDateTime": "2026-02-11T11:30:00",
       "venue": {
         "id": "ven-004",
         "name": "South Austin Community Center",
         "address": "3911 Manchaca Road",
         "city": "Austin, TX"
       },
-      "format": "Open Play",
-      "maxPlayers": 12,
-      "registeredCount": 8,
-      "spotsAvailable": 4,
-      "skillLevelMin": 1.0,
-      "skillLevelMax": 2.5,
-      "fee": null,
+      "format": {
+        "categoryId": "recreational",
+        "categoryName": "Recreational",
+        "categoryIcon": "smile",
+        "subtypeId": "clinic",
+        "subtypeName": "Clinics & Classes"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 2.0, "max": 3.0 },
+        "instructor": {
+          "id": "plr-028",
+          "name": "Patricia Simmons",
+          "certification": "IPTPA Level II"
+        },
+        "focusAreas": ["dinking", "soft_game", "reset_shots"],
+        "equipmentProvided": true
+      },
+      "maxPlayers": 8,
+      "registeredCount": 6,
+      "spotsAvailable": 2,
+      "waitlistEnabled": true,
+      "waitlistMax": 4,
+      "fee": 35,
       "organizer": {
-        "id": "plr-020",
+        "id": "plr-028",
         "name": "Patricia Simmons",
         "avatarUrl": null,
-        "skillRating": 3.5
+        "skillRating": 4.5
       },
       "status": "upcoming",
       "registrations": [
         {
-          "id": "reg-060",
-          "player": { "id": "plr-021", "name": "Jordan Blake", "avatarUrl": null, "skillRating": 1.5 },
+          "id": "reg-080",
+          "player": { "id": "plr-029", "name": "Jordan Blake", "avatarUrl": null, "skillRating": 2.5 },
           "status": "registered",
-          "registeredAt": "2026-02-01T14:00:00",
+          "registeredAt": "2026-02-03T09:00:00",
+          "paymentStatus": "paid",
           "partner": null
         },
         {
-          "id": "reg-061",
-          "player": { "id": "plr-022", "name": "Casey Rivers", "avatarUrl": null, "skillRating": 2.0 },
+          "id": "reg-081",
+          "player": { "id": "plr-030", "name": "Casey Rivers", "avatarUrl": null, "skillRating": 2.75 },
           "status": "registered",
-          "registeredAt": "2026-02-01T15:30:00",
+          "registeredAt": "2026-02-03T09:15:00",
+          "paymentStatus": "paid",
           "partner": null
         }
       ],
       "waitlist": []
+    },
+    {
+      "id": "evt-008",
+      "name": "Advanced 4.0+ Skill-Limited Play",
+      "description": "Competitive play session exclusively for 4.0+ rated players. Verified DUPR rating required. Round robin format with set partners. High-level play with like-skilled opponents.",
+      "startDateTime": "2026-02-16T14:00:00",
+      "endDateTime": "2026-02-16T17:00:00",
+      "venue": {
+        "id": "ven-002",
+        "name": "Lakewood Pickleball Club",
+        "address": "1200 Lakewood Drive",
+        "city": "Austin, TX"
+      },
+      "format": {
+        "categoryId": "specialty",
+        "categoryName": "Specialty",
+        "categoryIcon": "star",
+        "subtypeId": "skill-limited",
+        "subtypeName": "Skill-Limited Event"
+      },
+      "formatConfig": {
+        "skillRange": { "min": 4.0, "max": 5.5 },
+        "ratingSystem": "dupr",
+        "requireVerifiedRating": true,
+        "allowProvisional": false,
+        "baseFormat": {
+          "categoryId": "round-robin",
+          "subtypeId": "set-partners"
+        },
+        "scoring": {
+          "pointsToWin": 11,
+          "winBy": 2,
+          "capPoints": null
+        }
+      },
+      "maxPlayers": 16,
+      "registeredCount": 0,
+      "spotsAvailable": 16,
+      "waitlistEnabled": false,
+      "waitlistMax": 0,
+      "fee": 20,
+      "organizer": {
+        "id": "plr-005",
+        "name": "Jennifer Walsh",
+        "avatarUrl": null,
+        "skillRating": 4.25
+      },
+      "status": "upcoming",
+      "registrations": [],
+      "waitlist": []
     }
-  ],
-  "gameFormats": [
-    { "id": "open-play", "name": "Open Play", "description": "Casual paddle stacking rotation" },
-    { "id": "round-robin", "name": "Round Robin", "description": "Play with rotating partners against all opponents" },
-    { "id": "king-of-court", "name": "King of the Court", "description": "Winners move up, losers move down" },
-    { "id": "challenge-court", "name": "Challenge Court", "description": "Winners stay until defeated" },
-    { "id": "single-elimination", "name": "Single Elimination", "description": "Tournament bracket, one loss and you're out" },
-    { "id": "double-elimination", "name": "Double Elimination", "description": "Tournament bracket, two losses to eliminate" },
-    { "id": "pool-play", "name": "Pool Play", "description": "Round robin pools followed by bracket" },
-    { "id": "ladder", "name": "Ladder Tournament", "description": "Ongoing ranked competition with challenges" },
-    { "id": "skinny-singles", "name": "Skinny Singles", "description": "Half-court singles format" },
-    { "id": "singles", "name": "Traditional Singles", "description": "Full-court singles" },
-    { "id": "mixed-doubles", "name": "Mixed Doubles", "description": "Gender-balanced doubles teams" }
   ],
   "currentUser": {
     "id": "plr-002",
     "name": "Sarah Martinez",
     "avatarUrl": null,
     "skillRating": 3.5,
-    "isGameManager": false
+    "duprRating": 3.48,
+    "isGameManager": false,
+    "registeredEventIds": ["evt-001", "evt-002"],
+    "managedEventIds": []
   },
   "eventQRCodes": [
     {
@@ -347,8 +847,8 @@
       "eventId": "evt-001",
       "eventName": "Tuesday Night Open Play",
       "targetUrl": "https://kitchenkrew.app/events/evt-001/register",
-      "createdAt": "2026-01-25T10:00:00",
-      "expiresAt": "2026-02-03T18:00:00",
+      "createdAt": "2026-02-01T10:00:00",
+      "expiresAt": "2026-02-10T18:00:00",
       "scanCount": 45,
       "conversionCount": 12,
       "isActive": true
@@ -359,8 +859,8 @@
       "eventId": "evt-001",
       "eventName": "Tuesday Night Open Play",
       "targetUrl": "https://kitchenkrew.app/events/evt-001/checkin",
-      "createdAt": "2026-02-03T17:00:00",
-      "expiresAt": "2026-02-03T21:00:00",
+      "createdAt": "2026-02-10T17:00:00",
+      "expiresAt": "2026-02-10T21:00:00",
       "scanCount": 0,
       "conversionCount": 0,
       "isActive": true
@@ -368,25 +868,25 @@
     {
       "id": "eqr-003",
       "type": "event_registration",
-      "eventId": "evt-002",
-      "eventName": "Weekend Round Robin Tournament",
-      "targetUrl": "https://kitchenkrew.app/events/evt-002/register",
-      "createdAt": "2026-01-20T08:00:00",
-      "expiresAt": "2026-02-08T09:00:00",
-      "scanCount": 128,
-      "conversionCount": 16,
+      "eventId": "evt-004",
+      "eventName": "Spring Singles Championship",
+      "targetUrl": "https://kitchenkrew.app/events/evt-004/register",
+      "createdAt": "2026-01-15T12:00:00",
+      "expiresAt": "2026-02-22T08:00:00",
+      "scanCount": 156,
+      "conversionCount": 28,
       "isActive": true
     },
     {
       "id": "eqr-004",
       "type": "event_registration",
       "eventId": "evt-005",
-      "eventName": "Spring Singles Tournament",
+      "eventName": "Spring Ladder League - Session 1",
       "targetUrl": "https://kitchenkrew.app/events/evt-005/register",
-      "createdAt": "2026-01-15T12:00:00",
-      "expiresAt": "2026-02-15T08:00:00",
-      "scanCount": 87,
-      "conversionCount": 28,
+      "createdAt": "2026-01-20T08:00:00",
+      "expiresAt": "2026-02-13T18:30:00",
+      "scanCount": 89,
+      "conversionCount": 24,
       "isActive": true
     }
   ],
@@ -394,26 +894,29 @@
     {
       "eventId": "evt-001",
       "eventName": "Tuesday Night Open Play",
-      "eventDate": "Tue, Feb 3 at 6:00 PM",
+      "eventDate": "Tue, Feb 10 at 6:00 PM",
       "venueName": "Riverside Recreation Center",
+      "formatBadge": "Open Play",
       "shareUrl": "https://kitchenkrew.app/events/evt-001",
-      "defaultMessage": "Join me for Tuesday Night Open Play at Riverside Recreation Center on Feb 3rd! 🏓 Sign up here: https://kitchenkrew.app/events/evt-001"
+      "defaultMessage": "Join me for Tuesday Night Open Play at Riverside Recreation Center on Feb 10th! All skill levels welcome. Sign up here: https://kitchenkrew.app/events/evt-001"
     },
     {
       "eventId": "evt-002",
-      "eventName": "Weekend Round Robin Tournament",
-      "eventDate": "Sat, Feb 8 at 9:00 AM",
+      "eventName": "Weekend Scramble Round Robin",
+      "eventDate": "Sat, Feb 15 at 9:00 AM",
       "venueName": "Lakewood Pickleball Club",
+      "formatBadge": "Round Robin",
       "shareUrl": "https://kitchenkrew.app/events/evt-002",
-      "defaultMessage": "Competitive round robin tournament this Saturday! 🏆 Register here: https://kitchenkrew.app/events/evt-002"
+      "defaultMessage": "Competitive round robin tournament this Saturday! Rotating partners, top 4 advance to playoffs. Register here: https://kitchenkrew.app/events/evt-002"
     },
     {
-      "eventId": "evt-006",
-      "eventName": "Beginner Welcome Night",
-      "eventDate": "Thu, Feb 6 at 6:30 PM",
-      "venueName": "South Austin Community Center",
-      "shareUrl": "https://kitchenkrew.app/events/evt-006",
-      "defaultMessage": "New to pickleball? Join us for Beginner Welcome Night! Coaches will help you learn the basics. No experience needed! 🎾 https://kitchenkrew.app/events/evt-006"
+      "eventId": "evt-004",
+      "eventName": "Spring Singles Championship",
+      "eventDate": "Sat, Feb 22 at 8:00 AM",
+      "venueName": "Lakewood Pickleball Club",
+      "formatBadge": "Tournament",
+      "shareUrl": "https://kitchenkrew.app/events/evt-004",
+      "defaultMessage": "Spring Singles Championship coming up! Single elimination bracket with consolation. Medals for top 3. Sign up: https://kitchenkrew.app/events/evt-004"
     }
   ]
 }

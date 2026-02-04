@@ -58,7 +58,7 @@ function PodiumCard({ placement, isChampion, onViewPlayer }: PodiumCardProps) {
       shadow: 'shadow-[0_0_60px_rgba(251,191,36,0.4)]',
       icon: Crown,
       label: 'Champion',
-      height: 'h-48',
+      height: 'h-56',
       textColor: 'text-amber-900',
     },
     2: {
@@ -67,7 +67,7 @@ function PodiumCard({ placement, isChampion, onViewPlayer }: PodiumCardProps) {
       shadow: 'shadow-[0_0_40px_rgba(148,163,184,0.3)]',
       icon: Medal,
       label: 'Runner-up',
-      height: 'h-40',
+      height: 'h-44',
       textColor: 'text-slate-800',
     },
     3: {
@@ -76,7 +76,7 @@ function PodiumCard({ placement, isChampion, onViewPlayer }: PodiumCardProps) {
       shadow: 'shadow-[0_0_30px_rgba(251,146,60,0.3)]',
       icon: Medal,
       label: 'Third Place',
-      height: 'h-32',
+      height: 'h-36',
       textColor: 'text-orange-900',
     },
   }
@@ -109,11 +109,12 @@ function PodiumCard({ placement, isChampion, onViewPlayer }: PodiumCardProps) {
 
       {/* Podium Platform */}
       <div className={`
-        relative w-full max-w-[180px] ${config.height} rounded-t-2xl
+        relative w-full max-w-[200px] ${config.height} rounded-t-2xl
         bg-gradient-to-b ${config.bg}
         border-t-4 ${config.border}
         ${config.shadow}
         transition-transform group-hover:scale-105
+        flex flex-col
       `}>
         {/* Place Number */}
         <div className="absolute -top-6 left-1/2 -translate-x-1/2">
@@ -127,21 +128,22 @@ function PodiumCard({ placement, isChampion, onViewPlayer }: PodiumCardProps) {
           </div>
         </div>
 
-        {/* Team Info */}
-        <div className="absolute inset-x-4 top-8 text-center">
-          <p className={`font-bold text-lg ${config.textColor} leading-tight`}>
-            {placement.displayName}
-          </p>
-          <p className={`text-sm ${config.textColor} opacity-75 mt-1`}>
-            Seed #{placement.seed}
-          </p>
-        </div>
+        {/* Content Container - Flexbox layout */}
+        <div className="flex flex-col justify-between h-full pt-8 pb-4 px-3">
+          {/* Team Info */}
+          <div className="text-center">
+            <p className={`font-bold text-base ${config.textColor} leading-tight truncate`}>
+              {placement.displayName}
+            </p>
+            <p className={`text-sm ${config.textColor} opacity-75 mt-1`}>
+              Seed #{placement.seed}
+            </p>
+          </div>
 
-        {/* Players */}
-        <div className="absolute inset-x-4 bottom-4">
-          <div className={`text-xs ${config.textColor} opacity-60 text-center space-y-0.5`}>
+          {/* Players */}
+          <div className={`text-xs ${config.textColor} opacity-60 text-center leading-tight`}>
             {placement.players.map(player => (
-              <p key={player.id}>{player.name}</p>
+              <p key={player.id} className="truncate">{player.name}</p>
             ))}
           </div>
         </div>
@@ -208,8 +210,18 @@ function ChampionPath({ championPath, bracketMatches, championTeam }: ChampionPa
                       <p className="text-xs text-slate-400 uppercase tracking-wider mb-1">
                         {match.roundLabel}
                       </p>
-                      <p className="text-white font-medium">
-                        vs {opponent?.displayName ?? 'TBD'}
+                      <p className="text-white font-medium flex items-center gap-2">
+                        <span className="text-slate-400">vs</span>
+                        {opponent?.seed && (
+                          <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-slate-700 text-xs font-bold text-slate-300">
+                            {opponent.seed}
+                          </span>
+                        )}
+                        <span>
+                          {opponent?.players
+                            ? opponent.players.map(p => p.name).join(' / ')
+                            : 'TBD'}
+                        </span>
                       </p>
                     </div>
                     <div className="text-right">

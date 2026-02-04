@@ -1,12 +1,12 @@
 import data from '@/../product/sections/events/data.json'
 import { EventDiscovery } from './components/EventDiscovery'
-import type { Event, GameFormat, CurrentUser } from '@/../product/sections/events/types'
+import type { Event, FormatCategory, CurrentUser } from '@/../product/sections/events/types'
 
 export default function EventDiscoveryPreview() {
   return (
     <EventDiscovery
       events={data.events as Event[]}
-      gameFormats={data.gameFormats as GameFormat[]}
+      formatCategories={data.formatCategories as FormatCategory[]}
       currentUser={data.currentUser as CurrentUser}
       onViewEvent={(id) => console.log('View event:', id)}
       onFilterChange={(filters) => console.log('Filter change:', filters)}
