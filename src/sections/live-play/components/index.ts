@@ -35,3 +35,6 @@ export { CourtStatusBoard } from './CourtStatusBoard'
 export { HybridTournamentDashboard } from './HybridTournamentDashboard'
 export { HybridSeedingView } from './HybridSeedingView'
 export { PhaseTransitionScreen } from './PhaseTransitionScreen'
+
+// Recreational format components
+export { OpenPlayDashboard } from './OpenPlayDashboard'
