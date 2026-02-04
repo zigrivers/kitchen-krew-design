@@ -1,5 +1,5 @@
-import { Calendar, MapPin, Users, Trophy, DollarSign } from 'lucide-react'
-import type { Event, Player } from '@/../product/sections/events/types'
+import { Calendar, MapPin, Users, DollarSign, Trophy, RefreshCw, TrendingUp, Smile, UsersRound, Star } from 'lucide-react'
+import type { Event, Player, FormatCategoryIcon } from '@/../product/sections/events/types'
 
 interface EventCardProps {
   event: Event
@@ -56,6 +56,60 @@ function PlayerAvatar({ player, size = 'sm' }: { player: Player; size?: 'sm' | '
   )
 }
 
+/** Maps format category icon names to Lucide icon components */
+function FormatIcon({ icon, className }: { icon: FormatCategoryIcon; className?: string }) {
+  const iconMap = {
+    'trophy': Trophy,
+    'refresh-cw': RefreshCw,
+    'trending-up': TrendingUp,
+    'smile': Smile,
+    'users': UsersRound,
+    'star': Star,
+  }
+  const IconComponent = iconMap[icon] || Trophy
+  return <IconComponent className={className} />
+}
+
+/** Color schemes for each format category */
+const categoryColors: Record<string, { bg: string; text: string; darkBg: string; darkText: string }> = {
+  'tournament': {
+    bg: 'bg-amber-100',
+    text: 'text-amber-700',
+    darkBg: 'dark:bg-amber-900/40',
+    darkText: 'dark:text-amber-400',
+  },
+  'round-robin': {
+    bg: 'bg-sky-100',
+    text: 'text-sky-700',
+    darkBg: 'dark:bg-sky-900/40',
+    darkText: 'dark:text-sky-400',
+  },
+  'ladder-league': {
+    bg: 'bg-violet-100',
+    text: 'text-violet-700',
+    darkBg: 'dark:bg-violet-900/40',
+    darkText: 'dark:text-violet-400',
+  },
+  'recreational': {
+    bg: 'bg-lime-100',
+    text: 'text-lime-700',
+    darkBg: 'dark:bg-lime-900/40',
+    darkText: 'dark:text-lime-400',
+  },
+  'team': {
+    bg: 'bg-rose-100',
+    text: 'text-rose-700',
+    darkBg: 'dark:bg-rose-900/40',
+    darkText: 'dark:text-rose-400',
+  },
+  'specialty': {
+    bg: 'bg-orange-100',
+    text: 'text-orange-700',
+    darkBg: 'dark:bg-orange-900/40',
+    darkText: 'dark:text-orange-400',
+  },
+}
+
 export function EventCard({
   event,
   isRegistered,
@@ -67,6 +121,8 @@ export function EventCard({
 }: EventCardProps) {
   const isFull = event.spotsAvailable === 0
   const hasWaitlist = event.waitlist.length > 0
+  const colors = categoryColors[event.format.categoryId] || categoryColors['recreational']
+  const skillRange = event.formatConfig.skillRange
 
   return (
     <div
@@ -90,19 +146,23 @@ export function EventCard({
 
       {/* Card Content */}
       <div className="p-5">
-        {/* Format Tag */}
-        <div className="flex items-center gap-2 mb-3">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
-            <Trophy className="w-3.5 h-3.5" />
-            {event.format}
+        {/* Format Tags */}
+        <div className="flex items-center gap-2 mb-3 flex-wrap">
+          {/* Category Badge with Icon */}
+          <span
+            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${colors.bg} ${colors.text} ${colors.darkBg} ${colors.darkText}`}
+          >
+            <FormatIcon icon={event.format.categoryIcon} className="w-3.5 h-3.5" />
+            {event.format.subtypeName}
           </span>
-          {event.fee && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-400 text-xs font-medium">
+
+          {/* Fee Badge */}
+          {event.fee ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium">
               <DollarSign className="w-3.5 h-3.5" />
               {event.fee}
             </span>
-          )}
-          {!event.fee && (
+          ) : (
             <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-lime-100 dark:bg-lime-900/50 text-lime-700 dark:text-lime-400 text-xs font-medium">
               Free
             </span>
@@ -110,26 +170,26 @@ export function EventCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors line-clamp-2">
           {event.name}
         </h3>
 
         {/* Date & Time */}
         <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mb-2">
-          <Calendar className="w-4 h-4 text-slate-400" />
+          <Calendar className="w-4 h-4 text-slate-400 flex-shrink-0" />
           <span className="font-medium">{formatDate(event.startDateTime)}</span>
           <span className="text-slate-400">·</span>
-          <span>
+          <span className="truncate">
             {formatTime(event.startDateTime)} – {formatTime(event.endDateTime)}
           </span>
         </div>
 
         {/* Location */}
         <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 mb-4">
-          <MapPin className="w-4 h-4 text-slate-400" />
-          <span>{event.venue.name}</span>
+          <MapPin className="w-4 h-4 text-slate-400 flex-shrink-0" />
+          <span className="truncate">{event.venue.name}</span>
           <span className="text-slate-400">·</span>
-          <span className="text-slate-500">{event.venue.city}</span>
+          <span className="text-slate-500 truncate">{event.venue.city}</span>
         </div>
 
         {/* Skill Level */}
@@ -137,7 +197,7 @@ export function EventCard({
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-slate-500 dark:text-slate-400">Skill:</span>
             <span className="text-sm font-mono font-medium text-slate-700 dark:text-slate-300">
-              {event.skillLevelMin.toFixed(1)} – {event.skillLevelMax.toFixed(1)}
+              {skillRange.min.toFixed(1)} – {skillRange.max.toFixed(1)}
             </span>
           </div>
         </div>
@@ -178,16 +238,16 @@ export function EventCard({
         {/* Footer: Organizer & Players */}
         <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800">
           {/* Organizer */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <PlayerAvatar player={event.organizer} size="sm" />
-            <span className="text-sm text-slate-600 dark:text-slate-400">
+            <span className="text-sm text-slate-600 dark:text-slate-400 truncate">
               by <span className="font-medium text-slate-700 dark:text-slate-300">{event.organizer.name}</span>
             </span>
           </div>
 
           {/* Registered Players Preview */}
           {event.registrations.length > 0 && (
-            <div className="flex items-center">
+            <div className="flex items-center flex-shrink-0">
               <div className="flex -space-x-2">
                 {event.registrations.slice(0, 3).map((reg) => (
                   <PlayerAvatar key={reg.id} player={reg.player} size="sm" />

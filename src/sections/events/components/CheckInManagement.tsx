@@ -736,7 +736,7 @@ export function CheckInManagement({
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Trophy className="w-4 h-4" />
-                  {event.format}
+                  {event.format.subtypeName}
                 </span>
               </div>
             </div>

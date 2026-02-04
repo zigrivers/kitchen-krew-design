@@ -26,8 +26,25 @@ import {
   Check,
   Download,
   X,
+  RefreshCw,
+  TrendingUp,
+  Smile,
+  UsersRound,
+  GitBranch,
+  LayoutGrid,
+  ListOrdered,
 } from 'lucide-react'
-import type { Event, CurrentUser, Player, Registration, ShareMethod, ShareEventData, EventQRCode } from '@/../product/sections/events/types'
+import type {
+  Event,
+  CurrentUser,
+  Player,
+  Registration,
+  ShareMethod,
+  ShareEventData,
+  EventQRCode,
+  FormatCategoryId,
+  FormatCategoryIcon,
+} from '@/../product/sections/events/types'
 
 // =============================================================================
 // Props
@@ -71,6 +88,67 @@ export interface EventDetailProps {
 }
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+/** Color schemes for each format category */
+const categoryColors: Record<
+  string,
+  {
+    bg: string
+    text: string
+    iconBg: string
+    border: string
+  }
+> = {
+  tournament: {
+    bg: 'bg-amber-100 dark:bg-amber-900/30',
+    text: 'text-amber-700 dark:text-amber-400',
+    iconBg: 'bg-amber-500/20',
+    border: 'border-amber-200 dark:border-amber-800',
+  },
+  'round-robin': {
+    bg: 'bg-sky-100 dark:bg-sky-900/30',
+    text: 'text-sky-700 dark:text-sky-400',
+    iconBg: 'bg-sky-500/20',
+    border: 'border-sky-200 dark:border-sky-800',
+  },
+  'ladder-league': {
+    bg: 'bg-violet-100 dark:bg-violet-900/30',
+    text: 'text-violet-700 dark:text-violet-400',
+    iconBg: 'bg-violet-500/20',
+    border: 'border-violet-200 dark:border-violet-800',
+  },
+  recreational: {
+    bg: 'bg-lime-100 dark:bg-lime-900/30',
+    text: 'text-lime-700 dark:text-lime-400',
+    iconBg: 'bg-lime-500/20',
+    border: 'border-lime-200 dark:border-lime-800',
+  },
+  team: {
+    bg: 'bg-rose-100 dark:bg-rose-900/30',
+    text: 'text-rose-700 dark:text-rose-400',
+    iconBg: 'bg-rose-500/20',
+    border: 'border-rose-200 dark:border-rose-800',
+  },
+  specialty: {
+    bg: 'bg-orange-100 dark:bg-orange-900/30',
+    text: 'text-orange-700 dark:text-orange-400',
+    iconBg: 'bg-orange-500/20',
+    border: 'border-orange-200 dark:border-orange-800',
+  },
+}
+
+const categoryIconColors: Record<string, string> = {
+  tournament: 'text-amber-400',
+  'round-robin': 'text-sky-400',
+  'ladder-league': 'text-violet-400',
+  recreational: 'text-lime-400',
+  team: 'text-rose-400',
+  specialty: 'text-orange-400',
+}
+
+// =============================================================================
 // Helper Functions
 // =============================================================================
 
@@ -104,6 +182,20 @@ function getDuration(start: string, end: string): string {
 // =============================================================================
 // Sub-Components
 // =============================================================================
+
+/** Maps format category icon names to Lucide icon components */
+function FormatIcon({ icon, className }: { icon: FormatCategoryIcon; className?: string }) {
+  const iconMap = {
+    trophy: Trophy,
+    'refresh-cw': RefreshCw,
+    'trending-up': TrendingUp,
+    smile: Smile,
+    users: UsersRound,
+    star: Star,
+  }
+  const IconComponent = iconMap[icon] || Trophy
+  return <IconComponent className={className} />
+}
 
 function PlayerAvatar({
   player,
@@ -293,6 +385,293 @@ function WaitlistRow({ registration, position, isManager, onPromote, onRemove }:
 }
 
 // =============================================================================
+// Format-Specific Preview Components
+// =============================================================================
+
+/** Tournament bracket preview (simplified visual) */
+function BracketPreview({ event }: { event: Event }) {
+  const bracketType = event.formatConfig.bracketType || 'single_elimination'
+
+  return (
+    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-amber-900/50">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-900/30">
+          <GitBranch className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-slate-900 dark:text-white">Tournament Bracket</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {bracketType === 'single_elimination'
+              ? 'Single Elimination'
+              : bracketType === 'double_elimination'
+                ? 'Double Elimination'
+                : 'Pool Play + Playoffs'}
+          </p>
+        </div>
+      </div>
+
+      {/* Simplified bracket visualization */}
+      <div className="relative py-4">
+        <div className="flex items-center justify-between gap-2">
+          {/* Round 1 */}
+          <div className="flex-1 space-y-2">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 mb-2 text-center">Round 1</div>
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-6 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700"
+              />
+            ))}
+          </div>
+
+          {/* Connector lines */}
+          <div className="w-4 flex flex-col items-center gap-[3.25rem]">
+            <div className="w-full h-px bg-slate-300 dark:bg-slate-700" />
+            <div className="w-full h-px bg-slate-300 dark:bg-slate-700" />
+          </div>
+
+          {/* Semifinals */}
+          <div className="flex-1 space-y-2">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 mb-2 text-center">Semis</div>
+            <div className="h-6 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 mt-4" />
+            <div className="h-6 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 mt-8" />
+          </div>
+
+          {/* Connector */}
+          <div className="w-4 flex flex-col items-center">
+            <div className="w-full h-px bg-slate-300 dark:bg-slate-700 mt-12" />
+          </div>
+
+          {/* Finals */}
+          <div className="flex-1 space-y-2">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 mb-2 text-center">Finals</div>
+            <div className="h-8 rounded bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700 mt-8 flex items-center justify-center">
+              <Trophy className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-4">
+          Bracket will be seeded once registrations close
+        </p>
+      </div>
+    </div>
+  )
+}
+
+/** Round robin schedule grid preview */
+function RoundRobinPreview({ event }: { event: Event }) {
+  const playoffEnabled = event.formatConfig.playoffEnabled
+
+  return (
+    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-sky-200 dark:border-sky-900/50">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 rounded-xl bg-sky-100 dark:bg-sky-900/30">
+          <LayoutGrid className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-slate-900 dark:text-white">Round Robin Schedule</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Everyone plays each other{playoffEnabled && ' • Top players advance to playoffs'}
+          </p>
+        </div>
+      </div>
+
+      {/* Simplified matchup grid */}
+      <div className="overflow-x-auto">
+        <div className="grid grid-cols-5 gap-1 min-w-[280px]">
+          {/* Header row */}
+          <div className="h-8" />
+          {['P1', 'P2', 'P3', 'P4'].map((p) => (
+            <div
+              key={p}
+              className="h-8 flex items-center justify-center bg-sky-100 dark:bg-sky-900/30 rounded text-xs font-medium text-sky-700 dark:text-sky-400"
+            >
+              {p}
+            </div>
+          ))}
+
+          {/* Data rows */}
+          {['P1', 'P2', 'P3', 'P4'].map((row, i) => (
+            <>
+              <div
+                key={`label-${row}`}
+                className="h-8 flex items-center justify-center bg-sky-100 dark:bg-sky-900/30 rounded text-xs font-medium text-sky-700 dark:text-sky-400"
+              >
+                {row}
+              </div>
+              {[0, 1, 2, 3].map((col) => (
+                <div
+                  key={`${row}-${col}`}
+                  className={`h-8 rounded flex items-center justify-center text-xs ${
+                    i === col
+                      ? 'bg-slate-200 dark:bg-slate-800'
+                      : i > col
+                        ? 'bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
+                        : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  {i === col ? '—' : i > col ? '' : `R${i + col}`}
+                </div>
+              ))}
+            </>
+          ))}
+        </div>
+      </div>
+
+      <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-4">
+        Schedule will be generated once registrations close
+      </p>
+    </div>
+  )
+}
+
+/** Ladder/League standings preview */
+function LadderPreview({ event }: { event: Event }) {
+  const courtMovement = event.formatConfig.courtMovement
+
+  return (
+    <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-violet-200 dark:border-violet-900/50">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 rounded-xl bg-violet-100 dark:bg-violet-900/30">
+          <ListOrdered className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+        </div>
+        <div>
+          <h3 className="font-semibold text-slate-900 dark:text-white">Ladder Standings</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {courtMovement?.enabled ? 'Winners move up, losers move down' : 'Performance-based ranking'}
+          </p>
+        </div>
+      </div>
+
+      {/* Simplified ladder visualization */}
+      <div className="space-y-2">
+        {[
+          { position: 1, label: 'Court 1', color: 'bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700' },
+          { position: 2, label: 'Court 2', color: 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700' },
+          { position: 3, label: 'Court 3', color: 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700' },
+          { position: 4, label: 'Court 4', color: 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700' },
+        ].map((court) => (
+          <div
+            key={court.position}
+            className={`flex items-center gap-3 p-3 rounded-lg border ${court.color}`}
+          >
+            <div
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                court.position === 1
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-slate-300 dark:bg-slate-600 text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              {court.position}
+            </div>
+            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{court.label}</span>
+            <div className="flex-1 flex justify-end gap-1">
+              {[1, 2, 3, 4].map((slot) => (
+                <div
+                  key={slot}
+                  className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 border border-slate-300 dark:border-slate-600"
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-xs text-slate-500 dark:text-slate-400 text-center mt-4">
+        Standings will update as games are played
+      </p>
+    </div>
+  )
+}
+
+/** Format configuration summary */
+function FormatConfigSummary({ event }: { event: Event }) {
+  const config = event.formatConfig
+  const categoryId = event.format.categoryId
+  const colors = categoryColors[categoryId] || categoryColors['recreational']
+
+  const getConfigItems = () => {
+    const items: { label: string; value: string }[] = []
+
+    // Scoring (most formats)
+    if (config.scoring) {
+      items.push({
+        label: 'Scoring',
+        value: `${config.scoring.type === 'rally' ? 'Rally' : 'Side-out'} to ${config.scoring.pointsToWin}, win by ${config.scoring.winBy}${config.scoring.capPoints ? `, cap ${config.scoring.capPoints}` : ''}`,
+      })
+    }
+
+    // Tournament-specific
+    if (categoryId === 'tournament') {
+      if (config.bracketType) {
+        items.push({
+          label: 'Bracket',
+          value: config.bracketType.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+        })
+      }
+      if (config.seeding) {
+        items.push({
+          label: 'Seeding',
+          value: config.seeding.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+        })
+      }
+      if (config.consolationBracket) {
+        items.push({ label: 'Consolation', value: 'Yes' })
+      }
+    }
+
+    // Round Robin-specific
+    if (categoryId === 'round-robin') {
+      if (config.playoffEnabled) {
+        items.push({
+          label: 'Playoffs',
+          value: `Top ${config.playoffAdvancement || 4} advance`,
+        })
+      }
+    }
+
+    // Ladder-specific
+    if (categoryId === 'ladder-league' || categoryId === 'specialty') {
+      if (config.courtMovement?.enabled) {
+        items.push({
+          label: 'Court Movement',
+          value: config.courtMovement.type.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+        })
+      }
+    }
+
+    // Recreational-specific
+    if (categoryId === 'recreational' && config.courtRotation) {
+      items.push({
+        label: 'Rotation',
+        value: config.courtRotation.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
+      })
+    }
+
+    return items
+  }
+
+  const configItems = getConfigItems()
+
+  if (configItems.length === 0) return null
+
+  return (
+    <div className={`p-4 rounded-xl ${colors.bg} ${colors.border} border`}>
+      <h4 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Format Rules</h4>
+      <div className="grid grid-cols-2 gap-3">
+        {configItems.map((item, index) => (
+          <div key={index}>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{item.label}</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{item.value}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// =============================================================================
 // Share Modal (inline)
 // =============================================================================
 
@@ -436,13 +815,18 @@ function QRCodePlaceholder({ size = 180 }: { size?: number }) {
       const isFinderPattern =
         (i < 7 && j < 7) || (i < 7 && j >= gridSize - 7) || (i >= gridSize - 7 && j < 7)
       if (isFinderPattern) {
-        const isOuter = i === 0 || i === 6 || j === 0 || j === 6 ||
-                       (i < 7 && (j === gridSize - 7 || j === gridSize - 1)) ||
-                       (j >= gridSize - 7 && (i === 0 || i === 6)) ||
-                       (i >= gridSize - 7 && (j === 0 || j === 6))
-        const isInner = (i >= 2 && i <= 4 && j >= 2 && j <= 4) ||
-                       (i >= 2 && i <= 4 && j >= gridSize - 5 && j <= gridSize - 3) ||
-                       (i >= gridSize - 5 && i <= gridSize - 3 && j >= 2 && j <= 4)
+        const isOuter =
+          i === 0 ||
+          i === 6 ||
+          j === 0 ||
+          j === 6 ||
+          (i < 7 && (j === gridSize - 7 || j === gridSize - 1)) ||
+          (j >= gridSize - 7 && (i === 0 || i === 6)) ||
+          (i >= gridSize - 7 && (j === 0 || j === 6))
+        const isInner =
+          (i >= 2 && i <= 4 && j >= 2 && j <= 4) ||
+          (i >= 2 && i <= 4 && j >= gridSize - 5 && j <= gridSize - 3) ||
+          (i >= gridSize - 5 && i <= gridSize - 3 && j >= 2 && j <= 4)
         pattern[i][j] = isOuter || isInner
       } else {
         pattern[i][j] = ((i * 7 + j * 13 + i * j) % 3) === 0
@@ -564,7 +948,15 @@ function QRModal({ qrCode, event, isGenerating, isOpen, onDownload, onCopyLink, 
                 : 'border-2 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600'
             }`}
           >
-            {copied ? <><Check className="w-4 h-4" /> Copied!</> : <><Link2 className="w-4 h-4" /> Copy Link</>}
+            {copied ? (
+              <>
+                <Check className="w-4 h-4" /> Copied!
+              </>
+            ) : (
+              <>
+                <Link2 className="w-4 h-4" /> Copy Link
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -615,6 +1007,12 @@ export function EventDetail({
 
   // Stats
   const checkedInCount = event.registrations.filter((r) => r.status === 'checked_in').length
+
+  // Get category colors
+  const categoryId = event.format.categoryId
+  const colors = categoryColors[categoryId] || categoryColors['recreational']
+  const iconColor = categoryIconColors[categoryId] || 'text-lime-400'
+  const skillRange = event.formatConfig.skillRange
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
@@ -693,9 +1091,12 @@ export function EventDetail({
           <div className="max-w-4xl mx-auto">
             {/* Tags */}
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm text-white text-sm font-medium">
-                <Trophy className="w-4 h-4 text-lime-400" />
-                {event.format}
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm text-white text-sm font-medium`}>
+                <FormatIcon icon={event.format.categoryIcon} className={`w-4 h-4 ${iconColor}`} />
+                {event.format.subtypeName}
+              </span>
+              <span className={`inline-flex items-center px-2.5 py-1 rounded-lg ${colors.bg} ${colors.text} text-xs font-medium`}>
+                {event.format.categoryName}
               </span>
               {event.fee ? (
                 <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-sky-500/20 backdrop-blur-sm text-sky-300 text-sm font-medium">
@@ -709,7 +1110,7 @@ export function EventDetail({
               )}
               <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm text-slate-300 text-sm">
                 <Star className="w-4 h-4 text-amber-400" />
-                {event.skillLevelMin.toFixed(1)} – {event.skillLevelMax.toFixed(1)}
+                {skillRange.min.toFixed(1)} – {skillRange.max.toFixed(1)}
               </span>
             </div>
 
@@ -782,6 +1183,14 @@ export function EventDetail({
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-3">About this event</h2>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">{event.description}</p>
               </section>
+
+              {/* Format Configuration Summary */}
+              <FormatConfigSummary event={event} />
+
+              {/* Format-Specific Preview */}
+              {categoryId === 'tournament' && <BracketPreview event={event} />}
+              {categoryId === 'round-robin' && <RoundRobinPreview event={event} />}
+              {(categoryId === 'ladder-league' || categoryId === 'specialty') && <LadderPreview event={event} />}
 
               {/* Date & Location */}
               <section className="grid sm:grid-cols-2 gap-4">
@@ -868,9 +1277,7 @@ export function EventDetail({
                 <section className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-900/30">
                   <div className="flex items-center gap-2 mb-4">
                     <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                    <h3 className="font-semibold text-amber-900 dark:text-amber-200">
-                      Waitlist ({event.waitlist.length})
-                    </h3>
+                    <h3 className="font-semibold text-amber-900 dark:text-amber-200">Waitlist ({event.waitlist.length})</h3>
                   </div>
 
                   {event.waitlist.length > 0 ? (
