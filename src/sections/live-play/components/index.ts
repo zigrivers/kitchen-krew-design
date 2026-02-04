@@ -38,3 +38,10 @@ export { PhaseTransitionScreen } from './PhaseTransitionScreen'
 
 // Recreational format components
 export { OpenPlayDashboard } from './OpenPlayDashboard'
+
+// Team Competition components
+export { TeamMatchDashboard } from './TeamMatchDashboard'
+
+// Specialty format components
+export { KingOfCourtDashboard } from './KingOfCourtDashboard'
+export { ABCDDashboard } from './ABCDDashboard'
